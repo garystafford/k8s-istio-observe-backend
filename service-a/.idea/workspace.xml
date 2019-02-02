@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0eb3a9fd-1c1e-4d90-928b-59562b0ff68d" name="Default Changelist" comment="" />
+    <list default="true" id="0eb3a9fd-1c1e-4d90-928b-59562b0ff68d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/service-a.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-b/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-b/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-b/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-b/service-b.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-c/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-c/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-c/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-c/service-c.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-d/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-d/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-d/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-d/service-d.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,7 +21,7 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.go">
+        <entry file="file://$PROJECT_DIR$/service-a.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="142">
               <caret line="22" column="17" selection-start-line="22" selection-end-line="23" />
@@ -34,6 +44,9 @@
     </leaf>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.11.5/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -47,6 +60,7 @@
     <option name="width" value="1400" />
     <option name="height" value="837" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -58,18 +72,11 @@
           <expand>
             <path>
               <item name="service-a" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="service-a" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="service-a" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;service-a&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-            </path>
-            <path>
-              <item name="service-a" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;service-a&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -145,12 +152,12 @@
     <frame x="20" y="43" width="1400" height="837" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.24295302" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.24295302" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -177,7 +184,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
+    <entry file="file://$PROJECT_DIR$/service-a.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
           <caret line="22" column="17" selection-start-line="22" selection-end-line="23" />

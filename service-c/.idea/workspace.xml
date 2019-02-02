@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e37a6f18-c6c7-4cbd-b753-c8a5eacbc0e3" name="Default Changelist" comment="" />
+    <list default="true" id="e37a6f18-c6c7-4cbd-b753-c8a5eacbc0e3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../service-a/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-a/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-a/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-a/service-a.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-a/service-a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-b/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-b/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-b/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-b/service-b.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/service-c.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-d/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../service-d/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-d/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../service-d/service-d.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,10 +21,10 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.go">
+        <entry file="file://$PROJECT_DIR$/service-c.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="58" column="31" lean-forward="true" selection-start-line="58" selection-end-line="59" />
+            <state relative-caret-position="930">
+              <caret line="62" column="18" selection-start-line="62" selection-start-column="18" selection-end-line="62" selection-end-column="18" />
               <folding>
                 <element signature="e#14#184#0" expanded="true" />
               </folding>
@@ -50,6 +60,9 @@
     </option>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.11.5/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -63,6 +76,7 @@
     <option name="width" value="1400" />
     <option name="height" value="837" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -161,10 +175,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
+    <entry file="file://$PROJECT_DIR$/service-c.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="58" column="31" lean-forward="true" selection-start-line="58" selection-end-line="59" />
+        <state relative-caret-position="930">
+          <caret line="62" column="18" selection-start-line="62" selection-start-column="18" selection-end-line="62" selection-end-column="18" />
           <folding>
             <element signature="e#14#184#0" expanded="true" />
           </folding>
