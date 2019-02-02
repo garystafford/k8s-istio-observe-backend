@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  service-a:
+    build: ./service-a
+    image: garystafford/golang-service-a:1.0.0
+    networks:
+      - golang-demo
+  service-b:
+    build: ./service-b
+    image: garystafford/golang-service-b:1.0.0
+    networks:
+      - golang-demo
+  service-c:
+    build: ./service-c
+    image: garystafford/golang-service-c:1.0.0
+    networks:
+      - golang-demo
+    environment:
+      MONGO_CONN: 'mongodb://mongodb:27017/service-b'
+  service-d:
+    build: ./service-d
+    image: garystafford/golang-service-d:1.0.0
+    networks:
+      - golang-demo
+  mongodb:
+    image: mongo:latest
+    networks:
+      - voternet
+    command: --smallfiles
+
+networks:
+  golang-demo:
+    driver: bridge
+
+volumes:
+  data: {}
