@@ -31,6 +31,8 @@ services:
     image: garystafford/golang-service-f:1.0.0
     networks:
       - golang-demo
+    environment:
+      RABBITMQ_CONN: 'amqp://user:user1234@rabbitmq:5672/'
   mongodb:
     image: mongo:latest
     networks:

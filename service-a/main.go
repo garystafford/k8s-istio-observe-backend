@@ -23,9 +23,8 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	//time.Sleep(500 * time.Millisecond)
 
 	traces = nil
-
-	CallNextService("http://service-b:8000/ping") // service-b
-	CallNextService("http://service-c:8000/ping") // service-c
+	CallNextService("http://service-b:8000/ping")
+	CallNextService("http://service-c:8000/ping")
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-A", CreatedAt: time.Now().Local()}
 

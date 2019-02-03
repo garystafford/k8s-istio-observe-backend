@@ -36,7 +36,7 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SendMessage(trace Trace) {
+func GetMessages() {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -70,7 +70,7 @@ func SendMessage(trace Trace) {
 
 	go func() {
 		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
+			log.Printf("Received a message: %s", d)
 		}
 	}()
 
@@ -85,6 +85,7 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
+	GetMessages()
 	router := mux.NewRouter()
 	router.HandleFunc("/ping", Orchestrator).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
