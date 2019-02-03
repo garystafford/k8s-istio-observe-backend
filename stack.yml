@@ -50,17 +50,20 @@ services:
     image: mongo:latest
     networks:
       - golang-demo
+    ports:
+      - 27017:27017
     command: --smallfiles
   rabbitmq:
     image: rabbitmq:management
     ports:
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     networks:
       - golang-demo
 
 networks:
   golang-demo:
-    driver: overlay
+    external: true
 
 volumes:
   data: {}

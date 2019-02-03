@@ -20,8 +20,6 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(250 * time.Millisecond)
-
 	traces = nil
 	CallNextService("http://service-g:8000/ping")
 	CallNextService("http://service-h:8000/ping")

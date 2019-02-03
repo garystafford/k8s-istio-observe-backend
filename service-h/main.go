@@ -22,8 +22,6 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(250 * time.Millisecond)
-
 	traces = nil
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-H", CreatedAt: time.Now().Local()}

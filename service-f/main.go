@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -23,16 +24,12 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(250 * time.Millisecond)
-
 	traces = nil
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-F", CreatedAt: time.Now().Local()}
 
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
-
-	CallMongoDB(tmpTrace)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
@@ -41,14 +38,13 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 }
 
 func CallMongoDB(trace Trace) {
-	//print(os.Getenv("MONGO_CONN"))
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, os.Getenv("MONGO_CONN"))
 	if err != nil {
 		panic(err)
 	}
 
-	collection := client.Database("service-c").Collection("traces")
+	collection := client.Database("service-f").Collection("messages")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
 	_, err = collection.InsertOne(ctx, trace)
@@ -90,13 +86,26 @@ func GetMessages() {
 	forever := make(chan bool)
 
 	go func() {
-		for d := range msgs {
-			log.Printf("Received a message: %s", d)
+		for delivery := range msgs {
+			log.Printf("Received a message: %s", delivery)
+			CallMongoDB(deserialize(delivery.Body))
 		}
 	}()
 
 	log.Printf(" [*] Waiting for messages...")
 	<-forever
+}
+
+func deserialize(b []byte) (t Trace) {
+	var tmpTrace Trace
+	log.Printf("Body: %s", b)
+	buf := bytes.NewBuffer(b)
+	decoder := json.NewDecoder(buf)
+	err := decoder.Decode(&tmpTrace)
+	if err != nil {
+		panic(err)
+	}
+	return tmpTrace
 }
 
 func failOnError(err error, msg string) {

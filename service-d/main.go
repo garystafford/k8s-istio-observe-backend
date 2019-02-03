@@ -21,8 +21,6 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(250 * time.Millisecond)
-
 	traces = nil
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-D", CreatedAt: time.Now().Local()}
@@ -30,15 +28,20 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
 
-	SendMessage(tmpTrace)
-
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
 		panic(err)
 	}
+
+	b, err := json.Marshal(tmpTrace)
+	SendMessage(b)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
-func SendMessage(trace Trace) {
+func SendMessage(b []byte) {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -59,13 +62,14 @@ func SendMessage(trace Trace) {
 
 	err = ch.Publish(
 		"",
-		q.Name, // routing key
+		q.Name,
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(fmt.Sprintf("%v", trace)),
+			ContentType: "application/json",
+			Body:        b,
 		})
+	print(b)
 	failOnError(err, "Failed to publish a message")
 }
 
