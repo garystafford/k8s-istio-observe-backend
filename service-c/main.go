@@ -54,7 +54,6 @@ func CallMongoDB(trace Trace) {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 func main() {

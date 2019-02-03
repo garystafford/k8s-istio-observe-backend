@@ -33,6 +33,7 @@ services:
       - golang-demo
     environment:
       RABBITMQ_CONN: 'amqp://user:user1234@rabbitmq:5672/'
+      MONGO_CONN: 'mongodb://mongodb:27017/service-f'
   mongodb:
     image: mongo:latest
     networks:
