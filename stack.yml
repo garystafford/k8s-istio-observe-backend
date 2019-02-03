@@ -37,7 +37,9 @@ services:
       - golang-demo
     command: --smallfiles
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
     networks:
       - golang-demo
     environment:

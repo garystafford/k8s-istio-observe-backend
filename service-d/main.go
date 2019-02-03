@@ -57,7 +57,6 @@ func SendMessage(trace Trace) {
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := "Hello World!"
 	err = ch.Publish(
 		"",
 		q.Name, // routing key
@@ -67,7 +66,6 @@ func SendMessage(trace Trace) {
 			ContentType: "text/plain",
 			Body:        []byte(fmt.Sprintf("%v", trace)),
 		})
-	log.Printf(" [x] Sent %s", body)
 	failOnError(err, "Failed to publish a message")
 }
 
