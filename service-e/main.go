@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -19,9 +20,11 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(2000 * time.Millisecond)
+	//time.Sleep(250 * time.Millisecond)
 
 	traces = nil
+	CallNextService("http://service-g:8000/ping")
+	CallNextService("http://service-h:8000/ping")
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-E", CreatedAt: time.Now().Local()}
 
@@ -31,6 +34,24 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func CallNextService(url string) {
+	var tmpTraces []Trace
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("The HTTP request failed with error %s\n", err)
+	} else {
+		data, _ := ioutil.ReadAll(response.Body)
+		err := json.Unmarshal(data, &tmpTraces)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, r := range tmpTraces {
+			traces = append(traces, r)
+		}
 	}
 }
 

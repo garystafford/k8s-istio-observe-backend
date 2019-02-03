@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"io/ioutil"
+	"github.com/mongodb/mongo-go-driver/mongo"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -23,13 +25,13 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	//time.Sleep(250 * time.Millisecond)
 
 	traces = nil
-	CallNextService("http://service-d:8000/ping")
-	CallNextService("http://service-e:8000/ping")
 
-	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-B", CreatedAt: time.Now().Local()}
+	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-G", CreatedAt: time.Now().Local()}
 
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
+
+	CallMongoDB(tmpTrace)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
@@ -37,21 +39,19 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CallNextService(url string) {
-	var tmpTraces []Trace
-	response, err := http.Get(url)
+func CallMongoDB(trace Trace) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, os.Getenv("MONGO_CONN"))
 	if err != nil {
-		fmt.Printf("The HTTP request failed with error %s\n", err)
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpTraces)
-		if err != nil {
-			panic(err)
-		}
+		panic(err)
+	}
 
-		for _, r := range tmpTraces {
-			traces = append(traces, r)
-		}
+	collection := client.Database("service-g").Collection("traces")
+	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
+
+	_, err = collection.InsertOne(ctx, trace)
+	if err != nil {
+		panic(err)
 	}
 }
 

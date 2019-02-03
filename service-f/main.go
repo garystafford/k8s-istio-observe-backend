@@ -23,7 +23,7 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
-	//time.Sleep(1000 * time.Millisecond)
+	//time.Sleep(250 * time.Millisecond)
 
 	traces = nil
 
