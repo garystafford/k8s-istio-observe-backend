@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/mongodb/mongo-go-driver/mongo"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,24 +33,9 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 
 	CallMongoDB(tmpTrace)
 
-	json.NewEncoder(w).Encode(traces)
-}
-
-func CallNextService(url string) {
-	var tmpTraces []Trace
-	response, err := http.Get(url)
+	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		fmt.Printf("The HTTP request failed with error %s\n", err)
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpTraces)
-		if err != nil {
-			panic(err)
-		}
-
-		for _, r := range tmpTraces {
-			traces = append(traces, r)
-		}
+		panic(err)
 	}
 }
 

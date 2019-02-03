@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"io/ioutil"
+	"github.com/streadway/amqp"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -29,24 +30,50 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
 
-	json.NewEncoder(w).Encode(traces)
+	SendMessage(tmpTrace)
+
+	err := json.NewEncoder(w).Encode(traces)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func CallNextService(url string) {
-	var tmpTraces []Trace
-	response, err := http.Get(url)
-	if err != nil {
-		fmt.Printf("The HTTP request failed with error %s\n", err)
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpTraces)
-		if err != nil {
-			panic(err)
-		}
+func SendMessage(trace Trace) {
+	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
 
-		for _, r := range tmpTraces {
-			traces = append(traces, r)
-		}
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"service-d",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	body := "Hello World!"
+	err = ch.Publish(
+		"",
+		q.Name, // routing key
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(fmt.Sprintf("%v", trace)),
+		})
+	log.Printf(" [x] Sent %s", body)
+	failOnError(err, "Failed to publish a message")
+}
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
 	}
 }
 

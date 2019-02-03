@@ -24,15 +24,18 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 
 	traces = nil
 
-	CallNextService("http://localhost:8001/ping") // service-b
-	CallNextService("http://localhost:8002/ping") // service-c
+	CallNextService("http://service-b:8000/ping") // service-b
+	CallNextService("http://service-c:8000/ping") // service-c
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-A", CreatedAt: time.Now().Local()}
 
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
 
-	json.NewEncoder(w).Encode(traces)
+	err := json.NewEncoder(w).Encode(traces)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func CallNextService(url string) {

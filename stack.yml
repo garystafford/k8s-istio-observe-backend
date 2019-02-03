@@ -2,36 +2,51 @@ version: '3.7'
 
 services:
   service-a:
-    build: ./service-a
     image: garystafford/golang-service-a:1.0.0
     networks:
       - golang-demo
+    ports:
+      - 8100:8000
   service-b:
-    build: ./service-b
     image: garystafford/golang-service-b:1.0.0
     networks:
       - golang-demo
   service-c:
-    build: ./service-c
     image: garystafford/golang-service-c:1.0.0
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/service-b'
   service-d:
-    build: ./service-d
     image: garystafford/golang-service-d:1.0.0
+    networks:
+      - golang-demo
+    environment:
+      RABBITMQ_CONN: 'amqp://user:user1234@rabbitmq:5672/'
+  service-e:
+    image: garystafford/golang-service-e:1.0.0
+    networks:
+      - golang-demo
+  service-f:
+    image: garystafford/golang-service-f:1.0.0
     networks:
       - golang-demo
   mongodb:
     image: mongo:latest
     networks:
-      - voternet
+      - golang-demo
     command: --smallfiles
+  rabbitmq:
+    image: rabbitmq:latest
+    networks:
+      - golang-demo
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: user1234
 
 networks:
   golang-demo:
-    driver: bridge
+    driver: overlay
 
 volumes:
   data: {}
