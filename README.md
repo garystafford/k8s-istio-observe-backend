@@ -8,7 +8,7 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 
 ![Architecture Diagram](architecture_diagram_v2.png)
 
-## Build and Deploy
+## Build and Deploy Docker Stack
 
 Build all images, create Docker overlay network, and deploy Swarm of (10) contains: (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
@@ -16,7 +16,25 @@ Build all images, create Docker overlay network, and deploy Swarm of (10) contai
 sh ./build_go_srv_images.sh
 ```
 
-## URLs for Docker Swarm
+### Deployed Stack Services
+
+```text
+> docker stack services golang-demo
+
+ID                  NAME                    MODE                REPLICAS            IMAGE                         PORTS
+45jfnr9ggqlq        golang-demo_rabbitmq    replicated          1/1                 rabbitmq:management           *:5672->5672/tcp, *:15672->15672/tcp
+5xpoiccfjt4d        golang-demo_service-a   replicated          1/1                 garystafford/go-srv-a:1.0.0   *:8100->8000/tcp
+6zn4zmv4i67i        golang-demo_service-c   replicated          1/1                 garystafford/go-srv-c:1.0.0
+9u4plk2kchyx        golang-demo_service-d   replicated          1/1                 garystafford/go-srv-d:1.0.0
+m3l1u8vtytr8        golang-demo_service-b   replicated          1/1                 garystafford/go-srv-b:1.0.0
+psmnn8ie1epw        golang-demo_service-g   replicated          1/1                 garystafford/go-srv-g:1.0.0
+rh3erh9dieps        golang-demo_service-e   replicated          1/1                 garystafford/go-srv-e:1.0.0
+tsfntd0s2hvt        golang-demo_service-h   replicated          1/1                 garystafford/go-srv-h:1.0.0
+wci3a2b81j8m        golang-demo_service-f   replicated          1/1                 garystafford/go-srv-f:1.0.0
+y90djpxktk64        golang-demo_mongodb     replicated          1/1                 mongo:latest                  *:27017->27017
+```
+
+## Accessing the Stack
 
 To start, call Service A, the system
 's edge service: <http://localhost:8100/ping>
