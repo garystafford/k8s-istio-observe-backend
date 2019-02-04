@@ -2,9 +2,9 @@
 
 __Work In Progress__
 
-The (7) Go-based microservices are designed to generate service-to-service, service-to-db, and service-to-queue-to-service IPC. These communications can be observed using Istio's observability tools.
+The (7) Go-based RESTful microservices are designed to generate service-to-service, service-to-db, and service-to-queue-to-service IPC (inter-process communication). These communications can be observed using Istio's observability tools.
 
-A 'trace' object is returned by each service to the up-stream calling service. The traces have no real function other than to confirm the service calls succeeded. They do not support or enhance Istio's observability capabilities.
+A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
 
 ![Architecture Diagram](architecture_diagram.png)
 
