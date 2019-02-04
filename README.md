@@ -46,7 +46,8 @@ To observe the databases, use MongoDB Compass: localhost:27017
 ## Output from Service A
 
 ```json
-[{
+[
+  {
     "id": "1575c539-7871-4b91-8788-a29fccc51dfd",
     "serviceName": "Service-D",
     "createdAt": "2019-02-04T01:01:14.2423788Z"
