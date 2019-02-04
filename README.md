@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Kubernetes and Istio 1.0
 
-\####__ Work In Progress __
+__ Work In Progress __
 
 The (7) Go-based microservices are designed to generate service-to-service, service-to-db, and service-to-queue-to-service IPC. These communications can be observed using Istio's observability tools.
 
