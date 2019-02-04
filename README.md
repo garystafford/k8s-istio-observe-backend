@@ -1,4 +1,4 @@
-# Go-based Microservices Observability Demo with Kubernetes and Istio 1.0
+# Go-based Microservices Observability Demo with Istio 1.0
 
 _Kubernetes Work In Progress_
 
