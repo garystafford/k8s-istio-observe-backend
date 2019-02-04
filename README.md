@@ -6,7 +6,7 @@ The (7) Go-based, RESTful microservices are designed to generate service-to-serv
 
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
 
-![Architecture Diagram](architecture_diagram.png)
+![Architecture Diagram](architecture_diagram_v2.png)
 
 ## Build and Deploy
 
