@@ -93,8 +93,10 @@ A quick look at the services and their typical loads, using Apache Bench (ab).
 
 ```bash
 ab -kc 10 -n 1000 http://localhost:8100/ping
-docker stats --all --no-stream \
-    --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+```
+
+```bash
+docker stats --all --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 ```
 
 ```text
