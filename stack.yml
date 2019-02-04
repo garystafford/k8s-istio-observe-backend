@@ -60,15 +60,6 @@ services:
       - 15672:15672
     networks:
       - golang-demo
-  postgres:
-      image: postgres:latest
-      environment:
-        POSTGRES_PASSWORD: guest
-        POSTGRES_USER: guest
-  adminer:
-    image: adminer:latest
-    ports:
-      - 8080:8080
 networks:
   golang-demo:
     external: true

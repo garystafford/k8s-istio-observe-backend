@@ -1,6 +1,6 @@
 FROM golang:alpine
 LABEL maintainer="Gary A. Stafford <garystafford@rochester.rr.com>"
-ENV REFRESHED_AT 2019-02-02
+ENV REFRESHED_AT 2019-02-03
 EXPOSE 8000
 
 RUN apk update && apk upgrade && apk add git
