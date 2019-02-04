@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Kubernetes and Istio 1.0
 
-__Work In Progress__
+_Kubernetes Work In Progress_
 
 The (7) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-db (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
 
