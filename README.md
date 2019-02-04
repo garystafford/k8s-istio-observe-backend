@@ -86,6 +86,7 @@ To observe the databases, use MongoDB Compass: localhost:27017
   }
 ]
 ```
+
 ## Docker Stats
 
 A quick look at the services and their typical loads, using Apache Bench (ab).
@@ -108,7 +109,9 @@ golang-demo_service-d.1.vyge7w7q8213oyipeyu092zww   0.62%               5.855MiB
 golang-demo_service-e.1.km2y4zfpelzq166os1hy3si0h   0.59%               7.117MiB / 1.952GiB
 golang-demo_service-f.1.flhgix40ctk3j160v5sz82q1v   1.32%               1.695MiB / 1.952GiB
 golang-demo_service-g.1.ii62ga8kqa3p44x94z97xknts   32.54%              122.7MiB / 1.952GiB
-golang-demo_service-h.1.r75tk7cz4szwbluagrpaz04v6   29.78%              123.2MiB / 1.952GiB```
+golang-demo_service-h.1.r75tk7cz4szwbluagrpaz04v6   29.78%              123.2MiB / 1.952GiB
+```
+
 ## Other Useful Commands
 
 ```bash
