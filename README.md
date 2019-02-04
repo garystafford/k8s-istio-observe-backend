@@ -18,9 +18,11 @@ sh ./build_go_srv_images.sh
 
 ### Deployed Stack Services
 
-```text
+```bash
 > docker stack services golang-demo
+```
 
+```text
 ID                  NAME                    MODE                REPLICAS            IMAGE                         PORTS
 45jfnr9ggqlq        golang-demo_rabbitmq    replicated          1/1                 rabbitmq:management           *:5672->5672/tcp, *:15672->15672/tcp
 5xpoiccfjt4d        golang-demo_service-a   replicated          1/1                 garystafford/go-srv-a:1.0.0   *:8100->8000/tcp
@@ -84,7 +86,29 @@ To observe the databases, use MongoDB Compass: localhost:27017
   }
 ]
 ```
+## Docker Stats
 
+A quick look at the services and their typical loads, using Apache Bench (ab).
+
+```bash
+ab -kc 10 -n 1000 http://localhost:8100/ping
+docker stats --all --no-stream \
+    --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+```
+
+```text
+NAME                                                CPU %               MEM USAGE / LIMIT
+golang-demo_mongodb.1.k3kten2dg4sjba0s5l4o79w5b     47.05%              697.3MiB / 1.952GiB
+golang-demo_rabbitmq.1.jittnz3ezzbh4cqnzqgcchlgd    5.08%               84.46MiB / 1.952GiB
+
+golang-demo_service-a.1.lgtj4mj29ra4ify59v84nefqm   0.22%               6.859MiB / 1.952GiB
+golang-demo_service-b.1.rux5d1je9s90aw28jf7x2ws6a   0.15%               6.969MiB / 1.952GiB
+golang-demo_service-c.1.5olitvlahtnbz8daxx0cup4ty   30.27%              126.1MiB / 1.952GiB
+golang-demo_service-d.1.vyge7w7q8213oyipeyu092zww   0.62%               5.855MiB / 1.952GiB
+golang-demo_service-e.1.km2y4zfpelzq166os1hy3si0h   0.59%               7.117MiB / 1.952GiB
+golang-demo_service-f.1.flhgix40ctk3j160v5sz82q1v   1.32%               1.695MiB / 1.952GiB
+golang-demo_service-g.1.ii62ga8kqa3p44x94z97xknts   32.54%              122.7MiB / 1.952GiB
+golang-demo_service-h.1.r75tk7cz4szwbluagrpaz04v6   29.78%              123.2MiB / 1.952GiB```
 ## Other Useful Commands
 
 ```bash
