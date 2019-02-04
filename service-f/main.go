@@ -31,6 +31,8 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
 
+	CallMongoDB(tmpTrace)
+
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
 		panic(err)
