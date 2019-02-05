@@ -8,12 +8,20 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 
 ![Architecture Diagram](architecture_diagram_v2.png)
 
+## Requirements
+
+* Docker
+* Helm
+* Jinja2 (pip install)
+* gcloud CLI
+* Istio 1.0.5
+
 ## Build and Deploy Docker Stack
 
-Build all images, create Docker overlay network, and deploy Swarm of (10) contains: (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (10) contains: (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
-sh ./build_go_srv_images.sh
+sh ./part1_build_srv_images.sh
 ```
 
 ### Deployed Stack Services
