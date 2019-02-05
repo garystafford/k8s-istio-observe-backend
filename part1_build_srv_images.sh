@@ -4,7 +4,6 @@
 # site: https://programmaticponderings.com
 # license: MIT License
 # purpose: Build Go microservices for demo
-# usage: sh ./build_go_srv_images.sh
 
 declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
 

@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: go-srv-demo-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: go-srv-demo-dev
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - go-srv-demo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /service-a
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: service-a.dev.svc.cluster.local
