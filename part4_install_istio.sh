@@ -10,7 +10,7 @@ readonly ISTIO_HOME="/Applications/istio-1.0.5"
 kubectl apply -f $ISTIO_HOME/install/kubernetes/helm/helm-service-account.yaml
 helm init --service-account tiller
 sleep 15
-helm install $ISTIO_HOME/install/kubernetes/helm/istio \
+time helm install $ISTIO_HOME/install/kubernetes/helm/istio \
   --name istio \
   --namespace istio-system \
   --set mtls.enable=true \

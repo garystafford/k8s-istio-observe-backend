@@ -13,6 +13,7 @@ readonly MASTER_AUTH_NETS='72.231.208.0/24'
 readonly NAMESPACE='dev'
 
 # yes | gcloud components update
+# gcloud init # set new project
 
 # Build a 3-node, single-region, multi-zone GKE cluster
 time gcloud beta container \

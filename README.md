@@ -130,3 +130,19 @@ docker logs \
 docker logs \
   $(docker ps | grep golang-demo_rabbitmq.1 | awk '{print $NF}')
 ```
+
+## Build and Deploy GKE Cluster
+
+Build and deploy to a (3) GKE Cluster. Requires Istio 1.0.5 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
+
+```bash
+sh ./part3_create_gke_cluster.sh
+sh ./part4_install_istio.sh
+sh ./part5_deploy_resources.sh
+```
+
+## Tear Down GKE Cluster
+
+```bash
+sh ./part6_tear_down.sh
+```
