@@ -29,18 +29,18 @@ spec:
       labels:
         app: rabbitmq
       annotations:
-        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:management
-        resources:
-          requests:
-            memory: "100M"
-            cpu: "100m"
-          limits:
-            memory: "250M"
-            cpu: "250m"
+        image: registry.hub.docker.com/library/rabbitmq:management
+        # resources:
+        #   requests:
+        #     memory: "100M"
+        #     cpu: "100m"
+        #   limits:
+        #     memory: "250M"
+        #     cpu: "250m"
         ports:
         - containerPort: 5672
         imagePullPolicy: IfNotPresent

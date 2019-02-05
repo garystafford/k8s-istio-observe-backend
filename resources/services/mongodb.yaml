@@ -33,15 +33,15 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongodb:latest
-        command: ["--smallfiles"]
-        resources:
-          requests:
-            memory: "500M"
-            cpu: "100m"
-          limits:
-            memory: "1000M"
-            cpu: "500m"
+        image: registry.hub.docker.com/library/mongo:latest
+        # command: ["--smallfiles"]
+        # resources:
+        #   requests:
+        #     memory: "500M"
+        #     cpu: "100m"
+        #   limits:
+        #     memory: "1000M"
+        #     cpu: "500m"
         ports:
         - containerPort: 27017
         imagePullPolicy: IfNotPresent

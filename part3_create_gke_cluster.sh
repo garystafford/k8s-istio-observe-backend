@@ -21,7 +21,7 @@ time gcloud beta container \
   --no-enable-basic-auth \
   --no-issue-client-certificate \
   --cluster-version "1.11.6-gke.6" \
-  --machine-type "n1-standard-2" \
+  --machine-type "n1-standard-1" \
   --image-type "COS" \
   --disk-type "pd-standard" \
   --disk-size "100" \
