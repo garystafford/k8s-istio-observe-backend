@@ -4,6 +4,8 @@ The (7) Go-based, RESTful microservices, which make up the distributed system, a
 
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
 
+This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.5 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+
 ![Architecture Diagram](architecture_diagram_v2.png)
 
 ## Requirements
@@ -25,7 +27,7 @@ sh ./part1_build_srv_images.sh
 ### Deployed Stack Services
 
 ```bash
-> docker stack deploy -c stack.yml golang-demo\n
+docker stack deploy -c stack.yml golang-demo
 ```
 
 ```text
@@ -169,5 +171,5 @@ time sh ./part6_tear_down.sh
 
 ## References
 
-\-<https://istio.io/docs/reference/config/installation-options/>
-\-<https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
+- <https://istio.io/docs/reference/config/installation-options/>
+- <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
