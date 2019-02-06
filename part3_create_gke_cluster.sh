@@ -22,10 +22,10 @@ gcloud beta container \
   --no-enable-basic-auth \
   --no-issue-client-certificate \
   --cluster-version "1.11.6-gke.6" \
-  --machine-type "n1-standard-1" \
+  --machine-type "n1-standard-2" \
   --image-type "COS" \
   --disk-type "pd-standard" \
-  --disk-size "100" \
+  --disk-size "200" \
   --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
   --num-nodes "1" \
   --enable-stackdriver-kubernetes \
