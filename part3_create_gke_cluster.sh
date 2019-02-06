@@ -16,7 +16,7 @@ readonly NAMESPACE='dev'
 # gcloud init # set new project
 
 # Build a 3-node, single-region, multi-zone GKE cluster
-time gcloud beta container \
+gcloud beta container \
   --project $PROJECT clusters create $CLUSTER \
   --region $REGION \
   --no-enable-basic-auth \

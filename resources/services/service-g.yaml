@@ -1,39 +1,39 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-a
+  name: service-g
   labels:
-    app: service-a
+    app: service-g
 spec:
   ports:
   - name: http
     port: 8000
   selector:
-    app: service-a
+    app: service-g
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: service-a
+  name: service-g
   labels:
-    app: service-a
+    app: service-g
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: service-a
+      app: service-g
   template:
     metadata:
       labels:
-        app: service-a
+        app: service-g
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
-      - name: service-a
-        image: registry.hub.docker.com/garystafford/go-srv-a:1.0.0
+      - name: service-g
+        image: registry.hub.docker.com/garystafford/go-srv-g:1.0.0
         resources:
         # requests:
         #   memory: 100M

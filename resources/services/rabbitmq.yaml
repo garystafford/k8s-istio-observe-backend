@@ -7,7 +7,14 @@ metadata:
 spec:
   ports:
   - name: http
+    port: 15672
+    protocol: TCP
+  - name: amqp
     port: 5672
+    protocol: TCP
+  - name: epmd
+    port: 4369
+    protocol: TCP
   selector:
     app: rabbitmq
 ---

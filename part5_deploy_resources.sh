@@ -7,6 +7,8 @@
 
 # Constants - CHANGE ME!
 readonly NAMESPACE='dev'
+readonly SERVICES=(a b c d e f g h)
+
 
 # Create Namespaces
 kubectl apply -f ./resources/other/namespaces.yaml
@@ -19,4 +21,7 @@ kubectl apply -f ./resources/other/istio-gateway.yaml
 kubectl apply -n $NAMESPACE -f ./resources/config/go-srv-demo.yaml
 kubectl apply -n $NAMESPACE -f ./resources/services/rabbitmq.yaml
 kubectl apply -n $NAMESPACE -f ./resources/services/mongodb.yaml
-kubectl apply -n $NAMESPACE -f ./resources/services/service-a.yaml
+
+for service in ${SERVICES[@]}; do
+  kubectl apply -n $NAMESPACE -f ./resources/services/service-$service.yaml
+done

@@ -11,7 +11,7 @@ readonly CLUSTER='go-srv-demo-cluster'
 readonly REGION='us-east1'
 
 # Delete GKE cluster (time in foreground)
-time yes | gcloud beta container clusters delete $CLUSTER --region $REGION
+yes | gcloud beta container clusters delete $CLUSTER --region $REGION
 
 # Confirm network resources are also deleted
 gcloud compute forwarding-rules list
