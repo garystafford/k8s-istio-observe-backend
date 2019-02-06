@@ -27,7 +27,7 @@ sh ./part1_build_srv_images.sh
 ### Deployed Stack Services
 
 ```bash
-> docker stack services golang-demo
+> docker stack deploy -c stack.yml golang-demo\n
 ```
 
 ```text
@@ -125,6 +125,10 @@ golang-demo_service-h.1.r75tk7cz4szwbluagrpaz04v6   29.78%              123.2MiB
 ## Other Useful Commands
 
 ```bash
+docker stack ps golang-demo --no-trunc
+docker stack services golang-demo
+docker stack rm golang-demo
+
 docker exec -it \
   $(docker ps | grep golang-demo_mongodb.1 | awk '{print $NF}') sh
 mongo
@@ -144,13 +148,13 @@ docker logs \
 Build and deploy to a (3) GKE Cluster. Requires Istio 1.0.5 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
-sh ./part3_create_gke_cluster.sh
-sh ./part4_install_istio.sh
-sh ./part5_deploy_resources.sh
+time sh ./part3_create_gke_cluster.sh
+time sh ./part4_install_istio.sh
+time sh ./part5_deploy_resources.sh
 ```
 
 ## Tear Down GKE Cluster
 
 ```bash
-sh ./part6_tear_down.sh
+time sh ./part6_tear_down.sh
 ```
