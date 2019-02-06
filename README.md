@@ -141,6 +141,15 @@ docker logs \
   $(docker ps | grep golang-demo_rabbitmq.1 | awk '{print $NF}')
 ```
 
+## Build Kubernetes Deployment and Service Resources
+
+The Kubernetes Deployment and Service resources for (7) Go-based services were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
+
+```bash
+cd golang-srv-demo/resources/services/
+python3 ./service-builder.py
+```
+
 ## Build and Deploy GKE Cluster
 
 Build and deploy to a (3) GKE Cluster, with Istio 1.0.5 and all telemetry components.
@@ -157,3 +166,8 @@ time sh ./part5_deploy_resources.sh
 ```bash
 time sh ./part6_tear_down.sh
 ```
+
+## References
+
+\-<https://istio.io/docs/reference/config/installation-options/>
+\-<https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
