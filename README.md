@@ -173,3 +173,4 @@ time sh ./part6_tear_down.sh
 
 - <https://istio.io/docs/reference/config/installation-options/>
 - <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
+- <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>

@@ -3,31 +3,41 @@ kind: Service
 metadata:
   name: service-d
   labels:
-    app: service-d
+    name: service-d
+    component: service
+    version: "1.0.0"
 spec:
   ports:
   - name: http
     port: 8000
   selector:
-    app: service-d
+    name: service-d
+    component: service
+    version: "1.0.0"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: service-d
   labels:
-    app: service-d
+    name: service-d
+    component: service
+    version: "1.0.0"
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: service-d
+      name: service-d
+      component: service
+      version: "1.0.0"
   template:
     metadata:
       labels:
-        app: service-d
+        name: service-d
+        component: service
+        version: "1.0.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:

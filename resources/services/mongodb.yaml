@@ -3,32 +3,42 @@ kind: Service
 metadata:
   name: mongodb
   labels:
-    app: mongodb
+    name: mongodb
+    component: database
+    version: "1.0.0"
 spec:
   ports:
   - name: mongo
     port: 27017
     protocol: TCP
   selector:
-    app: mongodb
+    name: mongodb
+    component: database
+    version: "1.0.0"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mongodb
   labels:
-    app: mongodb
+    name: mongodb
+    component: database
+    version: "1.0.0"
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: mongodb
+      name: mongodb
+      component: database
+      version: "1.0.0"
   template:
     metadata:
       labels:
-        app: mongodb
+        name: mongodb
+        component: database
+        version: "1.0.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:

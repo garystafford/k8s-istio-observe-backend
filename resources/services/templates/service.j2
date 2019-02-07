@@ -3,37 +3,47 @@ kind: Service
 metadata:
   name: service-{{ service }}
   labels:
-    app: service-{{ service }}
+    name: service-{{ service }}
+    component: service
+    version: "{{ versions }}"
 spec:
   ports:
   - name: http
     port: 8000
   selector:
-    app: service-{{ service }}
+    name: service-{{ service }}
+    component: service
+    version: "{{ versions }}"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: service-{{ service }}
   labels:
-    app: service-{{ service }}
+    name: service-{{ service }}
+    component: service
+    version: "{{ versions }}"
 spec:
   replicas: {{ replicas }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: service-{{ service }}
+      name: service-{{ service }}
+      component: service
+      version: "{{ versions }}"
   template:
     metadata:
       labels:
-        app: service-{{ service }}
+        name: service-{{ service }}
+        component: service
+        version: "{{ versions }}"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-{{ service }}
-        image: registry.hub.docker.com/garystafford/go-srv-{{ service }}:1.0.0
+        image: registry.hub.docker.com/garystafford/go-srv-{{ service }}:{{ versions }}
         resources:
         # requests:
         #   memory: 100M

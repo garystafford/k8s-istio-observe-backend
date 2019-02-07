@@ -25,12 +25,9 @@ helm install $ISTIO_HOME/install/kubernetes/helm/istio \
   --set kiali.enabled=true \
   --set prometheus.enabled=true \
   --set servicegraph.enabled=true \
-  --set servicegraph.ingress.enabled=true \
   --set telemetry-gateway.grafanaEnabled=true \
   --set telemetry-gateway.prometheusEnabled=true \
   --set tracing.enabled=true \
-  --set tracing.ingress.enabled=true \
-  --set tracing.jaeger.ingress.enabled=true \
   --set tracing.provider=jaeger
 
 # --set kiali.ingress.enabled=true \
