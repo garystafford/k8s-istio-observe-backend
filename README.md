@@ -143,12 +143,12 @@ docker logs \
   $(docker ps | grep golang-demo_rabbitmq.1 | awk '{print $NF}')
 ```
 
-## Build Kubernetes Deployment and Service Resources
+## Optional: Build Kubernetes Deployment and Service Resources
 
 The Kubernetes Deployment and Service resources for (7) Go-based services were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
 
 ```bash
-cd golang-srv-demo/resources/services/
+cd golang-srv-demo/resources/services/templates
 python3 ./service-builder.py
 ```
 
