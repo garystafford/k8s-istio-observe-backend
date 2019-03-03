@@ -11,6 +11,7 @@ readonly CLUSTER='go-srv-demo-cluster'
 readonly REGION='us-east1'
 readonly MASTER_AUTH_NETS='72.231.208.0/24'
 readonly NAMESPACE='dev'
+readonly GKE_VERSION= '1.12.5-gke.5'
 
 # yes | gcloud components update
 # gcloud init # set new project
@@ -21,7 +22,7 @@ gcloud beta container \
   --region $REGION \
   --no-enable-basic-auth \
   --no-issue-client-certificate \
-  --cluster-version "1.11.6-gke.6" \
+  --cluster-version $GKE_VERSION \
   --machine-type "n1-standard-2" \
   --image-type "COS" \
   --disk-type "pd-standard" \
