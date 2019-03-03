@@ -3,9 +3,9 @@
 # author: Gary A. Stafford
 # site: https://programmaticponderings.com
 # license: MIT License
-# purpose: Install Istio 1.0.5
+# purpose: Install Istio 1.0.6
 
-readonly ISTIO_HOME="/Applications/istio-1.0.5"
+readonly ISTIO_HOME="/Applications/istio-1.0.6"
 
 helm repo add istio.io https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
 helm repo list

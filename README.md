@@ -1,10 +1,10 @@
-# Go-based Microservices Observability Demo with Istio 1.0
+# Go-based Microservices Observability Demo with Istio 1.0.x
 
 The (7) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-db (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
 
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
 
-This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.5 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
 
 ![Architecture Diagram](architecture_diagram_v2.png)
 
@@ -14,7 +14,7 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 -   Helm
 -   Jinja2 (pip install)
 -   gcloud CLI
--   Istio 1.0.5
+-   Istio 1.0.6
 
 ## Build and Deploy Docker Stack
 
@@ -27,6 +27,7 @@ sh ./part1_build_srv_images.sh
 ### Deployed Stack Services
 
 ```bash
+docker network create -d overlay --attachable golang-demo
 docker stack deploy -c stack.yml golang-demo
 ```
 
@@ -154,8 +155,8 @@ python3 ./service-builder.py
 
 ## Build and Deploy GKE Cluster
 
-Build and deploy to a (3) GKE Cluster, with Istio 1.0.5 and all telemetry components.
-Requires Istio 1.0.5 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
+Build and deploy to a (3) GKE Cluster, with Istio 1.0.6 and all telemetry components.
+Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
 time sh ./part3_create_gke_cluster.sh
@@ -174,3 +175,4 @@ time sh ./part6_tear_down.sh
 - <https://istio.io/docs/reference/config/installation-options/>
 - <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
 - <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>
+- <https://thenewstack.io/make-a-restful-json-api-go/>

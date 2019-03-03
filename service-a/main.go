@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -20,9 +21,18 @@ type Trace struct {
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, Authorization")
+
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	traces = nil
-	CallNextService("http://service-b:8000/ping")
-	CallNextService("http://service-c:8000/ping")
+	//CallNextService("http://service-b:8000/ping")
+	//CallNextService("http://service-c:8000/ping")
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-A", CreatedAt: time.Now().Local()}
 
@@ -54,7 +64,12 @@ func CallNextService(url string) {
 }
 
 func main() {
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+
 	router := mux.NewRouter()
-	router.HandleFunc("/ping", Orchestrator).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	router.HandleFunc("/ping", Orchestrator).Methods("GET", "OPTIONS")
+	//router.Headers("Content-Type", "application/json; charset=utf-8")
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(router)))
 }
