@@ -7,8 +7,11 @@
 
 declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
 # declare -a arr=("a")
+declare tag="1.0.0"
 
 for i in "${arr[@]}"
 do
-  docker push "garystafford/go-srv-$i:1.0.0"
+  docker push "garystafford/go-srv-$i:$tag"
 done
+
+docker push "garystafford/angular-observe:$tag"
