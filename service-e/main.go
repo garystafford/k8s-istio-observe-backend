@@ -13,18 +13,24 @@ import (
 
 type Trace struct {
 	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"serviceName,omitempty"`
-	CreatedAt   time.Time `json:"createdAt,omitempty"`
+	ServiceName string    `json:"service,omitempty"`
+	Greeting    string    `json:"greeting,omitempty"`
+	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
 var traces []Trace
 
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	traces = nil
-	CallNextService("http://service-g:8000/ping")
-	CallNextService("http://service-h:8000/ping")
+	CallNextService("http://service-g:8000/api/ping")
+	CallNextService("http://service-h:8000/api/ping")
 
-	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-E", CreatedAt: time.Now().Local()}
+	tmpTrace := Trace{
+		ID: uuid.New().String(),
+		ServiceName: "Service-E",
+		Greeting: "Bonjour, de Service-E!",
+		CreatedAt: time.Now().Local(),
+	}
 
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
@@ -55,6 +61,7 @@ func CallNextService(url string) {
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/ping", Orchestrator).Methods("GET")
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/ping", Orchestrator).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

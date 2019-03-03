@@ -17,8 +17,9 @@ import (
 
 type Trace struct {
 	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"serviceName,omitempty"`
-	CreatedAt   time.Time `json:"createdAt,omitempty"`
+	ServiceName string    `json:"service,omitempty"`
+	Greeting    string    `json:"greeting,omitempty"`
+	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
 var traces []Trace
@@ -26,7 +27,12 @@ var traces []Trace
 func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	traces = nil
 
-	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-F", CreatedAt: time.Now().Local()}
+	tmpTrace := Trace{
+		ID: uuid.New().String(),
+		ServiceName: "Service-F",
+		Greeting: "Hola, from Service-F!",
+		CreatedAt: time.Now().Local(),
+	}
 
 	traces = append(traces, tmpTrace)
 	fmt.Println(traces)
@@ -119,6 +125,7 @@ func failOnError(err error, msg string) {
 func main() {
 	GetMessages()
 	router := mux.NewRouter()
-	router.HandleFunc("/ping", Orchestrator).Methods("GET")
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/ping", Orchestrator).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
