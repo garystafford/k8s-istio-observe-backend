@@ -6,6 +6,7 @@
 # purpose: Push images to Dockerhub
 
 declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
+# declare -a arr=("a")
 
 for i in "${arr[@]}"
 do

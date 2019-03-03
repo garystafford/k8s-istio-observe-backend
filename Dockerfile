@@ -7,7 +7,7 @@ RUN apk update && apk upgrade && apk add git
 
 WORKDIR /go/src/app
 COPY main.go .
-
+RUN cat main.go
 RUN go get -d -v ./...
 RUN go install -v ./...
 

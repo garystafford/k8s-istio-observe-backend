@@ -5,8 +5,8 @@
 # license: MIT License
 # purpose: Build Go microservices for demo
 
-# declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
-declare -a arr=("a")
+declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
+# declare -a arr=("a")
 
 for i in "${arr[@]}"
 do

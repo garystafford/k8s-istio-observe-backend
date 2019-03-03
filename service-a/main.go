@@ -31,8 +31,8 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	traces = nil
-	//CallNextService("http://service-b:8000/ping")
-	//CallNextService("http://service-c:8000/ping")
+	CallNextService("http://service-b:8000/ping")
+	CallNextService("http://service-c:8000/ping")
 
 	tmpTrace := Trace{ID: uuid.New().String(), ServiceName: "Service-A", CreatedAt: time.Now().Local()}
 
