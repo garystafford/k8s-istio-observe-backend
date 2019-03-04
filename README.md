@@ -18,10 +18,11 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 
 ## Build and Deploy Docker Stack
 
-Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (10) contains: (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
-sh ./part1_build_srv_images.sh
+time sh ./part1_build_srv_images.sh
+time sh ./part12_push_images.sh
 ```
 
 ### Deployed Stack Services
@@ -31,6 +32,7 @@ docker stack rm golang-demo
 sleep 5
 docker network create -d overlay --attachable golang-demo
 docker stack deploy -c stack.yml golang-demo
+
 docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 ```
 
@@ -53,8 +55,9 @@ golang-demo_service-h    garystafford/go-srv-h:1.0.0
 
 ## Accessing the Stack
 
-To start, call Service A, the system
-'s edge service: <http://localhost:8100/ping>
+To start, call the Angular 7 Front-end UI: <http://localhost:80/>
+
+Alternately, call Service A, the system's edge service: <http://localhost:8000/api/ping>
 
 To observe the queue traffic, use the RabbitMQ Management Console: <http://localhost:15672/>
 
@@ -114,7 +117,7 @@ To observe the databases, use MongoDB Compass: localhost:27017
 A quick look at the services and their typical loads, using Apache Bench (ab).
 
 ```bash
-ab -kc 10 -n 1000 http://localhost:8100/ping
+ab -kc 100 -n 10000 http://localhost:8000/api/ping
 ```
 
 ```bash
