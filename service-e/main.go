@@ -20,7 +20,7 @@ type Trace struct {
 
 var traces []Trace
 
-func Orchestrator(w http.ResponseWriter, r *http.Request) {
+func PingHandler(w http.ResponseWriter, r *http.Request) {
 	traces = nil
 	CallNextService("http://service-g:8000/api/ping")
 	CallNextService("http://service-h:8000/api/ping")
@@ -62,6 +62,6 @@ func CallNextService(url string) {
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", Orchestrator).Methods("GET")
+	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

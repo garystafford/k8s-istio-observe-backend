@@ -21,7 +21,7 @@ type Trace struct {
 
 var traces []Trace
 
-func Orchestrator(w http.ResponseWriter, r *http.Request) {
+func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	traces = nil
@@ -29,10 +29,10 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	CallNextService("http://service-c:8000/api/ping")
 
 	tmpTrace := Trace{
-		ID: uuid.New().String(),
+		ID:          uuid.New().String(),
 		ServiceName: "Service-A",
-		Greeting: "Hello, from Service-A!",
-		CreatedAt: time.Now().Local(),
+		Greeting:    "Hello, from Service-A!",
+		CreatedAt:   time.Now().Local(),
 	}
 
 	traces = append(traces, tmpTrace)
@@ -42,6 +42,11 @@ func Orchestrator(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write([]byte("{\"alive\": true}"))
 }
 
 func CallNextService(url string) {
@@ -72,7 +77,8 @@ func main() {
 	})
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", Orchestrator).Methods("GET", "OPTIONS")
+	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
 	handler := c.Handler(router)
 	log.Fatal(http.ListenAndServe(":8000", handler))
 }

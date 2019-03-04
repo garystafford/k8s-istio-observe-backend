@@ -66,6 +66,7 @@ services:
       - 15672:15672
     networks:
       - golang-demo
+
 networks:
   golang-demo:
     external: true

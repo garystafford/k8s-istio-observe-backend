@@ -21,7 +21,7 @@ type Trace struct {
 
 var traces []Trace
 
-func Orchestrator(w http.ResponseWriter, r *http.Request) {
+func PingHandler(w http.ResponseWriter, r *http.Request) {
 	traces = nil
 
 	tmpTrace := Trace{
@@ -88,6 +88,6 @@ func failOnError(err error, msg string) {
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", Orchestrator).Methods("GET")
+	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
