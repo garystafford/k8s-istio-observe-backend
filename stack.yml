@@ -6,13 +6,13 @@ services:
     networks:
       - golang-demo
     ports:
-      - 8080:80
+      - 80:80
   service-a:
     image: garystafford/go-srv-a:1.0.0
     networks:
       - golang-demo
     ports:
-      - 8100:8000
+      - 8000:8000
   service-b:
     image: garystafford/go-srv-b:1.0.0
     networks:
@@ -57,7 +57,7 @@ services:
     networks:
       - golang-demo
     ports:
-      - 28017:27017
+      - 27017:27017
     command: --smallfiles
   rabbitmq:
     image: rabbitmq:management

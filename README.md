@@ -38,10 +38,10 @@ docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Port
 > docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 
 NAME                     IMAGE                                PORTS
-golang-demo_angular-ui   garystafford/angular-observe:1.0.0   *:8080->80/tcp
+golang-demo_angular-ui   garystafford/angular-observe:1.0.0   *:80->80/tcp
 golang-demo_mongodb      mongo:latest                         *:27017->27017/tcp
 golang-demo_rabbitmq     rabbitmq:management                  *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a    garystafford/go-srv-a:1.0.0          *:8100->8000/tcp
+golang-demo_service-a    garystafford/go-srv-a:1.0.0          *:8000->8000/tcp
 golang-demo_service-b    garystafford/go-srv-b:1.0.0
 golang-demo_service-c    garystafford/go-srv-c:1.0.0
 golang-demo_service-d    garystafford/go-srv-d:1.0.0
@@ -64,41 +64,48 @@ To observe the databases, use MongoDB Compass: localhost:27017
 
 ```json
 [
-  {
-    "id": "1575c539-7871-4b91-8788-a29fccc51dfd",
-    "serviceName": "Service-D",
-    "createdAt": "2019-02-04T01:01:14.2423788Z"
-  },
-  {
-    "id": "00b8c6d9-ce6f-4570-b101-5a9b49c43d90",
-    "serviceName": "Service-G",
-    "createdAt": "2019-02-04T01:01:14.2807012Z"
-  },
-  {
-    "id": "4c473aee-f2fe-4317-a283-f64e2e7c0db7",
-    "serviceName": "Service-H",
-    "createdAt": "2019-02-04T01:01:14.3016563Z"
-  },
-  {
-    "id": "c59bbed1-2350-45ef-9588-361d97c1fa3b",
-    "serviceName": "Service-E",
-    "createdAt": "2019-02-04T01:01:14.3150472Z"
-  },
-  {
-    "id": "92b6c13e-c43d-4488-8613-937baad90b74",
-    "serviceName": "Service-B",
-    "createdAt": "2019-02-04T01:01:14.3161737Z"
-  },
-  {
-    "id": "29494eb4-baf9-4333-abc4-a4990b8d0f2b",
-    "serviceName": "Service-C",
-    "createdAt": "2019-02-04T01:01:14.3173983Z"
-  },
-  {
-    "id": "7ca10884-6d4f-4cdd-adf9-9cc34d883d40",
-    "serviceName": "Service-A",
-    "createdAt": "2019-02-04T01:01:14.3287177Z"
-  }
+    {
+        "id": "e9e11d0e-0701-4d78-81f9-42b734cb52ee",
+        "service": "Service-D",
+        "greeting": "Shalom, from Service-D!",
+        "created": "2019-03-04T01:29:44.2013268Z"
+    },
+    {
+        "id": "7dfcfa4e-4218-4830-abb4-00caa54881ec",
+        "service": "Service-G",
+        "greeting": "Ahlan, from Service-G!",
+        "created": "2019-03-04T01:29:44.2437703Z"
+    },
+    {
+        "id": "825947a1-4dc3-410b-b484-61aeb4fc1b0f",
+        "service": "Service-H",
+        "greeting": "Ciao, from Service-H!",
+        "created": "2019-03-04T01:29:44.2751858Z"
+    },
+    {
+        "id": "b8ac5f8b-06f6-4d2c-9289-d351bd114240",
+        "service": "Service-E",
+        "greeting": "Bonjour, de Service-E!",
+        "created": "2019-03-04T01:29:44.2975462Z"
+    },
+    {
+        "id": "4daea39f-76f3-4195-9e41-0089b3ba83f6",
+        "service": "Service-B",
+        "greeting": "Namaste, from Service-B!",
+        "created": "2019-03-04T01:29:44.2989455Z"
+    },
+    {
+        "id": "aacf3c1c-20a5-4b45-83fc-99a0e4e900c8",
+        "service": "Service-C",
+        "greeting": "Konnichiwa, from Service-C!",
+        "created": "2019-03-04T01:29:44.3004077Z"
+    },
+    {
+        "id": "aaa0c36b-ac16-4e29-801b-84a7e4fe99a4",
+        "service": "Service-A",
+        "greeting": "Hello, from Service-A!",
+        "created": "2019-03-04T01:29:44.3329817Z"
+    }
 ]
 ```
 
@@ -178,7 +185,7 @@ time sh ./part6_tear_down.sh
 
 ## References
 
-- <https://istio.io/docs/reference/config/installation-options/>
-- <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
-- <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>
-- <https://thenewstack.io/make-a-restful-json-api-go/>
+-   <https://istio.io/docs/reference/config/installation-options/>
+-   <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
+-   <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>
+-   <https://thenewstack.io/make-a-restful-json-api-go/>
