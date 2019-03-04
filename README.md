@@ -2,9 +2,19 @@
 
 The (7) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-db (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
 
+## Optional Front-end UI
+
+The new Angular 7-based, front-end UI to the API, is located here: <https://github.com/garystafford/k8s-istio-observe-frontend>.
+
+## Traces
+
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
 
+## Deployment
+
 This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+
+## Architecture
 
 ![Architecture Diagram](architecture_diagram_v2.png)
 
