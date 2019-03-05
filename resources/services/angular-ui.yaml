@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-ui
+  labels:
+    name: angular-ui
+    component: ui
+    version: "1.0.1"
+spec:
+  ports:
+  - name: http
+    port: 80
+  selector:
+    name: angular-ui
+    component: ui
+    version: "1.0.1"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: angular-ui
+  labels:
+    name: angular-ui
+    component: ui
+    version: "1.0.1"
+spec:
+  replicas: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: angular-ui
+      component: ui
+      version: "1.0.1"
+  template:
+    metadata:
+      labels:
+        name: angular-ui
+        component: ui
+        version: "1.0.1"
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: angular-ui
+        image: registry.hub.docker.com/garystafford/angular-observe:1.0.2
+        resources:
+        # requests:
+        #   memory: 100M
+        #   cpu: 100m
+        # limits:
+        #   memory: 250M
+        #   cpu: 250m
+        env:
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent

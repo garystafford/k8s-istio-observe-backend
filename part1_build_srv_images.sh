@@ -5,9 +5,9 @@
 # license: MIT License
 # purpose: Build Go microservices for demo
 
-declare -a arr=("a" "b" "c" "a" "d" "e" "f" "g" "h")
-# declare -a arr=("a")
-declare tag="1.0.0"
+readonly -a arr=(a b c a d e f g h)
+# declare -a arr=(a)
+readonly tag=1.0.0
 
 for i in "${arr[@]}"
 do

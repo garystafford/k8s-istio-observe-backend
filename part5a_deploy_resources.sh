@@ -26,4 +26,5 @@ for namespace in ${NAMESPACES[@]}; do
   for service in ${SERVICES[@]}; do
     kubectl apply -n $namespace -f ./resources/services/service-$service.yaml
   done
+  kubectl apply -n $namespace -f ./resources/services/angular-ui.yaml
 done

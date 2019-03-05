@@ -187,7 +187,10 @@ Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available 
 ```bash
 time sh ./part3_create_gke_cluster.sh
 time sh ./part4_install_istio.sh
-time sh ./part5_deploy_resources.sh
+time sh ./part5a_deploy_resources.sh
+time sh ./part5b_firewall_rule.sh
+
+istioctl get all
 ```
 
 ## Tear Down GKE Cluster
