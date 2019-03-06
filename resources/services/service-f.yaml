@@ -39,7 +39,7 @@ spec:
         component: service
         version: "1.0.0"
       annotations:
-        sidecar.istio.io/inject: "false"
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-f
@@ -54,12 +54,12 @@ spec:
         env:
         - name: MONGO_CONN
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: go-srv-config
               key: mongodb.conn
         - name: RABBITMQ_CONN
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: go-srv-config
               key: rabbitmq.conn
         ports:

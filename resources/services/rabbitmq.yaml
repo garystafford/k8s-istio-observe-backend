@@ -8,15 +8,14 @@ metadata:
     version: "1.0.0"
 spec:
   ports:
-  - name: http
+  - name: dist
+    port: 25672
+  - name: management
     port: 15672
-    protocol: TCP
   - name: amqp
     port: 5672
-    protocol: TCP
   - name: epmd
     port: 4369
-    protocol: TCP
   selector:
     name: rabbitmq
     component: messaging
@@ -46,11 +45,11 @@ spec:
         component: messaging
         version: "1.0.0"
       annotations:
-        sidecar.istio.io/inject: "false"
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: rabbitmq
-        image: registry.hub.docker.com/library/rabbitmq:management
+        image: registry.hub.docker.com/library/rabbitmq:3.8-rc-management-alpine
         # resources:
         #   requests:
         #     memory: "100M"
@@ -59,5 +58,12 @@ spec:
         #     memory: "250M"
         #     cpu: "250m"
         ports:
-        - containerPort: 5672
+        - name: dist
+          containerPort: 25672
+        - name: management
+          containerPort: 15672
+        - name: amqp
+          containerPort: 5672
+        - name: epmd
+          containerPort: 4369
         imagePullPolicy: IfNotPresent

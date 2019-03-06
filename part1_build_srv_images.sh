@@ -18,7 +18,7 @@ do
   popd
 done
 
-docker image ls | grep "garystafford/go-srv-"
+docker image ls | grep 'garystafford/go-srv-'
 
 # docker stack rm golang-demo
 # sleep 5
