@@ -29,7 +29,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: angular-ui
+      app: angular-ui
       component: ui
       version: "1.0.0"
   template:
@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
       - name: angular-ui
-        image: registry.hub.docker.com/garystafford/angular-observe:1.0.5
+        image: registry.hub.docker.com/garystafford/angular-observe:1.0.0
         resources:
         # requests:
         #   memory: 100M

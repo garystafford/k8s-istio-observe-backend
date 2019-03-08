@@ -4,7 +4,7 @@ metadata:
   name: cloudamqp-external-mesh
 spec:
   hosts:
-  - {{ your_url_goes_here }}
+  - {{ your_host_url_goes_here }}
   ports:
   - name: rabbitmq
     number: 5672

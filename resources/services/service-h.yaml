@@ -29,7 +29,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: service-h
+      app: service-h
       component: service
       version: "1.0.0"
   template:

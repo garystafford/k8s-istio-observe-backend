@@ -35,7 +35,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: rabbitmq
+      app: rabbitmq
       component: messaging
       version: "1.0.0"
   template:

@@ -29,7 +29,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: service-g
+      app: service-g
       component: service
       version: "1.0.0"
   template:

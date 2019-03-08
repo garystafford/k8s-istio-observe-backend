@@ -40,23 +40,30 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+}
+
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write([]byte("{\"alive\": true}"))
 }
 
 func CallMongoDB(trace Trace) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+	
+	defer client.Disconnect(nil)
 
 	collection := client.Database("service-g").Collection("traces")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -64,5 +71,6 @@ func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }

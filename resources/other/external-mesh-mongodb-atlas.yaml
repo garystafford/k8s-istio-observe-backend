@@ -4,7 +4,7 @@ metadata:
   name: mongdb-atlas-external-mesh
 spec:
   hosts:
-  - {{ your_url_goes_here }}
+  - {{ your_host_url_goes_here }}
   ports:
   - name: mongo
     number: 27017

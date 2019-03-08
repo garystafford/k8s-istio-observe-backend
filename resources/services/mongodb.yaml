@@ -30,7 +30,7 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: mongodb
+      app: mongodb
       component: database
       version: "1.0.0"
   template:

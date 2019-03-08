@@ -44,12 +44,19 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write([]byte("{\"alive\": true}"))
+}
+
 func CallMongoDB(trace Trace) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
 		panic(err)
 	}
+
+	defer client.Disconnect(nil)
 
 	collection := client.Database("service-h").Collection("traces")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)

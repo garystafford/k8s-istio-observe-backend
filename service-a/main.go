@@ -40,7 +40,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -58,7 +58,7 @@ func CallNextService(url string) {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 		for _, r := range tmpTraces {

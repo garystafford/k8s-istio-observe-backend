@@ -9,9 +9,9 @@
 readonly PROJECT='go-srv-demo'
 
 # Create firewall rule to allow ingress traffic from port 80
-time gcloud compute firewall-rules create api-service-a \
+time gcloud compute firewall-rules create gke-go-srv-demo-cluster-service-a \
   --project $PROJECT \
-  --description 'Allow HTTP from anywhere' \
+  --description 'Allow access to Service A on port 8000' \
   --direction INGRESS \
   --priority 1000 \
   --network default \
