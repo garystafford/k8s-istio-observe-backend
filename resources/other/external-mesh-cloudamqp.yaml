@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: cloudamqp-external-mesh
+spec:
+  hosts:
+  - {{ your_url_goes_here }}
+  ports:
+  - name: rabbitmq
+    number: 5672
+    protocol: TCP
+  location: MESH_EXTERNAL
+  resolution: NONE

@@ -185,10 +185,10 @@ Build and deploy to a (3) GKE Cluster, with Istio 1.0.6 and all telemetry compon
 Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
-time sh ./part3_create_gke_cluster.sh
+time sh ./part3a_create_gke_cluster.sh
+time sh ./part3b_firewall_rule.sh
 time sh ./part4_install_istio.sh
 time sh ./part5a_deploy_resources.sh
-time sh ./part5b_firewall_rule.sh
 
 istioctl get all
 ```
@@ -205,3 +205,4 @@ time sh ./part6_tear_down.sh
 -   <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
 -   <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>
 -   <https://thenewstack.io/make-a-restful-json-api-go/>
+- <https://github.com/istio/istio/blob/aa034934c7f2a2a265224061c066eae88a652703/install/kubernetes/helm/istio/README.md>

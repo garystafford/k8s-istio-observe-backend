@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: service-d
   labels:
-    name: service-d
+    app: service-d
     component: service
     version: "1.0.0"
 spec:
@@ -11,7 +11,7 @@ spec:
   - name: http
     port: 8000
   selector:
-    name: service-d
+    app: service-d
     component: service
     version: "1.0.0"
 ---
@@ -20,7 +20,7 @@ kind: Deployment
 metadata:
   name: service-d
   labels:
-    name: service-d
+    app: service-d
     component: service
     version: "1.0.0"
 spec:
@@ -35,7 +35,7 @@ spec:
   template:
     metadata:
       labels:
-        name: service-d
+        app: service-d
         component: service
         version: "1.0.0"
       annotations:
@@ -52,11 +52,6 @@ spec:
         #   memory: 250M
         #   cpu: 250m
         env:
-        - name: MONGO_CONN
-          valueFrom:
-            secretKeyRef:
-              name: go-srv-config
-              key: mongodb.conn
         - name: RABBITMQ_CONN
           valueFrom:
             secretKeyRef:

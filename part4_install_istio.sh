@@ -23,6 +23,7 @@ helm install $ISTIO_HOME/install/kubernetes/helm/istio \
   --set global.mtls.enabled=true \
   --set grafana.enabled=true \
   --set kiali.enabled=true \
+  --set kiali.createDefaultSecret=true \
   --set prometheus.enabled=true \
   --set servicegraph.enabled=true \
   --set telemetry-gateway.grafanaEnabled=true \
@@ -35,7 +36,8 @@ helm install $ISTIO_HOME/install/kubernetes/helm/istio \
 # Error: release istio failed: Ingress.extensions "kiali" is invalid:
 # spec: Invalid value: []extensions.IngressRule(nil): either `backend` or `rules` must be specified
 
-helm ls --all istio
+kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
+
 helm list istio
 
 # helm del --purge istio

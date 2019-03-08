@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: go-srv-demo-gateway
+  name: demo-gateway
 spec:
   selector:
     istio: ingressgateway
@@ -16,12 +16,12 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: angular-ui-demo-dev
+  name: angular-ui-dev
 spec:
   hosts:
-  - ui.example-api.com
+  - ui.dev.example-api.com
   gateways:
-  - go-srv-demo-gateway
+  - demo-gateway
   http:
   - match:
     - uri:
@@ -35,12 +35,12 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: service-a-demo-dev
+  name: service-a-dev
 spec:
   hosts:
-  - api.example-api.com
+  - api.dev.example-api.com
   gateways:
-  - go-srv-demo-gateway
+  - demo-gateway
   http:
   - match:
     - uri:
@@ -50,3 +50,41 @@ spec:
         port:
           number: 8000
         host: service-a.dev.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: angular-ui-test
+spec:
+  hosts:
+  - ui.test.example-api.com
+  gateways:
+  - demo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: angular-ui.test.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: service-a-test
+spec:
+  hosts:
+  - api.test.example-api.com
+  gateways:
+  - demo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: service-a.test.svc.cluster.local

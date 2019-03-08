@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: rabbitmq
   labels:
-    name: rabbitmq
+    app: rabbitmq
     component: messaging
     version: "1.0.0"
 spec:
@@ -17,7 +17,7 @@ spec:
   - name: epmd
     port: 4369
   selector:
-    name: rabbitmq
+    app: rabbitmq
     component: messaging
     version: "1.0.0"
 ---
@@ -26,7 +26,7 @@ kind: Deployment
 metadata:
   name: rabbitmq
   labels:
-    name: rabbitmq
+    app: rabbitmq
     component: messaging
     version: "1.0.0"
 spec:
@@ -41,7 +41,7 @@ spec:
   template:
     metadata:
       labels:
-        name: rabbitmq
+        app: rabbitmq
         component: messaging
         version: "1.0.0"
       annotations:

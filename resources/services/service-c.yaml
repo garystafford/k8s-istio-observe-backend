@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: service-c
   labels:
-    name: service-c
+    app: service-c
     component: service
     version: "1.0.0"
 spec:
@@ -11,7 +11,7 @@ spec:
   - name: http
     port: 8000
   selector:
-    name: service-c
+    app: service-c
     component: service
     version: "1.0.0"
 ---
@@ -20,7 +20,7 @@ kind: Deployment
 metadata:
   name: service-c
   labels:
-    name: service-c
+    app: service-c
     component: service
     version: "1.0.0"
 spec:
@@ -35,7 +35,7 @@ spec:
   template:
     metadata:
       labels:
-        name: service-c
+        app: service-c
         component: service
         version: "1.0.0"
       annotations:
@@ -57,11 +57,6 @@ spec:
             secretKeyRef:
               name: go-srv-config
               key: mongodb.conn
-        - name: RABBITMQ_CONN
-          valueFrom:
-            secretKeyRef:
-              name: go-srv-config
-              key: rabbitmq.conn
         ports:
         - containerPort: 8000
         imagePullPolicy: IfNotPresent

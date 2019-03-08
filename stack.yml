@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   angular-ui:
-    image: garystafford/angular-observe:1.0.3
+    image: garystafford/angular-observe:1.0.5
     networks:
       - golang-demo
     ports:
