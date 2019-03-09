@@ -8,7 +8,7 @@
 # Constants - CHANGE ME!
 readonly PROJECT='go-srv-demo'
 readonly CLUSTER='go-srv-demo-cluster'
-readonly REGION='us-east1'
+readonly REGION='us-central1'
 readonly MASTER_AUTH_NETS='72.231.208.0/24'
 readonly NAMESPACE='dev'
 readonly GKE_VERSION='1.12.5-gke.5'
