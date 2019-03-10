@@ -2,13 +2,16 @@
 
 The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
 
+![Kiali](pics/Kiali.png)
+
+
 ## Optional Front-end UI
 
 An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
 ## Architecture
 
-![Architecture Diagram](Golang_Service_Diagram.png)
+![Architecture Diagram](pics/Golang_Service_Diagram.png)
 
 ## Traces
 
