@@ -11,7 +11,10 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "*"
+    - ui.dev.example-api.com
+    - ui.test.example-api.com
+    - api.dev.example-api.com
+    - api.test.example-api.com
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
