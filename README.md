@@ -6,6 +6,10 @@ The (8) Go-based, RESTful microservices, which make up the distributed system, a
 
 The Angular 7-based, front-end UI to the API, is located here: <https://github.com/garystafford/k8s-istio-observe-frontend>.
 
+## Architecture
+
+![Architecture Diagram](Golang_Service_Diagram.png)
+
 ## Traces
 
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
@@ -13,10 +17,6 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 ## Deployment
 
 This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
-
-## Architecture
-
-![Architecture Diagram](Golang_Service_Diagram.png)
 
 ## Requirements
 
