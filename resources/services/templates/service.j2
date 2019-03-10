@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: service-{{ service }}
   labels:
-    name: service-{{ service }}
+    app: service-{{ service }}
     component: service
     version: "{{ versions }}"
 spec:
@@ -11,7 +11,7 @@ spec:
   - name: http
     port: 80
   selector:
-    name: service-{{ service }}
+    app: service-{{ service }}
     component: service
     version: "{{ versions }}"
 ---
@@ -20,7 +20,7 @@ kind: Deployment
 metadata:
   name: service-{{ service }}
   labels:
-    name: service-{{ service }}
+    app: service-{{ service }}
     component: service
     version: "{{ versions }}"
 spec:
@@ -29,13 +29,13 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      name: service-{{ service }}
+      app: service-{{ service }}
       component: service
       version: "{{ versions }}"
   template:
     metadata:
       labels:
-        name: service-{{ service }}
+        app: service-{{ service }}
         component: service
         version: "{{ versions }}"
       annotations:
@@ -54,14 +54,14 @@ spec:
         env:
         - name: MONGO_CONN
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: go-srv-config
               key: mongodb.conn
         - name: RABBITMQ_CONN
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: go-srv-config
               key: rabbitmq.conn
         ports:
         - containerPort: 80
-        imagePullPolicy: Always #IfNotPresent
+        imagePullPolicy: IfNotPresent #Always

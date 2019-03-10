@@ -53,4 +53,4 @@ spec:
         #   cpu: 250m
         ports:
         - containerPort: 80
-        imagePullPolicy: Always #IfNotPresent
+        imagePullPolicy: IfNotPresent #Always
