@@ -1,10 +1,10 @@
 # Go-based Microservices Observability Demo with Istio 1.0.x
 
-The (8) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
+The (8) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
 
 ## Optional Front-end UI
 
-The new Angular 7-based, front-end UI to the API, is located here: <https://github.com/garystafford/k8s-istio-observe-frontend>.
+The Angular 7-based, front-end UI to the API, is located here: <https://github.com/garystafford/k8s-istio-observe-frontend>.
 
 ## Traces
 
@@ -22,7 +22,7 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 
 -   Docker
 -   Helm
--   gcloud CLI
+-   `gcloud` CLI
 -   Istio 1.0.6
 -   Jinja2 (pip install) - _optional_
 
@@ -149,7 +149,7 @@ golang-demo_service-g.1.ii62ga8kqa3p44x94z97xknts   32.54%              122.7MiB
 golang-demo_service-h.1.r75tk7cz4szwbluagrpaz04v6   29.78%              123.2MiB / 1.952GiB
 ```
 
-## Other Useful Commands
+## Other Useful Docker Commands
 
 ```bash
 docker stack ps golang-demo --no-trunc
@@ -172,7 +172,7 @@ docker logs \
 
 ## Optional: Build Kubernetes Deployment and Service Resources
 
-The Kubernetes Deployment and Service resources for (7) Go-based services were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
+The Kubernetes Deployment and Service resources for (8) Go-based microservices were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
 
 ```bash
 cd golang-srv-demo/resources/services/templates
@@ -181,7 +181,7 @@ python3 ./service-builder.py
 
 ## Build and Deploy GKE Cluster
 
-Build and deploy to a (3) GKE Cluster, with Istio 1.0.6 and all telemetry components.
+Build and deploy to a 3-node GKE Cluster, with Istio 1.0.6 and all Istio telemetry components.
 Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
@@ -191,8 +191,8 @@ time sh ./part5a_deploy_resources.sh
 
 istioctl get all
 
-https://github.com/rakyll/hey
-hey -n 500 -c 50 -h2 http://api.dev.example-api.com
+# https://github.com/rakyll/hey
+hey -n 500 -c 10 -h2 http://api.dev.example-api.com
 ```
 
 ## Tear Down GKE Cluster
