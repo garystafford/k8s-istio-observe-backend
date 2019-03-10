@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: go-srv-config
-type: Opaque
-data:
-  mongodb.conn: bW9uZ29kYitzcnY6Ly9kZW1vX3VzZXI6TGF0VVJZYjhkb15BTHNAY2x1c3Rlci1kZXYtaXN0aW8tb2JzZXJ2ZS1tMi1lcGc0Yi5nY3AubW9uZ29kYi5uZXQvdGVzdD9yZXRyeVdyaXRlcz10cnVl
-  rabbitmq.conn: YW1xcDovL2F4bXJ1amF2OlloYlZFeS1fN3VuV3NMS29neUwyOG1qWFg2NU04Z2xKQGFsYmF0cm9zcy5ybXEuY2xvdWRhbXFwLmNvbS9heG1ydWphdg==
