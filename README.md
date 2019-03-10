@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Istio 1.0.x
 
-The (7) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-db (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
+The (8) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, when the system is deployed to Kubernetes.
 
 ## Optional Front-end UI
 
@@ -22,13 +22,13 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 
 -   Docker
 -   Helm
--   Jinja2 (pip install)
 -   gcloud CLI
 -   Istio 1.0.6
+-   Jinja2 (pip install) - _optional_
 
 ## Build and Deploy Docker Stack
 
-Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (7) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (8) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
 time sh ./part1_build_srv_images.sh
