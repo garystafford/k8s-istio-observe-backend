@@ -4,7 +4,6 @@ The (8) Go-based, RESTful microservices, which make up this reference distribute
 
 ![Kiali](pics/Kiali.png)
 
-
 ## Optional Front-end UI
 
 An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
@@ -26,7 +25,7 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 }
 ```
 
-## Deployment
+## Docker Swarm Deployment
 
 This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
 
@@ -184,7 +183,7 @@ docker logs \
   $(docker ps | grep golang-demo_rabbitmq.1 | awk '{print $NF}')
 ```
 
-## GKE
+## GKE Deployment
 
 ### Optional: Build Kubernetes Deployment and Service Resources
 
