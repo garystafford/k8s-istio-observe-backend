@@ -25,9 +25,9 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 
 ## Deployment
 
-This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Cloud Platform (GCP) Google Kubernetes Engine (GKE), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
 
-## Requirements
+### Requirements
 
 -   Docker
 -   Helm
@@ -35,9 +35,9 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 -   Istio 1.0.6
 -   Jinja2 (pip install) - _optional_
 
-## Build and Deploy Docker Stack
+### Optional: Build and Push Docker Images
 
-Build all images, create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (8) Go microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+All Docker images, references in the Docker Swarm and Kubernetes resource files, for the microservices and UI, are available on [Docker Hub](https://hub.docker.com/u/garystafford/). To build all images yourself, modify and use these two scripts.
 
 ```bash
 time sh ./part1_build_srv_images.sh
@@ -45,6 +45,8 @@ time sh ./part2_push_images.sh
 ```
 
 ### Deployed Stack Services
+
+Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (8) Go-based microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
 docker stack rm golang-demo
@@ -72,7 +74,7 @@ golang-demo_service-g    garystafford/go-srv-g:1.1.0
 golang-demo_service-h    garystafford/go-srv-h:1.1.0
 ```
 
-## Accessing the Stack
+## Accessing the Docker Swarm-based Stack
 
 To start, call the Angular 7 Front-end UI: <http://localhost:80/>
 
@@ -179,7 +181,9 @@ docker logs \
   $(docker ps | grep golang-demo_rabbitmq.1 | awk '{print $NF}')
 ```
 
-## Optional: Build Kubernetes Deployment and Service Resources
+## GKE
+
+### Optional: Build Kubernetes Deployment and Service Resources
 
 The Kubernetes Deployment and Service resources for (8) Go-based microservices were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
 
@@ -188,7 +192,7 @@ cd golang-srv-demo/resources/services/templates
 python3 ./service-builder.py
 ```
 
-## Build and Deploy GKE Cluster
+### Build and Deploy GKE Cluster
 
 Build and deploy to a 3-node GKE Cluster, with Istio 1.0.6 and all Istio telemetry components.
 Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
