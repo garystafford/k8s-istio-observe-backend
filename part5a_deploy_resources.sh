@@ -12,15 +12,13 @@ readonly SERVICES=(a b c d e f g h)
 
 # Create Namespaces
 kubectl apply -f ./resources/other/namespaces.yaml
+kubectl apply -f ./resources/other/istio-gateway.yaml
+kubectl apply -f ../golang-srv-demo-secrets/other/external-mesh-mongodb-atlas.yaml
+kubectl apply -f ../golang-srv-demo-secrets/other/external-mesh-cloudamqp.yaml
 
 for namespace in ${NAMESPACES[@]}; do
   # Enable automatic Istio sidecar injection
   kubectl label namespace $namespace istio-injection=enabled
-
-  # Istio Gateway and three ServiceEntry resources
-  kubectl apply -f ./resources/other/istio-gateway.yaml
-  kubectl apply -f ../golang-srv-demo-secrets/other/external-mesh-mongodb-atlas.yaml
-  kubectl apply -f ../golang-srv-demo-secrets/other/external-mesh-cloudamqp.yaml
 
   # kubectl apply -n $namespace -f ./resources/configs/go-srv-demo.yaml
   # kubectl apply -n $namespace -f ./resources/services/rabbitmq.yaml

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: rabbitmq
     component: messaging
-    version: "1.0.0"
+    version: "1.1.0"
 spec:
   ports:
   - name: dist
@@ -19,7 +19,7 @@ spec:
   selector:
     app: rabbitmq
     component: messaging
-    version: "1.0.0"
+    version: "1.1.0"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -28,7 +28,7 @@ metadata:
   labels:
     app: rabbitmq
     component: messaging
-    version: "1.0.0"
+    version: "1.1.0"
 spec:
   replicas: 1
   strategy:
@@ -37,13 +37,13 @@ spec:
     matchLabels:
       app: rabbitmq
       component: messaging
-      version: "1.0.0"
+      version: "1.1.0"
   template:
     metadata:
       labels:
         app: rabbitmq
         component: messaging
-        version: "1.0.0"
+        version: "1.1.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
@@ -66,4 +66,4 @@ spec:
           containerPort: 5672
         - name: epmd
           containerPort: 4369
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always #IfNotPresent

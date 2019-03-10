@@ -8,7 +8,7 @@
 # Constants - CHANGE ME!
 readonly PROJECT='go-srv-demo'
 readonly CLUSTER='go-srv-demo-cluster'
-readonly REGION='us-east1'
+readonly REGION='us-central1'
 
 # Delete GKE cluster (time in foreground)
 yes | gcloud beta container clusters delete $CLUSTER --region $REGION

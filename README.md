@@ -53,7 +53,7 @@ NAME                     IMAGE                                PORTS
 golang-demo_angular-ui   garystafford/angular-observe:1.0.0   *:80->80/tcp
 golang-demo_mongodb      mongo:latest                         *:27017->27017/tcp
 golang-demo_rabbitmq     rabbitmq:management                  *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a    garystafford/go-srv-a:1.0.0          *:8000->8000/tcp
+golang-demo_service-a    garystafford/go-srv-a:1.0.0          *:8000->80/tcp
 golang-demo_service-b    garystafford/go-srv-b:1.0.0
 golang-demo_service-c    garystafford/go-srv-c:1.0.0
 golang-demo_service-d    garystafford/go-srv-d:1.0.0
@@ -185,12 +185,14 @@ Build and deploy to a (3) GKE Cluster, with Istio 1.0.6 and all telemetry compon
 Requires Istio 1.0.6 is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
-time sh ./part3a_create_gke_cluster.sh
-time sh ./part3b_firewall_rule.sh
+time sh ./part3_create_gke_cluster.sh
 time sh ./part4_install_istio.sh
 time sh ./part5a_deploy_resources.sh
 
 istioctl get all
+
+https://github.com/rakyll/hey
+hey -n 500 -c 50 -h2 http://api.dev.example-api.com
 ```
 
 ## Tear Down GKE Cluster

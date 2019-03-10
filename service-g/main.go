@@ -55,7 +55,7 @@ func CallMongoDB(trace Trace) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	defer client.Disconnect(nil)
 
 	collection := client.Database("service-g").Collection("traces")
@@ -72,5 +72,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(":80", router))
 }

@@ -5,15 +5,15 @@ metadata:
   labels:
     app: service-b
     component: service
-    version: "1.0.0"
+    version: "1.1.0"
 spec:
   ports:
   - name: http
-    port: 8000
+    port: 80
   selector:
     app: service-b
     component: service
-    version: "1.0.0"
+    version: "1.1.0"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: service-b
     component: service
-    version: "1.0.0"
+    version: "1.1.0"
 spec:
   replicas: 2
   strategy:
@@ -31,19 +31,19 @@ spec:
     matchLabels:
       app: service-b
       component: service
-      version: "1.0.0"
+      version: "1.1.0"
   template:
     metadata:
       labels:
         app: service-b
         component: service
-        version: "1.0.0"
+        version: "1.1.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-b
-        image: registry.hub.docker.com/garystafford/go-srv-b:1.0.0
+        image: registry.hub.docker.com/garystafford/go-srv-b:1.1.0
         resources:
         # requests:
         #   memory: 100M
@@ -52,5 +52,5 @@ spec:
         #   memory: 250M
         #   cpu: 250m
         ports:
-        - containerPort: 8000
-        imagePullPolicy: IfNotPresent
+        - containerPort: 80
+        imagePullPolicy: Always #IfNotPresent

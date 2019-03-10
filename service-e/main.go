@@ -22,8 +22,8 @@ var traces []Trace
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	traces = nil
-	CallNextService("http://service-g:8000/api/ping")
-	CallNextService("http://service-h:8000/api/ping")
+	CallNextService("http://service-g/api/ping")
+	CallNextService("http://service-h/api/ping")
 
 	tmpTrace := Trace{
 		ID: uuid.New().String(),
@@ -69,5 +69,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(":80", router))
 }

@@ -25,8 +25,8 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	traces = nil
-	CallNextService("http://service-b:8000/api/ping")
-	CallNextService("http://service-c:8000/api/ping")
+	CallNextService("http://service-b/api/ping")
+	CallNextService("http://service-c/api/ping")
 
 	tmpTrace := Trace{
 		ID:          uuid.New().String(),
@@ -80,5 +80,5 @@ func main() {
 	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
 	handler := c.Handler(router)
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	log.Fatal(http.ListenAndServe(":80", handler))
 }

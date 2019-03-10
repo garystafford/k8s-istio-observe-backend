@@ -9,7 +9,7 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 8000
+    port: 80
   selector:
     name: service-{{ service }}
     component: service
@@ -63,5 +63,5 @@ spec:
               name: go-srv-config
               key: rabbitmq.conn
         ports:
-        - containerPort: 8000
-        imagePullPolicy: IfNotPresent
+        - containerPort: 80
+        imagePullPolicy: Always #IfNotPresent

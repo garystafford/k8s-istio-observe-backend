@@ -8,7 +8,7 @@ spec:
   servers:
   - port:
       number: 80
-      name: angular-ui
+      name: http
       protocol: HTTP
     hosts:
     - "*"
@@ -31,6 +31,7 @@ spec:
         port:
           number: 80
         host: angular-ui.dev.svc.cluster.local
+      weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -48,8 +49,9 @@ spec:
     route:
     - destination:
         port:
-          number: 8000
+          number: 80
         host: service-a.dev.svc.cluster.local
+      weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -69,6 +71,7 @@ spec:
         port:
           number: 80
         host: angular-ui.test.svc.cluster.local
+      weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -86,5 +89,6 @@ spec:
     route:
     - destination:
         port:
-          number: 8000
+          number: 80
         host: service-a.test.svc.cluster.local
+      weight: 100
