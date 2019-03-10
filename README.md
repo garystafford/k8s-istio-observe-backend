@@ -1,10 +1,10 @@
 # Go-based Microservices Observability Demo with Istio 1.0.x
 
-The (8) Go-based, RESTful microservices, which make up the distributed system, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
+The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
 
 ## Optional Front-end UI
 
-The Angular 7-based, front-end UI to the API, is located here: <https://github.com/garystafford/k8s-istio-observe-frontend>.
+An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
 ## Architecture
 
@@ -13,6 +13,15 @@ The Angular 7-based, front-end UI to the API, is located here: <https://github.c
 ## Traces
 
 A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
+
+```json
+{
+  "id": "aaa0c36b-ac16-4e29-801b-84a7e4fe99a4",
+  "service": "Service-A",
+  "greeting": "Hello, from Service-A!",
+  "created": "2019-03-04T01:29:44.3329817Z"
+}
+```
 
 ## Deployment
 
