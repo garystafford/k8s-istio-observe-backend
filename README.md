@@ -16,7 +16,7 @@ This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally t
 
 ## Architecture
 
-![Architecture Diagram](architecture_diagram_v2.png)
+![Architecture Diagram](Golang_Service_Diagram.png)
 
 ## Requirements
 
