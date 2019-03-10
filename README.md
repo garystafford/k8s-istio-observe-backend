@@ -32,7 +32,7 @@ Build all images, create Docker overlay network, and deploy Docker Swarm, locall
 
 ```bash
 time sh ./part1_build_srv_images.sh
-time sh ./part12_push_images.sh
+time sh ./part2_push_images.sh
 ```
 
 ### Deployed Stack Services
@@ -50,17 +50,17 @@ docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Port
 > docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 
 NAME                     IMAGE                                PORTS
-golang-demo_angular-ui   garystafford/angular-observe:1.0.0   *:80->80/tcp
+golang-demo_angular-ui   garystafford/angular-observe:1.1.0   *:80->80/tcp
 golang-demo_mongodb      mongo:latest                         *:27017->27017/tcp
 golang-demo_rabbitmq     rabbitmq:management                  *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a    garystafford/go-srv-a:1.0.0          *:8000->80/tcp
-golang-demo_service-b    garystafford/go-srv-b:1.0.0
-golang-demo_service-c    garystafford/go-srv-c:1.0.0
-golang-demo_service-d    garystafford/go-srv-d:1.0.0
-golang-demo_service-e    garystafford/go-srv-e:1.0.0
-golang-demo_service-f    garystafford/go-srv-f:1.0.0
-golang-demo_service-g    garystafford/go-srv-g:1.0.0
-golang-demo_service-h    garystafford/go-srv-h:1.0.0
+golang-demo_service-a    garystafford/go-srv-a:1.1.0          *:8000->80/tcp
+golang-demo_service-b    garystafford/go-srv-b:1.1.0
+golang-demo_service-c    garystafford/go-srv-c:1.1.0
+golang-demo_service-d    garystafford/go-srv-d:1.1.0
+golang-demo_service-e    garystafford/go-srv-e:1.1.0
+golang-demo_service-f    garystafford/go-srv-f:1.1.0
+golang-demo_service-g    garystafford/go-srv-g:1.1.0
+golang-demo_service-h    garystafford/go-srv-h:1.1.0
 ```
 
 ## Accessing the Stack
@@ -207,4 +207,4 @@ time sh ./part6_tear_down.sh
 -   <https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio>
 -   <https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/>
 -   <https://thenewstack.io/make-a-restful-json-api-go/>
-- <https://github.com/istio/istio/blob/aa034934c7f2a2a265224061c066eae88a652703/install/kubernetes/helm/istio/README.md>
+-   <https://github.com/istio/istio/blob/aa034934c7f2a2a265224061c066eae88a652703/install/kubernetes/helm/istio/README.md>
