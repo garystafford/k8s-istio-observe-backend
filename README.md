@@ -46,7 +46,7 @@ time sh ./part2_push_images.sh
 
 ### Deployed Stack Services
 
-Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) contains: (1) Angular 7 Front-end UI, (8) Go-based microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) containers: (1) Angular 7 Front-end UI, (8) Go-based microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
 docker stack rm golang-demo
