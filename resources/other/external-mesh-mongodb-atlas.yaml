@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: mongdb-atlas-external-mesh
+  name: mongodb-atlas-external-mesh
 spec:
   hosts:
   - {{ your_host_url_goes_here }}
