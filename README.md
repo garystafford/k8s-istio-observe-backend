@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Istio 1.0.x
 
-The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
+Project code for the post, [Kubernetes-based Microservice Observability with Istio Service Mesh: Part 1](https://wp.me/p1RD28-6fL). The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
 
 ![Kiali](pics/Kiali.png)
 
@@ -27,7 +27,7 @@ A 'trace' JSON object is returned by each service to the up-stream calling servi
 
 ## Docker Swarm Deployment
 
-This README outlines deploying the Microservices/RabbitMQ/MongDB stack locally to Docker Swarm. Then, deploying the same stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+The post, [Kubernetes-based Microservice Observability with Istio Service Mesh: Part 1](https://wp.me/p1RD28-6fL), and this README outlines deploying the Microservices/RabbitMQ/MongoDB stack locally to Docker Swarm. Then, deploying the same stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.0.6 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
 
 ### Requirements
 
