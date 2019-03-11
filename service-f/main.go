@@ -1,3 +1,8 @@
+// author: Gary A. Stafford
+// site: https://programmaticponderings.com
+// license: MIT License
+// purpose: Service F
+
 package main
 
 import (
@@ -7,9 +12,9 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"github.com/streadway/amqp"
 	"log"
 	"net/http"
 	"os"
@@ -29,10 +34,10 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	traces = nil
 
 	tmpTrace := Trace{
-		ID: uuid.New().String(),
+		ID:          uuid.New().String(),
 		ServiceName: "Service-F",
-		Greeting: "Hola, from Service-F!",
-		CreatedAt: time.Now().Local(),
+		Greeting:    "Hola, from Service-F!",
+		CreatedAt:   time.Now().Local(),
 	}
 
 	traces = append(traces, tmpTrace)
@@ -48,7 +53,10 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write([]byte("{\"alive\": true}"))
+	_, err := w.Write([]byte("{\"alive\": true}"))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func CallMongoDB(trace Trace) {

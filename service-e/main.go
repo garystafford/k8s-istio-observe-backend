@@ -1,3 +1,8 @@
+// author: Gary A. Stafford
+// site: https://programmaticponderings.com
+// license: MIT License
+// purpose: Service E
+
 package main
 
 import (
@@ -26,10 +31,10 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	CallNextService("http://service-h/api/ping")
 
 	tmpTrace := Trace{
-		ID: uuid.New().String(),
+		ID:          uuid.New().String(),
 		ServiceName: "Service-E",
-		Greeting: "Bonjour, de Service-E!",
-		CreatedAt: time.Now().Local(),
+		Greeting:    "Bonjour, de Service-E!",
+		CreatedAt:   time.Now().Local(),
 	}
 
 	traces = append(traces, tmpTrace)
@@ -43,7 +48,10 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write([]byte("{\"alive\": true}"))
+	_, err := w.Write([]byte("{\"alive\": true}"))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func CallNextService(url string) {
