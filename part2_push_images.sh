@@ -14,4 +14,4 @@ do
   docker push "garystafford/go-srv-$i:$tag"
 done
 
-# docker push "garystafford/angular-observe:$tag"
+docker push "garystafford/angular-observe:1.1.0"
