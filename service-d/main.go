@@ -11,7 +11,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/streadway/amqp"
-	"log"
+	joonix "github.com/joonix/log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"time"
@@ -37,17 +38,16 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "json.NewEncoder()").Fatal(err)
 	}
 
 	b, err := json.Marshal(tmpTrace)
 	SendMessage(b)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "w.Write()").Fatal(err)
 	}
 }
 
@@ -55,17 +55,23 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "w.Write()").Fatal(err)
 	}
 }
 
 func SendMessage(b []byte) {
+	log.WithField("func", "amqp.Publishing()").Infof("body: %s", b)
+
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.WithField("func", "amqp.Dial()").Fatal(err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.WithField("func", "conn.Channel()").Fatal(err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -76,7 +82,9 @@ func SendMessage(b []byte) {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.WithField("func", "ch.QueueDeclare()").Fatal(err)
+	}
 
 	err = ch.Publish(
 		"",
@@ -87,14 +95,13 @@ func SendMessage(b []byte) {
 			ContentType: "application/json",
 			Body:        b,
 		})
-	print(b)
-	failOnError(err, "Failed to publish a message")
+		if err != nil {
+			log.WithField("func", "amqp.Publishing()").Fatal(err)
+		}
 }
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
+func init() {
+	log.SetFormatter(&joonix.FluentdFormatter{})
 }
 
 func main() {
@@ -102,5 +109,8 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	err := http.ListenAndServe(":80", handler)
+	if err != nil {
+		log.WithField("func", "http.ListenAndServe()").Fatal(err)
+	}
 }

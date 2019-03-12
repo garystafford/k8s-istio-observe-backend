@@ -11,7 +11,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"io/ioutil"
-	"log"
+	joonix "github.com/joonix/log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -38,11 +39,10 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "json.NewEncoder()").Fatal(err)
 	}
 }
 
@@ -50,7 +50,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "w.Write()").Fatal(err)
 	}
 }
 
@@ -72,10 +72,17 @@ func CallNextService(url string) {
 	}
 }
 
+func init() {
+	log.SetFormatter(&joonix.FluentdFormatter{})
+}
+
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	err := http.ListenAndServe(":80", handler)
+	if err != nil {
+		log.WithField("func", "http.ListenAndServe()").Fatal(err)
+	}
 }

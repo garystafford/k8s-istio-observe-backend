@@ -15,7 +15,8 @@ import (
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
+	joonix "github.com/joonix/log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"time"
@@ -41,13 +42,12 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	CallMongoDB(tmpTrace)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "json.NewEncoder()").Fatal(err)
 	}
 }
 
@@ -55,7 +55,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "w.Write()").Fatal(err)
 	}
 }
 
@@ -63,7 +63,7 @@ func CallMongoDB(trace Trace) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		panic(err)
+		log.WithField("func", "mongo.Connect()").Fatal(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -73,17 +73,21 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "collection.InsertOne()").Fatal(err)
 	}
 }
 
 func GetMessages() {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.WithField("func", "amqp.Dial()").Fatal(err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.WithField("func", "conn.Channel()").Fatal(err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -94,7 +98,9 @@ func GetMessages() {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.WithField("func", "ch.QueueDeclare()").Fatal(err)
+	}
 
 	msgs, err := ch.Consume(
 		q.Name,
@@ -105,37 +111,37 @@ func GetMessages() {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to register a consumer")
+	if err != nil {
+		log.WithField("func", "ch.Consume()").Fatal(err)
+	}
 
 	forever := make(chan bool)
 
 	go func() {
 		for delivery := range msgs {
-			log.Printf("Received a message: %s", delivery)
+			log.WithField("func", "GetMessages()").Infof("message: %s", delivery)
 			CallMongoDB(deserialize(delivery.Body))
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages...")
+	log.Infof(" [*] Waiting for messages...")
 	<-forever
 }
 
 func deserialize(b []byte) (t Trace) {
 	var tmpTrace Trace
-	log.Printf("Body: %s", b)
+	log.WithField("func", "amqp.Publishing()").Infof("body: %s", b)
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
 	err := decoder.Decode(&tmpTrace)
 	if err != nil {
-		log.Fatal(err)
+		log.WithField("func", "decoder.Decode()").Fatal(err)
 	}
 	return tmpTrace
 }
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
+func init() {
+	log.SetFormatter(&joonix.FluentdFormatter{})
 }
 
 func main() {
@@ -144,5 +150,8 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	err := http.ListenAndServe(":80", handler)
+	if err != nil {
+		log.WithField("func", "http.ListenAndServe()").Fatal(err)
+	}
 }
