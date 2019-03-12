@@ -66,7 +66,7 @@ func CallNextService(url string) {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
 		if err != nil {
-			log.Warning(err)
+			log.Fatal(err)
 		}
 
 		for _, r := range tmpTraces {

@@ -9,9 +9,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	joonix "github.com/joonix/log"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -46,7 +46,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.WithField("func", "json.NewEncoder()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -54,7 +54,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.WithField("func", "w.Write()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -62,7 +62,7 @@ func CallMongoDB(trace Trace) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		log.WithField("func", "mongo.Connect()").Fatal(err)
+		log.Fatal(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -72,20 +72,20 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.WithField("func", "collection.InsertOne()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
 func GetMessages() {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	if err != nil {
-		log.WithField("func", "amqp.Dial()").Fatal(err)
+		log.Fatal(err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.WithField("func", "conn.Channel()").Fatal(err)
+		log.Fatal(err)
 	}
 	defer ch.Close()
 
@@ -98,7 +98,7 @@ func GetMessages() {
 		nil,
 	)
 	if err != nil {
-		log.WithField("func", "ch.QueueDeclare()").Fatal(err)
+		log.Fatal(err)
 	}
 
 	msgs, err := ch.Consume(
@@ -111,7 +111,7 @@ func GetMessages() {
 		nil,
 	)
 	if err != nil {
-		log.WithField("func", "ch.Consume()").Fatal(err)
+		log.Fatal(err)
 	}
 
 	forever := make(chan bool)
@@ -134,13 +134,17 @@ func deserialize(b []byte) (t Trace) {
 	decoder := json.NewDecoder(buf)
 	err := decoder.Decode(&tmpTrace)
 	if err != nil {
-		log.WithField("func", "decoder.Decode()").Fatal(err)
+		log.Fatal(err)
 	}
 	return tmpTrace
 }
 
 func init() {
-	log.SetFormatter(&joonix.FluentdFormatter{})
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
@@ -149,8 +153,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	err := http.ListenAndServe(":80", router)
-	if err != nil {
-		log.WithField("func", "http.ListenAndServe()").Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":80", router))
 }

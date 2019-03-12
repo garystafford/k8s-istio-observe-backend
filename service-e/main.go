@@ -7,13 +7,13 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	joonix "github.com/joonix/log"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -42,7 +42,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.WithField("func", "json.NewEncoder()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -50,7 +50,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.WithField("func", "w.Write()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -58,7 +58,7 @@ func CallNextService(url string) {
 	var tmpTraces []Trace
 	response, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("The HTTP request failed with error %s\n", err)
+		log.Warning(err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
@@ -73,7 +73,11 @@ func CallNextService(url string) {
 }
 
 func init() {
-	log.SetFormatter(&joonix.FluentdFormatter{})
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
@@ -81,8 +85,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	err := http.ListenAndServe(":80", router)
-	if err != nil {
-		log.WithField("func", "http.ListenAndServe()").Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":80", router))
 }

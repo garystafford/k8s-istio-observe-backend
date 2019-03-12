@@ -7,9 +7,9 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	joonix "github.com/joonix/log"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"net/http"
@@ -40,13 +40,13 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.WithField("func", "json.NewEncoder()").Fatal(err)
+		log.Fatal(err)
 	}
 
 	b, err := json.Marshal(tmpTrace)
 	SendMessage(b)
 	if err != nil {
-		log.WithField("func", "w.Write()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -54,7 +54,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.WithField("func", "w.Write()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -63,13 +63,13 @@ func SendMessage(b []byte) {
 
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	if err != nil {
-		log.WithField("func", "amqp.Dial()").Fatal(err)
+		log.Fatal(err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.WithField("func", "conn.Channel()").Fatal(err)
+		log.Fatal(err)
 	}
 	defer ch.Close()
 
@@ -82,7 +82,7 @@ func SendMessage(b []byte) {
 		nil,
 	)
 	if err != nil {
-		log.WithField("func", "ch.QueueDeclare()").Fatal(err)
+		log.Fatal(err)
 	}
 
 	err = ch.Publish(
@@ -95,12 +95,16 @@ func SendMessage(b []byte) {
 			Body:        b,
 		})
 		if err != nil {
-			log.WithField("func", "amqp.Publishing()").Fatal(err)
+			log.Fatal(err)
 		}
 }
 
 func init() {
-	log.SetFormatter(&joonix.FluentdFormatter{})
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
@@ -108,8 +112,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	err := http.ListenAndServe(":80", router)
-	if err != nil {
-		log.WithField("func", "http.ListenAndServe()").Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":80", router))
 }
