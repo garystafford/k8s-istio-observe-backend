@@ -7,13 +7,14 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	joonix "github.com/joonix/log"
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -44,7 +45,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.WithField("func", "json.NewEncoder()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -52,7 +53,7 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.WithField("func", "w.Write()").Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -60,12 +61,12 @@ func CallNextService(url string) {
 	var tmpTraces []Trace
 	response, err := http.Get(url)
 	if err != nil {
-		log.WithField("func", "http.Get()").Warning(err)
+		log.Warning(err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
 		if err != nil {
-			log.WithField("func", "json.Unmarshal()").Warning(err)
+			log.Warning(err)
 		}
 
 		for _, r := range tmpTraces {
@@ -75,7 +76,11 @@ func CallNextService(url string) {
 }
 
 func init() {
-	log.SetFormatter(&joonix.FluentdFormatter{})
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
@@ -89,8 +94,5 @@ func main() {
 	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
 	handler := c.Handler(router)
-	err := http.ListenAndServe(":80", handler)
-	if err != nil {
-		log.WithField("func", "http.ListenAndServe()").Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":80", handler))
 }
