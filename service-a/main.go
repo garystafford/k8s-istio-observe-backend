@@ -7,6 +7,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -45,28 +46,44 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
+
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
+	}
+}
+
+func ThrowErrorHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	err1 := errors.New("error: intentionally throwing an error")
+	if err1 != nil {
+		log.Error(err1)
+	}
+
+	_, err := w.Write([]byte("{\"error\": \"thrown\"}"))
+	if err != nil {
+		log.Error(err)
 	}
 }
 
 func CallNextService(url string) {
+	log.Info(url)
 	var tmpTraces []Trace
 	response, err := http.Get(url)
 	if err != nil {
-		log.Warning(err)
+		log.Error(err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
 		if err != nil {
-			log.Fatal(err)
+			log.Error(err)
 		}
 
 		for _, r := range tmpTraces {
@@ -93,6 +110,7 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/error", ThrowErrorHandler).Methods("GET", "OPTIONS")
 	handler := c.Handler(router)
 	log.Fatal(http.ListenAndServe(":80", handler))
 }

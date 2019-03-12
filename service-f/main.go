@@ -46,7 +46,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -54,15 +54,16 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func CallMongoDB(trace Trace) {
+	log.Info(trace)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -72,20 +73,20 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func GetMessages() {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	defer ch.Close()
 
@@ -98,7 +99,7 @@ func GetMessages() {
 		nil,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	msgs, err := ch.Consume(
@@ -111,7 +112,7 @@ func GetMessages() {
 		nil,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	forever := make(chan bool)
@@ -128,13 +129,13 @@ func GetMessages() {
 }
 
 func deserialize(b []byte) (t Trace) {
+	log.Info(b)
 	var tmpTrace Trace
-	log.WithField("func", "amqp.Publishing()").Infof("body: %s", b)
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
 	err := decoder.Decode(&tmpTrace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	return tmpTrace
 }

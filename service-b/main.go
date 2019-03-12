@@ -42,7 +42,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -50,20 +50,21 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func CallNextService(url string) {
+	log.Info(url)
 	var tmpTraces []Trace
 	response, err := http.Get(url)
 	if err != nil {
-		log.Warning(err)
+		log.Error(err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
 		err := json.Unmarshal(data, &tmpTraces)
 		if err != nil {
-			log.Fatal(err)
+			log.Error(err)
 		}
 
 		for _, r := range tmpTraces {

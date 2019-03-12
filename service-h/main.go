@@ -44,7 +44,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -52,15 +52,16 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func CallMongoDB(trace Trace) {
+	log.Info(trace)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -70,7 +71,7 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
