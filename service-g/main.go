@@ -8,13 +8,12 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	joonix "github.com/joonix/log"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"os"
 	"time"
@@ -84,7 +83,7 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	err := http.ListenAndServe(":80", handler)
+	err := http.ListenAndServe(":80", router)
 	if err != nil {
 		log.WithField("func", "http.ListenAndServe()").Fatal(err)
 	}

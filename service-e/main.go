@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"io/ioutil"
 	joonix "github.com/joonix/log"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -81,7 +81,7 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	err := http.ListenAndServe(":80", handler)
+	err := http.ListenAndServe(":80", router)
 	if err != nil {
 		log.WithField("func", "http.ListenAndServe()").Fatal(err)
 	}
