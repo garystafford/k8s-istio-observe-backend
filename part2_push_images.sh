@@ -7,7 +7,7 @@
 
 readonly -a arr=(a b c a d e f g h)
 # declare -a arr=(a)
-readonly tag=1.1.0
+readonly tag=1.2.0
 
 for i in "${arr[@]}"
 do
