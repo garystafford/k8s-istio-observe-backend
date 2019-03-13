@@ -54,4 +54,4 @@ spec:
         env:
         ports:
         - containerPort: 80
-        imagePullPolicy: IfNotPresent #Always
+        imagePullPolicy: Always
