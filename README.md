@@ -8,6 +8,8 @@ The (8) Go-based, RESTful microservices, which make up this reference distribute
 
 An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
+![preview](pics/preview2.png)
+
 ## Architecture
 
 ![Architecture Diagram](pics/Golang_Service_Diagram.png)
