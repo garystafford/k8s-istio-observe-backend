@@ -9,13 +9,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -41,13 +41,12 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	CallMongoDB(tmpTrace)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -55,15 +54,16 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func CallMongoDB(trace Trace) {
+	log.Info(trace)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -73,17 +73,21 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func GetMessages() {
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.Error(err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.Error(err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -94,7 +98,9 @@ func GetMessages() {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.Error(err)
+	}
 
 	msgs, err := ch.Consume(
 		q.Name,
@@ -105,37 +111,41 @@ func GetMessages() {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to register a consumer")
+	if err != nil {
+		log.Error(err)
+	}
 
 	forever := make(chan bool)
 
 	go func() {
 		for delivery := range msgs {
-			log.Printf("Received a message: %s", delivery)
+			log.WithField("func", "GetMessages()").Infof("message: %s", delivery)
 			CallMongoDB(deserialize(delivery.Body))
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages...")
+	log.Infof(" [*] Waiting for messages...")
 	<-forever
 }
 
 func deserialize(b []byte) (t Trace) {
+	log.Info(b)
 	var tmpTrace Trace
-	log.Printf("Body: %s", b)
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
 	err := decoder.Decode(&tmpTrace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	return tmpTrace
 }
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
+func init() {
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {

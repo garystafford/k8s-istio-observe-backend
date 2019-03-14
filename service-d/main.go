@@ -7,11 +7,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -37,17 +37,16 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	b, err := json.Marshal(tmpTrace)
 	SendMessage(b)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -55,17 +54,23 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func SendMessage(b []byte) {
+	log.Info(b)
+
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.Error(err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.Error(err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -76,7 +81,9 @@ func SendMessage(b []byte) {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.Error(err)
+	}
 
 	err = ch.Publish(
 		"",
@@ -87,14 +94,17 @@ func SendMessage(b []byte) {
 			ContentType: "application/json",
 			Body:        b,
 		})
-	print(b)
-	failOnError(err, "Failed to publish a message")
+		if err != nil {
+			log.Error(err)
+		}
 }
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
+func init() {
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {

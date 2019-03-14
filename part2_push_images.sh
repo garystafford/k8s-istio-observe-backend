@@ -7,11 +7,11 @@
 
 readonly -a arr=(a b c a d e f g h)
 # declare -a arr=(a)
-readonly tag=1.1.0
+readonly tag=1.2.0
 
 for i in "${arr[@]}"
 do
   docker push "garystafford/go-srv-$i:$tag"
 done
 
-docker push "garystafford/angular-observe:$tag"
+docker push "garystafford/angular-observe:1.1.0"

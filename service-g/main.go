@@ -8,12 +8,12 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -39,13 +39,12 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	traces = append(traces, tmpTrace)
-	fmt.Println(traces)
 
 	CallMongoDB(tmpTrace)
 
 	err := json.NewEncoder(w).Encode(traces)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
@@ -53,15 +52,16 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 }
 
 func CallMongoDB(trace Trace) {
+	log.Info(trace)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 
 	defer client.Disconnect(nil)
@@ -71,8 +71,16 @@ func CallMongoDB(trace Trace) {
 
 	_, err = collection.InsertOne(ctx, trace)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
+}
+
+func init() {
+	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
