@@ -22,21 +22,10 @@ sleep 15
 helm install $ISTIO_HOME/install/kubernetes/helm/istio \
   --name istio \
   --namespace istio-system \
-  --set global.mtls.enabled=true \
+  --set prometheus.enabled=true \
   --set grafana.enabled=true \
   --set kiali.enabled=true \
-  --set kiali.createDefaultSecret=true \
-  --set prometheus.enabled=true \
-  --set servicegraph.enabled=true \
-  --set telemetry-gateway.grafanaEnabled=true \
-  --set telemetry-gateway.prometheusEnabled=true \
-  --set tracing.enabled=true \
-  --set tracing.provider=jaeger
-
-# --set kiali.ingress.enabled=true \
-# Doesn't work:
-# Error: release istio failed: Ingress.extensions "kiali" is invalid:
-# spec: Invalid value: []extensions.IngressRule(nil): either `backend` or `rules` must be specified
+  --set tracing.enabled=true
 
 kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
 

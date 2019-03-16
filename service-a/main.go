@@ -11,6 +11,7 @@ import (
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -50,7 +51,6 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
@@ -60,17 +60,12 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ThrowErrorHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	err1 := errors.New("error: intentionally throwing an error")
-	if err1 != nil {
-		log.Error(err1)
-	}
-
-	_, err := w.Write([]byte("{\"error\": \"thrown\"}"))
+	err := errors.New("error: intentionally throwing 500 Internal Server Error")
 	if err != nil {
 		log.Error(err)
 	}
+
+	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func CallNextService(url string) {
@@ -111,6 +106,7 @@ func main() {
 	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/error", ThrowErrorHandler).Methods("GET", "OPTIONS")
+	api.Handle("/metrics", promhttp.Handler())
 	handler := c.Handler(router)
 	log.Fatal(http.ListenAndServe(":80", handler))
 }

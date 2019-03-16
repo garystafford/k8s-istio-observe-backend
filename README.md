@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Istio 1.0.x
 
-The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Zipkin, Jaeger, Kiali, Service Graph, Prometheus, and Grafana, when the system is deployed to Kubernetes.
+The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate service-to-service, service-to-database (MongoDB), and service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes.
 
 ![Kiali](pics/Kiali.png)
 
@@ -210,6 +210,41 @@ istioctl get all
 
 # https://github.com/rakyll/hey
 hey -n 500 -c 10 -h2 http://api.dev.example-api.com
+```
+## Access Tools Example
+
+```bash
+# Jaeger
+kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
+
+# Grafana
+gcloud container clusters get-credentials go-srv-demo-cluster --region us-central1 --project go-srv-demo \
+ && kubectl port-forward --namespace istio-system $(kubectl get pod --namespace istio-system --selector="app=grafana" --output jsonpath='{.items[0].metadata.name}') 3000:3000
+
+#Prometheus
+$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') 9090:9090 &
+
+gcloud container clusters get-credentials go-srv-demo-cluster --region us-central1 --project go-srv-demo \
+  && kubectl port-forward --namespace istio-system $(kubectl get pod --namespace istio-system --selector="app=prometheus" --output jsonpath='{.items[0].metadata.name}') 9090:9090
+```
+
+Prometheus Query Examples
+
+```text
+hey -n 1000 -c 10 -h2 http://api.dev.example-api.com/api/ping
+hey -n 1000 -c 25 -h2 http://api.dev.example-api.com/api/ping
+hey -n 2000 -c 20 -h2 http://api.dev.example-api.com/api/ping
+
+up{namespace="dev",pod_name=~"service-.*"}
+
+container_memory_max_usage_bytes{namespace="dev",container_name="service-f"}
+container_memory_max_usage_bytes{namespace="dev",container_name=~"service-.*"}
+
+container_network_transmit_packets_total{namespace="dev",pod_name=~"service-e-.*"}
+
+istio_requests_total{destination_service_namespace="dev",connection_security_policy="mutual_tls",destination_app="service-a"}
+
+istio_response_bytes_count{destination_service_namespace="dev",connection_security_policy="mutual_tls",source_app="service-a"}
 ```
 
 ## Tear Down GKE Cluster
