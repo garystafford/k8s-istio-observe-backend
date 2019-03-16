@@ -7,7 +7,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -17,6 +16,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -59,13 +59,17 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ThrowErrorHandler(w http.ResponseWriter, r *http.Request) {
-	err := errors.New("error: intentionally throwing 500 Internal Server Error")
+
+func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	statusCode, err := strconv.Atoi(params["code"])
 	if err != nil {
+		statusCode = 404
+		w.Write([]byte("404 page not found"))
 		log.Error(err)
 	}
+	w.WriteHeader(statusCode)
 
-	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func CallNextService(url string) {
@@ -105,7 +109,7 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
-	api.HandleFunc("/error", ThrowErrorHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
 	api.Handle("/metrics", promhttp.Handler())
 	handler := c.Handler(router)
 	log.Fatal(http.ListenAndServe(":80", handler))
