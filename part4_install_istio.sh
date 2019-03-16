@@ -30,6 +30,3 @@ helm install $ISTIO_HOME/install/kubernetes/helm/istio \
 kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
 
 helm list istio
-
-# helm del --purge istio
-# Doesn't work: Error: customresourcedefinitions.apiextensions.k8s.io "gateways.networking.istio.io" already exists

@@ -31,5 +31,3 @@ for namespace in ${NAMESPACES[@]}; do
   done
   kubectl apply -n $namespace -f ./resources/services/angular-ui.yaml
 done
-
-# istioctl get all

@@ -6,7 +6,7 @@
 # purpose: Build Go microservices for demo
 
 readonly -a arr=(a b c a d e f g h)
-# declare -a arr=(a)
+# readonly -a arr=(a)
 readonly tag=1.2.0
 
 for i in "${arr[@]}"
@@ -19,8 +19,3 @@ do
 done
 
 docker image ls | grep 'garystafford/go-srv-'
-
-# docker stack rm golang-demo
-# sleep 5
-# docker network create -d overlay --attachable golang-demo
-# docker stack deploy -c stack.yml golang-demo
