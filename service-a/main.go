@@ -30,11 +30,9 @@ type Trace struct {
 var traces []Trace
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
 	traces = nil
-	CallNextService("http://service-b/api/ping")
-	CallNextService("http://service-c/api/ping")
+	CallNextService("http://service-b/api/ping", w, r)
+	CallNextService("http://service-c/api/ping", w, r)
 
 	tmpTrace := Trace{
 		ID:          uuid.New().String(),
@@ -59,35 +57,53 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	statusCode, err := strconv.Atoi(params["code"])
 	if err != nil {
-		statusCode = 404
-		w.Write([]byte("404 page not found"))
 		log.Error(err)
 	}
 	w.WriteHeader(statusCode)
 
 }
 
-func CallNextService(url string) {
+func CallNextService(url string, w http.ResponseWriter, r *http.Request) {
 	log.Info(url)
 	var tmpTraces []Trace
-	response, err := http.Get(url)
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Error(err)
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpTraces)
-		if err != nil {
-			log.Error(err)
-		}
+	}
 
-		for _, r := range tmpTraces {
-			traces = append(traces, r)
-		}
+	req.Header.Add("x-request-id", r.Header.Get("x-request-id"))
+	req.Header.Add("x-b3-traceid", r.Header.Get("x-b3-traceid"))
+	req.Header.Add("x-b3-spanid", r.Header.Get("x-b3-spanid"))
+	req.Header.Add("x-b3-parentspanid", r.Header.Get("x-b3-parentspanid"))
+	req.Header.Add("x-b3-sampled", r.Header.Get("x-b3-sampled"))
+	req.Header.Add("x-b3-flags", r.Header.Get("x-b3-flags"))
+	req.Header.Add("x-ot-span-context", r.Header.Get("x-ot-span-context"))
+	log.Info(req)
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body)
+	err = json.Unmarshal(body, &tmpTraces)
+	if err != nil {
+		log.Error(err)
+	}
+
+	for _, r := range tmpTraces {
+		traces = append(traces, r)
 	}
 }
 
