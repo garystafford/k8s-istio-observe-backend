@@ -64,8 +64,6 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	statusCode, err := strconv.Atoi(params["code"])
 	if err != nil {
-		statusCode = 404
-		w.Write([]byte("404 page not found"))
 		log.Error(err)
 	}
 	w.WriteHeader(statusCode)
