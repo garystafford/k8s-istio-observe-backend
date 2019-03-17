@@ -32,7 +32,7 @@ var traces []Trace
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	log.Debug(r)
+	log.Info(r)
 
 	traces = nil
 	CallNextService("http://service-b/api/ping")
@@ -60,7 +60,6 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 	}
 }
-
 
 func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
