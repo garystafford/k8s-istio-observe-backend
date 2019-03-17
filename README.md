@@ -8,22 +8,22 @@ The (8) Go-based, RESTful microservices, which make up this reference distribute
 
 An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
-![preview](pics/preview2.png)
+![preview](pics/ui.png)
 
 ## Architecture
 
-![Architecture Diagram](pics/Golang_Service_Diagram.png)
+![Architecture Diagram](pics/architecture.png)
 
-## Traces
+## Service Responses
 
-A 'trace' JSON object is returned by each service to the up-stream calling service (show below). The traces have no real function other than to confirm the service-to-service calls succeeded. They do not support or enhance Istio's observability capabilities.
+On the reference platform, each upstream service responds to requests from downstream services by returning a small informational JSON payload (termed a greeting in the source code).
 
 ```json
 {
-  "id": "aaa0c36b-ac16-4e29-801b-84a7e4fe99a4",
+  "id": "844ea9c7-b340-4956-9c8b-f28ae42d0f4a",
   "service": "Service-A",
-  "greeting": "Hello, from Service-A!",
-  "created": "2019-03-04T01:29:44.3329817Z"
+  "message": "Hello, from Service-A!",
+  "created": "2019-03-17T16:10:16.4982543Z"
 }
 ```
 
@@ -93,46 +93,46 @@ To observe the databases, use MongoDB Compass: localhost:27017
 ```json
 [
     {
-        "id": "e9e11d0e-0701-4d78-81f9-42b734cb52ee",
+        "id": "9f12e095-989f-49aa-80f7-05f27a1ae2ef",
         "service": "Service-D",
-        "greeting": "Shalom, from Service-D!",
-        "created": "2019-03-04T01:29:44.2013268Z"
+        "message": "Shalom, from Service-D!",
+        "created": "2019-03-17T16:10:16.197706983Z"
     },
     {
-        "id": "7dfcfa4e-4218-4830-abb4-00caa54881ec",
+        "id": "a2ed6cac-88bc-42b5-9d94-7b64a655ead9",
         "service": "Service-G",
-        "greeting": "Ahlan, from Service-G!",
-        "created": "2019-03-04T01:29:44.2437703Z"
+        "message": "Ahlan, from Service-G!",
+        "created": "2019-03-17T16:10:16.229348021Z"
     },
     {
-        "id": "825947a1-4dc3-410b-b484-61aeb4fc1b0f",
+        "id": "d5384ee3-1d43-460a-abc8-142e5d5f5b8e",
         "service": "Service-H",
-        "greeting": "Ciao, from Service-H!",
-        "created": "2019-03-04T01:29:44.2751858Z"
+        "message": "Ciao, from Service-H!",
+        "created": "2019-03-17T16:10:16.293059651Z"
     },
     {
-        "id": "b8ac5f8b-06f6-4d2c-9289-d351bd114240",
+        "id": "953d654d-5c32-4d5d-9ce1-e158dee3701b",
         "service": "Service-E",
-        "greeting": "Bonjour, de Service-E!",
-        "created": "2019-03-04T01:29:44.2975462Z"
+        "message": "Bonjour, de Service-E!",
+        "created": "2019-03-17T16:10:16.414109276Z"
     },
     {
-        "id": "4daea39f-76f3-4195-9e41-0089b3ba83f6",
+        "id": "98a73e02-9c4a-443a-a4c9-1f0216d5c099",
         "service": "Service-B",
-        "greeting": "Namaste, from Service-B!",
-        "created": "2019-03-04T01:29:44.2989455Z"
+        "message": "Namaste, from Service-B!",
+        "created": "2019-03-17T16:10:16.415805403Z"
     },
     {
-        "id": "aacf3c1c-20a5-4b45-83fc-99a0e4e900c8",
+        "id": "d5cd62d4-fe79-4b6b-81a9-80d59f3d42c3",
         "service": "Service-C",
-        "greeting": "Konnichiwa, from Service-C!",
-        "created": "2019-03-04T01:29:44.3004077Z"
+        "message": "Konnichiwa, from Service-C!",
+        "created": "2019-03-17T16:10:16.420415356Z"
     },
     {
-        "id": "aaa0c36b-ac16-4e29-801b-84a7e4fe99a4",
+        "id": "844ea9c7-b340-4956-9c8b-f28ae42d0f4a",
         "service": "Service-A",
-        "greeting": "Hello, from Service-A!",
-        "created": "2019-03-04T01:29:44.3329817Z"
+        "message": "Hello, from Service-A!",
+        "created": "2019-03-17T16:10:16.4982543Z"
     }
 ]
 ```
@@ -176,7 +176,7 @@ docker exec -it \
 mongo
 show dbs
 use service-c
-db.traces.find().pretty()
+db.greetings.find().pretty()
 
 docker logs \
   $(docker ps | grep golang-demo_service-f.1 | awk '{print $NF}')
