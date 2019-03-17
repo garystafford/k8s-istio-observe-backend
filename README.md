@@ -65,17 +65,17 @@ docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Port
 > docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 
 NAME                     IMAGE                                PORTS
-golang-demo_angular-ui   garystafford/angular-observe:1.1.0   *:80->80/tcp
+golang-demo_angular-ui   garystafford/angular-observe:1.3.0   *:80->80/tcp
 golang-demo_mongodb      mongo:latest                         *:27017->27017/tcp
 golang-demo_rabbitmq     rabbitmq:management                  *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a    garystafford/go-srv-a:1.1.0          *:8000->80/tcp
-golang-demo_service-b    garystafford/go-srv-b:1.1.0
-golang-demo_service-c    garystafford/go-srv-c:1.1.0
-golang-demo_service-d    garystafford/go-srv-d:1.1.0
-golang-demo_service-e    garystafford/go-srv-e:1.1.0
-golang-demo_service-f    garystafford/go-srv-f:1.1.0
-golang-demo_service-g    garystafford/go-srv-g:1.1.0
-golang-demo_service-h    garystafford/go-srv-h:1.1.0
+golang-demo_service-a    garystafford/go-srv-a:1.3.0          *:8000->80/tcp
+golang-demo_service-b    garystafford/go-srv-b:1.3.0
+golang-demo_service-c    garystafford/go-srv-c:1.3.0
+golang-demo_service-d    garystafford/go-srv-d:1.3.0
+golang-demo_service-e    garystafford/go-srv-e:1.3.0
+golang-demo_service-f    garystafford/go-srv-f:1.3.0
+golang-demo_service-g    garystafford/go-srv-g:1.3.0
+golang-demo_service-h    garystafford/go-srv-h:1.3.0
 ```
 
 ## Accessing the Docker Swarm-based Stack
