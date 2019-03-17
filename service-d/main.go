@@ -17,35 +17,35 @@ import (
 	"time"
 )
 
-type Trace struct {
+type Greeting struct {
 	ID          string    `json:"id,omitempty"`
 	ServiceName string    `json:"service,omitempty"`
-	Greeting    string    `json:"greeting,omitempty"`
+	Message     string    `json:"message,omitempty"`
 	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
-var traces []Trace
+var greetings []Greeting
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	traces = nil
+	greetings = nil
 
-	tmpTrace := Trace{
+	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-D",
-		Greeting:    "Shalom, from Service-D!",
+		Message:     "Shalom, from Service-D!",
 		CreatedAt:   time.Now().Local(),
 	}
 
-	traces = append(traces, tmpTrace)
+	greetings = append(greetings, tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(traces)
+	err := json.NewEncoder(w).Encode(greetings)
 	if err != nil {
 		log.Error(err)
 	}
 
-	b, err := json.Marshal(tmpTrace)
+	b, err := json.Marshal(tmpGreeting)
 	SendMessage(b)
 	if err != nil {
 		log.Error(err)
@@ -96,9 +96,9 @@ func SendMessage(b []byte) {
 			ContentType: "application/json",
 			Body:        b,
 		})
-		if err != nil {
-			log.Error(err)
-		}
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 func init() {

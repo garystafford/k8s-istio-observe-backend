@@ -20,34 +20,34 @@ import (
 	"time"
 )
 
-type Trace struct {
+type Greeting struct {
 	ID          string    `json:"id,omitempty"`
 	ServiceName string    `json:"service,omitempty"`
-	Greeting    string    `json:"greeting,omitempty"`
+	Message     string    `json:"message,omitempty"`
 	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
-var traces []Trace
+var greetings []Greeting
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	log.Info(r)
 
-	traces = nil
+	greetings = nil
 	CallNextService("http://service-b/api/ping")
 	CallNextService("http://service-c/api/ping")
 
-	tmpTrace := Trace{
+	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-A",
-		Greeting:    "Hello, from Service-A!",
+		Message:     "Hello, from Service-A!",
 		CreatedAt:   time.Now().Local(),
 	}
 
-	traces = append(traces, tmpTrace)
+	greetings = append(greetings, tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(traces)
+	err := json.NewEncoder(w).Encode(greetings)
 	if err != nil {
 		log.Error(err)
 	}
@@ -73,19 +73,19 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 func CallNextService(url string) {
 	log.Info(url)
-	var tmpTraces []Trace
+	var tmpGreetings []Greeting
 	response, err := http.Get(url)
 	if err != nil {
 		log.Error(err)
 	} else {
 		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpTraces)
+		err := json.Unmarshal(data, &tmpGreetings)
 		if err != nil {
 			log.Error(err)
 		}
 
-		for _, r := range tmpTraces {
-			traces = append(traces, r)
+		for _, r := range tmpGreetings {
+			greetings = append(greetings, r)
 		}
 	}
 }

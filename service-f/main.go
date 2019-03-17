@@ -21,32 +21,32 @@ import (
 	"time"
 )
 
-type Trace struct {
+type Greeting struct {
 	ID          string    `json:"id,omitempty"`
 	ServiceName string    `json:"service,omitempty"`
-	Greeting    string    `json:"greeting,omitempty"`
+	Message     string    `json:"message,omitempty"`
 	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
-var traces []Trace
+var greetings []Greeting
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	traces = nil
+	greetings = nil
 
-	tmpTrace := Trace{
+	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-F",
-		Greeting:    "Hola, from Service-F!",
+		Message:     "Hola, from Service-F!",
 		CreatedAt:   time.Now().Local(),
 	}
 
-	traces = append(traces, tmpTrace)
+	greetings = append(greetings, tmpGreeting)
 
-	CallMongoDB(tmpTrace)
+	CallMongoDB(tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(traces)
+	err := json.NewEncoder(w).Encode(greetings)
 	if err != nil {
 		log.Error(err)
 	}
@@ -60,8 +60,8 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CallMongoDB(trace Trace) {
-	log.Info(trace)
+func CallMongoDB(greeting Greeting) {
+	log.Info(greeting)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
@@ -73,7 +73,7 @@ func CallMongoDB(trace Trace) {
 	collection := client.Database("service-f").Collection("messages")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
-	_, err = collection.InsertOne(ctx, trace)
+	_, err = collection.InsertOne(ctx, greeting)
 	if err != nil {
 		log.Error(err)
 	}
@@ -129,16 +129,16 @@ func GetMessages() {
 	<-forever
 }
 
-func deserialize(b []byte) (t Trace) {
+func deserialize(b []byte) (t Greeting) {
 	log.Debug(b)
-	var tmpTrace Trace
+	var tmpGreeting Greeting
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
-	err := decoder.Decode(&tmpTrace)
+	err := decoder.Decode(&tmpGreeting)
 	if err != nil {
 		log.Error(err)
 	}
-	return tmpTrace
+	return tmpGreeting
 }
 
 func init() {
