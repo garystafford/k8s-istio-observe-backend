@@ -31,6 +31,8 @@ type Trace struct {
 var traces []Trace
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	traces = nil
 
 	tmpTrace := Trace{
@@ -104,7 +106,7 @@ func GetMessages() {
 
 	msgs, err := ch.Consume(
 		q.Name,
-		"",
+		"service-f",
 		true,
 		false,
 		false,
@@ -119,17 +121,16 @@ func GetMessages() {
 
 	go func() {
 		for delivery := range msgs {
-			log.WithField("func", "GetMessages()").Infof("message: %s", delivery)
+			log.Debug(delivery)
 			CallMongoDB(deserialize(delivery.Body))
 		}
 	}()
 
-	log.Infof(" [*] Waiting for messages...")
 	<-forever
 }
 
 func deserialize(b []byte) (t Trace) {
-	log.Info(b)
+	log.Debug(b)
 	var tmpTrace Trace
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
@@ -149,7 +150,8 @@ func init() {
 }
 
 func main() {
-	GetMessages()
+	go GetMessages()
+
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
