@@ -31,6 +31,7 @@ var traces []Trace
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	log.Info(r)
 
 	traces = nil
 	CallNextService("http://service-b/api/ping")
