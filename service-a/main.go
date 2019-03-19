@@ -32,7 +32,7 @@ var greetings []Greeting
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	log.Info(r)
+	log.Debug(r)
 
 	greetings = nil
 
@@ -73,8 +73,6 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
-
 	var tmpGreetings []Greeting
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -84,13 +82,22 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		log.Error(err)
 	}
 
-	req.Header.Add("x-request-id", r.Header.Get("x-request-id"))
-	req.Header.Add("x-b3-traceid", r.Header.Get("x-b3-traceid"))
-	req.Header.Add("x-b3-spanid", r.Header.Get("x-b3-spanid"))
-	req.Header.Add("x-b3-parentspanid", r.Header.Get("x-b3-parentspanid"))
-	req.Header.Add("x-b3-sampled", r.Header.Get("x-b3-sampled"))
-	req.Header.Add("x-b3-flags", r.Header.Get("x-b3-flags"))
-	req.Header.Add("x-ot-span-context", r.Header.Get("x-ot-span-context"))
+	headers := []string{
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context",
+	}
+
+	for _, header := range headers {
+		if r.Header.Get(header) != "" {
+			req.Header.Add(header, r.Header.Get(header))
+		}
+	}
+
 	log.Info(req)
 
 	client := &http.Client{}
