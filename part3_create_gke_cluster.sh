@@ -19,12 +19,12 @@ readonly MACHINE_TYPE='n1-standard-2'
 
 # Build a 3-node, single-region, multi-zone GKE cluster
 gcloud beta container \
-  --project $PROJECT clusters create $CLUSTER \
-  --region $REGION \
+  --project ${PROJECT} clusters create ${CLUSTER} \
+  --region ${REGION} \
   --no-enable-basic-auth \
   --no-issue-client-certificate \
-  --cluster-version $GKE_VERSION \
-  --machine-type $MACHINE_TYPE \
+  --cluster-version ${GKE_VERSION} \
+  --machine-type ${MACHINE_TYPE} \
   --image-type COS \
   --disk-type pd-standard \
   --disk-size 200 \
@@ -33,9 +33,9 @@ gcloud beta container \
   --enable-stackdriver-kubernetes \
   --enable-ip-alias \
   --enable-master-authorized-networks \
-  --master-authorized-networks $MASTER_AUTH_NETS \
-  --network projects/$PROJECT/global/networks/default \
-  --subnetwork projects/$PROJECT/regions/$REGION/subnetworks/default \
+  --master-authorized-networks ${MASTER_AUTH_NETS} \
+  --network projects/${PROJECT}/global/networks/default \
+  --subnetwork projects/${PROJECT}/regions/${REGION}/subnetworks/default \
   --default-max-pods-per-node 110 \
   --addons HorizontalPodAutoscaling,HttpLoadBalancing \
   --metadata disable-legacy-endpoints=true \
@@ -43,7 +43,7 @@ gcloud beta container \
   --enable-autorepair
 
 # Get cluster credentials
-gcloud container clusters get-credentials $CLUSTER \
-  --region $REGION --project $PROJECT
+gcloud container clusters get-credentials ${CLUSTER} \
+  --region ${REGION} --project ${PROJECT}
 
 kubectl config current-context

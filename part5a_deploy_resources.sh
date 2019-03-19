@@ -18,16 +18,16 @@ kubectl apply -f ../golang-srv-demo-secrets/other/external-mesh-cloudamqp.yaml
 
 for namespace in ${NAMESPACES[@]}; do
   # Enable automatic Istio sidecar injection
-  kubectl label namespace $namespace istio-injection=enabled
+  kubectl label namespace ${namespace} istio-injection=enabled
 
   # kubectl apply -n $namespace -f ./resources/configs/go-srv-demo.yaml
   # kubectl apply -n $namespace -f ./resources/services/rabbitmq.yaml
   # kubectl apply -n $namespace -f ./resources/services/mongodb.yaml
 
-  kubectl apply -n $namespace -f ../golang-srv-demo-secrets/secret/go-srv-demo.yaml
+  kubectl apply -n ${namespace} -f ../golang-srv-demo-secrets/secret/go-srv-demo.yaml
 
   for service in ${SERVICES[@]}; do
-    kubectl apply -n $namespace -f ./resources/services/service-$service.yaml
+    kubectl apply -n ${namespace} -f ./resources/services/service-$service.yaml
   done
-  kubectl apply -n $namespace -f ./resources/services/angular-ui.yaml
+  kubectl apply -n ${namespace} -f ./resources/services/angular-ui.yaml
 done

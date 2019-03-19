@@ -32,11 +32,12 @@ var greetings []Greeting
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	log.Info(r)
+	log.Debug(r)
 
 	greetings = nil
-	CallNextService("http://service-b/api/ping")
-	CallNextService("http://service-c/api/ping")
+
+	CallNextServiceWithTrace("http://service-b/api/ping", w, r)
+	CallNextServiceWithTrace("http://service-c/api/ping", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -71,22 +72,52 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CallNextService(url string) {
-	log.Info(url)
+func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
 	var tmpGreetings []Greeting
-	response, err := http.Get(url)
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Error(err)
-	} else {
-		data, _ := ioutil.ReadAll(response.Body)
-		err := json.Unmarshal(data, &tmpGreetings)
-		if err != nil {
-			log.Error(err)
-		}
+	}
 
-		for _, r := range tmpGreetings {
-			greetings = append(greetings, r)
+	// Headers must be passed for Jaeger Distributed Tracing
+	headers := []string{
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context",
+	}
+
+	for _, header := range headers {
+		if r.Header.Get(header) != "" {
+			req.Header.Add(header, r.Header.Get(header))
 		}
+	}
+
+	log.Info(req)
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	defer response.Body.Close()
+
+	body, _ := ioutil.ReadAll(response.Body)
+	err = json.Unmarshal(body, &tmpGreetings)
+	if err != nil {
+		log.Error(err)
+	}
+
+	for _, r := range tmpGreetings {
+		greetings = append(greetings, r)
 	}
 }
 
