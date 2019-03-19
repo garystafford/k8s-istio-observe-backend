@@ -82,6 +82,7 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		log.Error(err)
 	}
 
+	// Headers must be passed for Jaeger Distributed Tracing
 	headers := []string{
 		"x-request-id",
 		"x-b3-traceid",
