@@ -8,13 +8,13 @@ services:
     ports:
       - 80:80
   service-a:
-    image: garystafford/go-srv-a:1.3.0
+    image: garystafford/go-srv-a:1.4.0
     networks:
       - golang-demo
     ports:
       - 8000:80
   service-b:
-    image: garystafford/go-srv-b:1.3.0
+    image: garystafford/go-srv-b:1.4.0
     networks:
       - golang-demo
   service-c:
@@ -30,7 +30,7 @@ services:
     environment:
       RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
   service-e:
-    image: garystafford/go-srv-e:1.3.0
+    image: garystafford/go-srv-e:1.4.0
     networks:
       - golang-demo
   service-f:

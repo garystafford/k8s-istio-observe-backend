@@ -211,6 +211,7 @@ istioctl get all
 # https://github.com/rakyll/hey
 hey -n 500 -c 10 -h2 http://api.dev.example-api.com
 ```
+
 ## Access Tools Example
 
 ```bash
@@ -218,14 +219,13 @@ hey -n 500 -c 10 -h2 http://api.dev.example-api.com
 kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=jaeger -o jsonpath='{.items[0].metadata.name}') 16686:16686 &
 
 # Grafana
-gcloud container clusters get-credentials go-srv-demo-cluster --region us-central1 --project go-srv-demo \
- && kubectl port-forward --namespace istio-system $(kubectl get pod --namespace istio-system --selector="app=grafana" --output jsonpath='{.items[0].metadata.name}') 3000:3000
+kubectl port-forward -n istio-system $(kubectl get pod -n istio-system -l app=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
 
-#Prometheus
-$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') 9090:9090 &
+# Prometheus
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=prometheus -o jsonpath='{.items[0].metadata.name}') 9090:9090 &
 
-gcloud container clusters get-credentials go-srv-demo-cluster --region us-central1 --project go-srv-demo \
-  && kubectl port-forward --namespace istio-system $(kubectl get pod --namespace istio-system --selector="app=prometheus" --output jsonpath='{.items[0].metadata.name}') 9090:9090
+# Kiali
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001 &
 ```
 
 Prometheus Query Examples
