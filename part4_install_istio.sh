@@ -33,6 +33,7 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
   --set tracing.enabled=true
 
 kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
+# kubectl apply --namespace istio-system -f ./resources/secrets/grafana.yaml
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 
