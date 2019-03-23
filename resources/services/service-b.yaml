@@ -51,6 +51,9 @@ spec:
         # limits:
         #   memory: 250M
         #   cpu: 250m
+        env:
+        - name: LOG_LEVEL
+          value: info
         ports:
         - containerPort: 80
         imagePullPolicy: IfNotPresent #Always

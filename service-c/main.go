@@ -79,12 +79,23 @@ func CallMongoDB(greeting Greeting) {
 	defer client.Disconnect(ctx)
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func init() {
 	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.InfoLevel)
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL","info"))
+	if err != nil {
+		log.Error(err)
+	}
+	log.SetLevel(level)
 }
 
 func main() {
