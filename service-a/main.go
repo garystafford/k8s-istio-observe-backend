@@ -137,7 +137,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL","info"))
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
 	if err != nil {
 		log.Error(err)
 	}

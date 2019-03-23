@@ -36,7 +36,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-H",
-		Message:    "Ciao, from Service-H!",
+		Message:     "Ciao, from Service-H!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -89,7 +89,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL","info"))
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
 	if err != nil {
 		log.Error(err)
 	}
