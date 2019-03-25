@@ -5,7 +5,7 @@
 # license: MIT License
 # purpose: Install Istio 1.1.0
 
-# set -ex
+set -ex
 
 readonly ISTIO_HOME='/Applications/istio-1.1.0'
 
