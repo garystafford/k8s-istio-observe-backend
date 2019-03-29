@@ -5,7 +5,7 @@
 # license: MIT License
 # purpose: Install Istio 1.1.0
 
-set -ex
+# set -ex
 
 readonly ISTIO_HOME='/Applications/istio-1.1.0'
 
@@ -18,11 +18,14 @@ helm init --service-account tiller
 
 # Wait for Tiller pod to come up
 # Error: could not find a ready tiller pod
-sleep 15
+sleep 30
 
 helm install ${ISTIO_HOME}/install/kubernetes/helm/istio-init \
   --name istio-init \
   --namespace istio-system
+
+# Wait for AKS, much slower than GKE :(
+sleep 30
 
 helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
   --name istio \
@@ -34,6 +37,8 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
 
 kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
 # kubectl apply --namespace istio-system -f ./resources/secrets/grafana.yaml
+
+sleep 30
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 

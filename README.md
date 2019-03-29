@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Istio 1.1.0
 
-__Successfully tested with Istio 1.1.0, released 3/19/2019__
+**Successfully tested with Istio 1.1.0, released 3/19/2019**
 
 The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate HTTP-based service-to-service, TCP-based service-to-database (MongoDB), and TCP-based service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). Service A calls Service B and Service C, Service B calls Service D and Service E, Service D produces a message on a RabbitMQ queue that Service F consumes and writes to MongoDB, and so on. These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes with Istio.
 
@@ -31,7 +31,7 @@ On the reference platform, each upstream service responds to requests from downs
 
 ## Docker Swarm Deployment
 
-The post, [Kubernetes-based Microservice Observability with Istio Service Mesh: Part 1](https://wp.me/p1RD28-6fL), and this README outlines deploying the Microservices/RabbitMQ/MongoDB stack locally to Docker Swarm. Then, deploying the same stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.1.0 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali.
+The post, [Kubernetes-based Microservice Observability with Istio Service Mesh: Part 1](https://wp.me/p1RD28-6fL), outlines deploying the stack to Google Kubernetes Engine (GKE) on the Google Cloud Platform (GCP), with Istio 1.1.0 and all associated telemetry components: Prometheus, Grafana, Zipkin, Jaeger, Service Graph, and Kiali. This README outlines deploying the Microservices/RabbitMQ/MongoDB stack locally to Docker Swarm
 
 ### Requirements
 
@@ -209,12 +209,23 @@ time sh ./part4_install_istio.sh
 time sh ./part5a_deploy_resources.sh
 
 istioctl get all
-
-# https://github.com/rakyll/hey
-hey -n 500 -c 10 -h2 http://api.dev.example-api.com
 ```
 
-## Access Tools Example
+## Install `hey`
+
+<https://github.com/rakyll/hey>
+
+```bash
+go get -u github.com/rakyll/hey
+cd go/src/github.com/rakyll/hey/
+go build
+./hey -n 500 -c 10 -h2 http://api.dev.example-api.com
+./hey -n 1000 -c 10 -h2 http://api.dev.example-api.com/api/ping
+./hey -n 1000 -c 25 -h2 http://api.dev.example-api.com/api/ping
+./hey -n 2000 -c 50 -h2 http://api.dev.example-api.com/api/ping
+```
+
+## Port Forward to Tools
 
 ```bash
 # Jaeger
@@ -230,13 +241,9 @@ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=pr
 kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001 &
 ```
 
-Prometheus Query Examples
+## Prometheus Query Examples
 
 ```text
-hey -n 1000 -c 10 -h2 http://api.dev.example-api.com/api/ping
-hey -n 1000 -c 25 -h2 http://api.dev.example-api.com/api/ping
-hey -n 2000 -c 20 -h2 http://api.dev.example-api.com/api/ping
-
 up{namespace="dev",pod_name=~"service-.*"}
 
 container_memory_max_usage_bytes{namespace="dev",container_name="service-f"}
