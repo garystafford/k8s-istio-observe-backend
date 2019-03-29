@@ -18,6 +18,7 @@ helm init --service-account tiller
 
 # Wait for Tiller pod to come up
 # Error: could not find a ready tiller pod
+echo 'Waiting 30 seconds...'
 sleep 30
 
 helm install ${ISTIO_HOME}/install/kubernetes/helm/istio-init \
@@ -25,6 +26,7 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio-init \
   --namespace istio-system
 
 # Wait for AKS, much slower than GKE :(
+echo 'Waiting 30 seconds...'
 sleep 30
 
 helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
@@ -36,8 +38,8 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
   --set tracing.enabled=true
 
 kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
-# kubectl apply --namespace istio-system -f ./resources/secrets/grafana.yaml
 
+echo 'Waiting 30 seconds...'
 sleep 30
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
