@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service H
+// purpose: Service H - gRPC
 
 package main
 
@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	port = ":50051"
+	port = ":50052"
 )
 
 type greetingServiceServer struct {
@@ -37,7 +37,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 		Created: time.Now().Local().String(),
 	}
 
-	CallMongoDB(tmpGreeting)
+	//CallMongoDB(tmpGreeting)
 
 	return &pb.GreetingResponse{
 		Greeting: &tmpGreeting,

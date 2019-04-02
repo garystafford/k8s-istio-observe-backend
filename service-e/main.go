@@ -14,7 +14,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	_ "google.golang.org/grpc"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -29,7 +28,7 @@ type Greeting struct {
 	CreatedAt   time.Time `json:"created,omitempty"`
 }
 
-var greetings []Greeting
+var greetings []pb.Greeting
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -38,15 +37,17 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	CallNextServiceWithTrace("http://service-g/api/ping", w, r)
+	//CallGrpcService("service-g:50051")
+	//CallGrpcService("service-h:50051")
 
-	CallGrpcService("service-h:50051")
+	CallGrpcService("localhost:50051")
+	CallGrpcService("localhost:50052")
 
-	tmpGreeting := Greeting{
-		ID:          uuid.New().String(),
-		ServiceName: "Service-E",
-		Message:     "Bonjour, de Service-E!",
-		CreatedAt:   time.Now().Local(),
+	tmpGreeting := pb.Greeting{
+		Id:      uuid.New().String(),
+		Service: "Service-E",
+		Message: "Bonjour, de Service-E!",
+		Created: time.Now().Local().String(),
 	}
 
 	greetings = append(greetings, tmpGreeting)
@@ -69,13 +70,13 @@ func CallGrpcService(address string) {
 	defer cancel()
 
 	req := pb.GreetingRequest{}
-	greeting, err := client.Ping(ctx, &req)
+	greeting, err := client.Greeting(ctx, &req)
 	log.Info(greeting.GetGreeting())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 
-	greetings = append(greetings, greeting.GetGreeting())
+	greetings = append(greetings, *greeting.GetGreeting())
 }
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
@@ -86,59 +87,59 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
-
-	var tmpGreetings []Greeting
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Error(err)
-	}
-
-	headers := []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"x-ot-span-context",
-	}
-
-	for _, header := range headers {
-		if r.Header.Get(header) != "" {
-			req.Header.Add(header, r.Header.Get(header))
-		}
-	}
-
-	log.Info(req)
-
-	client := &http.Client{}
-	response, err := client.Do(req)
-
-	if err != nil {
-		log.Error(err)
-	}
-
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = json.Unmarshal(body, &tmpGreetings)
-	if err != nil {
-		log.Error(err)
-	}
-
-	for _, r := range tmpGreetings {
-		greetings = append(greetings, r)
-	}
-}
+//func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
+//	log.Info(url)
+//
+//	var tmpGreetings []Greeting
+//
+//	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+//
+//	req, err := http.NewRequest("GET", url, nil)
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	headers := []string{
+//		"x-request-id",
+//		"x-b3-traceid",
+//		"x-b3-spanid",
+//		"x-b3-parentspanid",
+//		"x-b3-sampled",
+//		"x-b3-flags",
+//		"x-ot-span-context",
+//	}
+//
+//	for _, header := range headers {
+//		if r.Header.Get(header) != "" {
+//			req.Header.Add(header, r.Header.Get(header))
+//		}
+//	}
+//
+//	log.Info(req)
+//
+//	client := &http.Client{}
+//	response, err := client.Do(req)
+//
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	defer response.Body.Close()
+//
+//	body, err := ioutil.ReadAll(response.Body)
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	err = json.Unmarshal(body, &tmpGreetings)
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	for _, r := range tmpGreetings {
+//		greetings = append(greetings, r)
+//	}
+//}
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
