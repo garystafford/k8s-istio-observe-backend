@@ -6,15 +6,20 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	_ "google.golang.org/grpc"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	pb "../greeting"
 )
 
 type Greeting struct {
@@ -34,7 +39,8 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	greetings = nil
 
 	CallNextServiceWithTrace("http://service-g/api/ping", w, r)
-	CallNextServiceWithTrace("http://service-h/api/ping", w, r)
+
+	CallGrpcService("service-h:50051")
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -49,6 +55,27 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func CallGrpcService(address string) {
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewGreetingServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := pb.GreetingRequest{}
+	greeting, err := client.Ping(ctx, &req)
+	log.Info(greeting.GetGreeting())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+
+	greetings = append(greetings, greeting.GetGreeting())
 }
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
@@ -137,5 +164,5 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/ping", PingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	log.Fatal(http.ListenAndServe(":8081", router))
 }
