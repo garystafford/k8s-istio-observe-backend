@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service F
+// purpose: Service F - gRPC
 
 package main
 
@@ -11,56 +11,55 @@ import (
 	"encoding/json"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
+	"google.golang.org/grpc"
+	"net"
 	"os"
 	"time"
+
+	pb "../greeting"
 )
 
-type Greeting struct {
-	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"service,omitempty"`
-	Message     string    `json:"message,omitempty"`
-	CreatedAt   time.Time `json:"created,omitempty"`
+const (
+	port = ":50051"
+)
+
+type greetingServiceServer struct {
 }
 
-var greetings []Greeting
+var greetings []pb.Greeting
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 
-	greetings = nil
-
-	tmpGreeting := Greeting{
-		ID:          uuid.New().String(),
-		ServiceName: "Service-F",
-		Message:     "Hola, from Service-F!",
-		CreatedAt:   time.Now().Local(),
+	tmpGreeting := pb.Greeting{
+		Id:      uuid.New().String(),
+		Service: "Service-G",
+		Message: "Ahlan, from Service-G!",
+		Created: time.Now().Local().String(),
 	}
-
-	greetings = append(greetings, tmpGreeting)
 
 	CallMongoDB(tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(greetings)
-	if err != nil {
-		log.Error(err)
-	}
+	return &pb.GreetingResponse{
+		Greeting: &tmpGreeting,
+	}, nil
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	_, err := w.Write([]byte("{\"alive\": true}"))
-	if err != nil {
-		log.Error(err)
+func (s *greetingServiceServer) Health(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
+
+	tmpHealth := pb.Health{
+		Alive: "ok",
 	}
+
+	return &pb.HealthResponse{
+		Health: &tmpHealth,
+	}, nil
 }
 
-func CallMongoDB(greeting Greeting) {
+func CallMongoDB(greeting pb.Greeting) {
 	log.Info(greeting)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
@@ -129,9 +128,9 @@ func GetMessages() {
 	<-forever
 }
 
-func deserialize(b []byte) (t Greeting) {
+func deserialize(b []byte) (t pb.Greeting) {
 	log.Debug(b)
-	var tmpGreeting Greeting
+	var tmpGreeting pb.Greeting
 	buf := bytes.NewBuffer(b)
 	decoder := json.NewDecoder(buf)
 	err := decoder.Decode(&tmpGreeting)
@@ -163,9 +162,12 @@ func init() {
 func main() {
 	go GetMessages()
 
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	pb.RegisterGreetingServiceServer(s, &greetingServiceServer{})
+	log.Fatal(s.Serve(lis))
 }
