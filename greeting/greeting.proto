@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package greeting;
 
 // protoc -I greeting/ greeting/greeting.proto --go_out=plugins=grpc:greeting

@@ -1,64 +1,60 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service C
+// purpose: Service C - gRPC
 
 package main
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
+	"google.golang.org/grpc"
+	"net"
 	"os"
 	"time"
+
+	pb "../greeting"
 )
 
-type Greeting struct {
-	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"service,omitempty"`
-	Message     string    `json:"message,omitempty"`
-	CreatedAt   time.Time `json:"created,omitempty"`
+const (
+	port = ":50051"
+)
+
+type greetingServiceServer struct {
 }
 
-var greetings []Greeting
+func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	greetings = nil
-
-	tmpGreeting := Greeting{
-		ID:          uuid.New().String(),
-		ServiceName: "Service-C",
-		Message:     "Konnichiwa, from Service-C!",
-		CreatedAt:   time.Now().Local(),
+	tmpGreeting := pb.Greeting{
+		Id:      uuid.New().String(),
+		Service: "Service-C",
+		Message: "Konnichiwa, from Service-C!",
+		Created: time.Now().Local().String(),
 	}
-
-	greetings = append(greetings, tmpGreeting)
 
 	CallMongoDB(tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(greetings)
-	if err != nil {
-		log.Error(err)
-	}
+	return &pb.GreetingResponse{
+		Greeting: &tmpGreeting,
+	}, nil
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	_, err := w.Write([]byte("{\"alive\": true}"))
-	if err != nil {
-		log.Error(err)
+func (s *greetingServiceServer) Health(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
+
+	tmpHealth := pb.Health{
+		Alive: "ok",
 	}
+
+	return &pb.HealthResponse{
+		Health: &tmpHealth,
+	}, nil
 }
 
-func CallMongoDB(greeting Greeting) {
+func CallMongoDB(greeting pb.Greeting) {
 	log.Info(greeting)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
@@ -68,15 +64,13 @@ func CallMongoDB(greeting Greeting) {
 
 	defer client.Disconnect(nil)
 
-	collection := client.Database("service-c").Collection("greetings")
+	collection := client.Database("service-g").Collection("greetings")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
 	_, err = collection.InsertOne(ctx, greeting)
 	if err != nil {
 		log.Error(err)
 	}
-
-	defer client.Disconnect(ctx)
 }
 
 func getEnv(key, fallback string) string {
@@ -99,9 +93,12 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	pb.RegisterGreetingServiceServer(s, &greetingServiceServer{})
+	s.Serve(lis)
 }

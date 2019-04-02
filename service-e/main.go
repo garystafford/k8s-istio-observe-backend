@@ -13,7 +13,6 @@ import (
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -84,60 +83,6 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
-	}
-}
-
-func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
-
-	var tmpGreetings []pb.Greeting
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Error(err)
-	}
-
-	headers := []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"x-ot-span-context",
-	}
-
-	for _, header := range headers {
-		if r.Header.Get(header) != "" {
-			req.Header.Add(header, r.Header.Get(header))
-		}
-	}
-
-	log.Info(req)
-
-	client := &http.Client{}
-	response, err := client.Do(req)
-
-	if err != nil {
-		log.Error(err)
-	}
-
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = json.Unmarshal(body, &tmpGreetings)
-	if err != nil {
-		log.Error(err)
-	}
-
-	for _, r := range tmpGreetings {
-		greetings = append(greetings, r)
 	}
 }
 

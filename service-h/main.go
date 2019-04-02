@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	port = ":50052"
+	port = ":50051"
 )
 
 type greetingServiceServer struct {
@@ -36,7 +36,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 		Created: time.Now().Local().String(),
 	}
 
-	//CallMongoDB(tmpGreeting)
+	CallMongoDB(tmpGreeting)
 
 	return &pb.GreetingResponse{
 		Greeting: &tmpGreeting,
