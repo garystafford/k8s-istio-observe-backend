@@ -27,6 +27,10 @@ const (
 type greetingServiceServer struct {
 }
 
+var (
+	greetings []*pb.Greeting
+)
+
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 
 	tmpGreeting := pb.Greeting{
@@ -38,19 +42,10 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	CallMongoDB(tmpGreeting)
 
+	greetings = append(greetings, &tmpGreeting)
+
 	return &pb.GreetingResponse{
-		Greeting: &tmpGreeting,
-	}, nil
-}
-
-func (s *greetingServiceServer) Health(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
-
-	tmpHealth := pb.Health{
-		Alive: "ok",
-	}
-
-	return &pb.HealthResponse{
-		Health: &tmpHealth,
+		Greeting: greetings,
 	}, nil
 }
 
@@ -100,5 +95,5 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterGreetingServiceServer(s, &greetingServiceServer{})
-	s.Serve(lis)
+	log.Fatal(s.Serve(lis))
 }

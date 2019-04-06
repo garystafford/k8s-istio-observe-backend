@@ -30,32 +30,25 @@ const (
 type greetingServiceServer struct {
 }
 
-var greetings []pb.Greeting
+var (
+	greetings []*pb.Greeting
+)
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
-		Service: "Service-G",
-		Message: "Ahlan, from Service-G!",
+		Service: "Service-F",
+		Message: "Hola, from Service-F!",
 		Created: time.Now().Local().String(),
 	}
 
 	CallMongoDB(tmpGreeting)
 
+	greetings = append(greetings, &tmpGreeting)
+
 	return &pb.GreetingResponse{
-		Greeting: &tmpGreeting,
-	}, nil
-}
-
-func (s *greetingServiceServer) Health(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
-
-	tmpHealth := pb.Health{
-		Alive: "ok",
-	}
-
-	return &pb.HealthResponse{
-		Health: &tmpHealth,
+		Greeting: greetings,
 	}, nil
 }
 

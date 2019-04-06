@@ -7,54 +7,47 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net/http"
+	"net"
 	"os"
 	"time"
 
 	pb "../greeting"
 )
 
-type Greeting struct {
-	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"service,omitempty"`
-	Message     string    `json:"message,omitempty"`
-	CreatedAt   time.Time `json:"created,omitempty"`
+const (
+	port = ":50051"
+)
+
+type greetingServiceServer struct {
 }
 
-var greetings []pb.Greeting
+var (
+	greetings []*pb.Greeting
+)
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	log.Debug(r)
-
-	greetings = nil
-
-	//CallGrpcService("service-g:50051")
-	//CallGrpcService("service-h:50051")
-
+func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 	CallGrpcService("localhost:50051")
 	CallGrpcService("localhost:50052")
 
+	localGreeting()
+
+	return &pb.GreetingResponse{
+		Greeting: greetings,
+	}, nil
+}
+
+func localGreeting() {
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
 		Service: "Service-E",
 		Message: "Bonjour, de Service-E!",
 		Created: time.Now().Local().String(),
 	}
-
-	greetings = append(greetings, tmpGreeting)
-
-	err := json.NewEncoder(w).Encode(greetings)
-	if err != nil {
-		log.Error(err)
-	}
+	greetings = append(greetings, &tmpGreeting)
 }
 
 func CallGrpcService(address string) {
@@ -75,14 +68,8 @@ func CallGrpcService(address string) {
 		log.Fatalf("did not connect: %v", err)
 	}
 
-	greetings = append(greetings, *greeting.GetGreeting())
-}
-
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	_, err := w.Write([]byte("{\"alive\": true}"))
-	if err != nil {
-		log.Error(err)
+	for _, greeting := range greeting.GetGreeting() {
+		greetings = append(greetings, greeting)
 	}
 }
 
@@ -106,9 +93,12 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8081", router))
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	pb.RegisterGreetingServiceServer(s, &greetingServiceServer{})
+	log.Fatal(s.Serve(lis))
 }

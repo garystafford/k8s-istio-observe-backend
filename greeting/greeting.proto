@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package greeting;
 
 // protoc -I greeting/ greeting/greeting.proto --go_out=plugins=grpc:greeting
@@ -11,25 +10,14 @@ message Greeting {
     string created = 4;
 }
 
+
 message GreetingRequest {
 }
 
 message GreetingResponse {
-    Greeting greeting = 1;
-}
-
-message Health {
-    string alive = 1;
-}
-
-message HealthRequest {
-}
-
-message HealthResponse {
-    Health health = 1;
+    repeated Greeting greeting = 1;
 }
 
 service GreetingService {
     rpc Greeting (GreetingRequest) returns (GreetingResponse);
-    rpc Health (HealthRequest) returns (HealthResponse);
 }

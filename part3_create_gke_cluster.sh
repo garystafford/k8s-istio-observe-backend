@@ -10,7 +10,6 @@ readonly PROJECT='go-srv-demo'
 readonly CLUSTER='go-srv-demo-cluster'
 readonly REGION='us-central1'
 readonly MASTER_AUTH_NETS='72.231.208.0/24'
-readonly NAMESPACE='dev'
 readonly GKE_VERSION='1.12.5-gke.5'
 readonly MACHINE_TYPE='n1-standard-2'
 

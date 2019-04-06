@@ -6,6 +6,7 @@
 package main
 
 import (
+	pb "../greeting"
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
@@ -16,8 +17,6 @@ import (
 	"net"
 	"os"
 	"time"
-
-	pb "../greeting"
 )
 
 const (
@@ -26,6 +25,10 @@ const (
 
 type greetingServiceServer struct {
 }
+
+var (
+	greetings []*pb.Greeting
+)
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 
@@ -38,19 +41,10 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	CallMongoDB(tmpGreeting)
 
+	greetings = append(greetings, &tmpGreeting)
+
 	return &pb.GreetingResponse{
-		Greeting: &tmpGreeting,
-	}, nil
-}
-
-func (s *greetingServiceServer) Health(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
-
-	tmpHealth := pb.Health{
-		Alive: "ok",
-	}
-
-	return &pb.HealthResponse{
-		Health: &tmpHealth,
+		Greeting: greetings,
 	}, nil
 }
 
