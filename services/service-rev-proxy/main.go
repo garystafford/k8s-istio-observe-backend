@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: gRPC Gateway
+// purpose: gRPC Gateway / Reverse Proxy
 // reference: https://github.com/grpc-ecosystem/grpc-gateway
 
 package main
@@ -15,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
-	gw "../greeting"
+	gw "github.com/garystafford/pb-greeting"
 )
 
 var (

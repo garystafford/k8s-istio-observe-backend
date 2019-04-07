@@ -6,9 +6,9 @@
 package main
 
 import (
-	pb "github.com/garystafford/pb-greeting"
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
+	pb "github.com/garystafford/pb-greeting"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,7 +31,6 @@ var (
 )
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
-
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
 		Service: "Service-H",
