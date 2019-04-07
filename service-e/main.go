@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service E
+// purpose: Service E - gRPC
 
 package main
 
@@ -30,24 +30,21 @@ var (
 )
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
-	CallGrpcService("localhost:50051")
-	CallGrpcService("localhost:50052")
-
-	localGreeting()
-
-	return &pb.GreetingResponse{
-		Greeting: greetings,
-	}, nil
-}
-
-func localGreeting() {
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
 		Service: "Service-E",
 		Message: "Bonjour, de Service-E!",
 		Created: time.Now().Local().String(),
 	}
+
 	greetings = append(greetings, &tmpGreeting)
+
+	CallGrpcService("service-g:50051")
+	CallGrpcService("service-h:50051")
+
+	return &pb.GreetingResponse{
+		Greeting: greetings,
+	}, nil
 }
 
 func CallGrpcService(address string) {

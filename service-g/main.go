@@ -40,9 +40,10 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 		Created: time.Now().Local().String(),
 	}
 
+	greetings = append(greetings, &tmpGreeting)
+
 	CallMongoDB(tmpGreeting)
 
-	greetings = append(greetings, &tmpGreeting)
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,

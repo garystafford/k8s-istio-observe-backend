@@ -1,114 +1,72 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service B
+// purpose: Service E - gRPC
 
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
-	"net/http"
+	"google.golang.org/grpc"
+	"net"
 	"os"
 	"time"
+
+	pb "../greeting"
 )
 
-type Greeting struct {
-	ID          string    `json:"id,omitempty"`
-	ServiceName string    `json:"service,omitempty"`
-	Message     string    `json:"message,omitempty"`
-	CreatedAt   time.Time `json:"created,omitempty"`
+const (
+	port = ":50051"
+)
+
+type greetingServiceServer struct {
 }
 
-var greetings []Greeting
+var (
+	greetings []*pb.Greeting
+)
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	log.Debug(r)
-
-	greetings = nil
-
-	CallNextServiceWithTrace("http://service-d/api/ping", w, r)
-	CallNextServiceWithTrace("http://service-e/api/ping", w, r)
-
-	tmpGreeting := Greeting{
-		ID:          uuid.New().String(),
-		ServiceName: "Service-B",
-		Message:     "Namaste, from Service-B!",
-		CreatedAt:   time.Now().Local(),
+func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
+	tmpGreeting := pb.Greeting{
+		Id:      uuid.New().String(),
+		Service: "Service-B",
+		Message: "Namaste, from Service-B!",
+		Created: time.Now().Local().String(),
 	}
 
-	greetings = append(greetings, tmpGreeting)
+	greetings = append(greetings, &tmpGreeting)
 
-	err := json.NewEncoder(w).Encode(greetings)
-	if err != nil {
-		log.Error(err)
-	}
+	CallGrpcService("service-d:50051")
+	CallGrpcService("service-e:50051")
+
+	return &pb.GreetingResponse{
+		Greeting: greetings,
+	}, nil
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	_, err := w.Write([]byte("{\"alive\": true}"))
+func CallGrpcService(address string) {
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
-		log.Error(err)
+		log.Fatalf("did not connect: %v", err)
 	}
-}
+	defer conn.Close()
 
-func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
+	client := pb.NewGreetingServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-	var tmpGreetings []Greeting
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	req, err := http.NewRequest("GET", url, nil)
+	req := pb.GreetingRequest{}
+	greeting, err := client.Greeting(ctx, &req)
+	log.Info(greeting.GetGreeting())
 	if err != nil {
-		log.Error(err)
+		log.Fatalf("did not connect: %v", err)
 	}
 
-	headers := []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"x-ot-span-context",
-	}
-
-	for _, header := range headers {
-		if r.Header.Get(header) != "" {
-			req.Header.Add(header, r.Header.Get(header))
-		}
-	}
-
-	log.Info(req)
-	client := &http.Client{}
-	response, err := client.Do(req)
-
-	if err != nil {
-		log.Error(err)
-	}
-
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = json.Unmarshal(body, &tmpGreetings)
-	if err != nil {
-		log.Error(err)
-	}
-
-	for _, r := range tmpGreetings {
-		greetings = append(greetings, r)
+	for _, greeting := range greeting.GetGreeting() {
+		greetings = append(greetings, greeting)
 	}
 }
 
@@ -124,7 +82,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL","info"))
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
 	if err != nil {
 		log.Error(err)
 	}
@@ -132,9 +90,12 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":80", router))
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	pb.RegisterGreetingServiceServer(s, &greetingServiceServer{})
+	log.Fatal(s.Serve(lis))
 }
