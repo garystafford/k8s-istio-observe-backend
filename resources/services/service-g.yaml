@@ -5,24 +5,24 @@ metadata:
   labels:
     app: service-g
     component: service
-    version: "1.4.0"
+    version: "1.5.0"
 spec:
   ports:
   - name: http
-    port: 80
+    port: 50051
   selector:
     app: service-g
     component: service
-    version: "1.4.0"
+    version: "1.5.0"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-g
   labels:
     app: service-g
     component: service
-    version: "1.4.0"
+    version: "1.5.0"
 spec:
   replicas: 2
   strategy:
@@ -31,20 +31,20 @@ spec:
     matchLabels:
       app: service-g
       component: service
-      version: "1.4.0"
+      version: "1.5.0"
   template:
     metadata:
       labels:
         app: service-g
         component: service
-        version: "1.4.0"
+        version: "1.5.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-g
-        image: registry.hub.docker.com/garystafford/go-srv-g:1.4.0
-        resources:
+        image: registry.hub.docker.com/garystafford/go-srv-g:1.5.0
+        # resources:
         # requests:
         #   memory: 100M
         #   cpu: 100m
@@ -60,5 +60,5 @@ spec:
               name: go-srv-config
               key: mongodb.conn
         ports:
-        - containerPort: 80
+        - containerPort: 50051
         imagePullPolicy: IfNotPresent #Always

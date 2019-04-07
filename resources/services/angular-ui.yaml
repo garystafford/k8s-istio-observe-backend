@@ -5,7 +5,7 @@ metadata:
   labels:
     app: angular-ui
     component: ui
-    version: "1.4.0"
+    version: "1.5.0"
 spec:
   ports:
   - name: http
@@ -13,16 +13,16 @@ spec:
   selector:
     app: angular-ui
     component: ui
-    version: "1.4.0"
+    version: "1.5.0"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: angular-ui
   labels:
     app: angular-ui
     component: ui
-    version: "1.4.0"
+    version: "1.5.0"
 spec:
   replicas: 2
   strategy:
@@ -31,20 +31,20 @@ spec:
     matchLabels:
       app: angular-ui
       component: ui
-      version: "1.4.0"
+      version: "1.5.0"
   template:
     metadata:
       labels:
         app: angular-ui
         component: ui
-        version: "1.4.0"
+        version: "1.5.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: angular-ui
-        image: registry.hub.docker.com/garystafford/angular-observe:1.4.0
-        resources:
+        image: registry.hub.docker.com/garystafford/angular-observe:1.5.0
+        # resources:
         # requests:
         #   memory: 100M
         #   cpu: 100m

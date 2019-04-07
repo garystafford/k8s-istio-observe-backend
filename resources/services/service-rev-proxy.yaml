@@ -1,26 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-d
+  name: service-rev-proxy
   labels:
-    app: service-d
+    app: service-rev-proxy
     component: service
     version: "1.5.0"
 spec:
   ports:
   - name: http
-    port: 50051
+    port: 80
   selector:
-    app: service-d
+    app: service-rev-proxy
     component: service
     version: "1.5.0"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-d
+  name: service-rev-proxy
   labels:
-    app: service-d
+    app: service-rev-proxy
     component: service
     version: "1.5.0"
 spec:
@@ -29,21 +29,21 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: service-d
+      app: service-rev-proxy
       component: service
       version: "1.5.0"
   template:
     metadata:
       labels:
-        app: service-d
+        app: service-rev-proxy
         component: service
         version: "1.5.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
-      - name: service-d
-        image: registry.hub.docker.com/garystafford/go-srv-d:1.5.0
+      - name: service-rev-proxy
+        image: registry.hub.docker.com/garystafford/go-srv-rev-proxy:1.5.0
         # resources:
         # requests:
         #   memory: 100M
@@ -54,11 +54,6 @@ spec:
         env:
         - name: LOG_LEVEL
           value: info
-        - name: RABBITMQ_CONN
-          valueFrom:
-            secretKeyRef:
-              name: go-srv-config
-              key: rabbitmq.conn
         ports:
-        - containerPort: 50051
+        - containerPort: 80
         imagePullPolicy: IfNotPresent #Always
