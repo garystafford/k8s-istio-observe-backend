@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	echoEndpoint = flag.String("service-a_endpoint", "localhost:50051", "endpoint of Service-A")
+	echoEndpoint = flag.String("service-a_endpoint", "service-a:50051", "endpoint of Service-A")
 )
 
 func run() error {
@@ -34,7 +34,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":8083", mux)
+	return http.ListenAndServe(":80", mux)
 }
 
 func main() {
