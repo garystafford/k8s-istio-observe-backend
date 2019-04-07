@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service E - gRPC
+// purpose: Service B - gRPC
 
 package main
 

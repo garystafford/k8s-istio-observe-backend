@@ -1,7 +1,7 @@
 syntax = "proto3";
 package greeting;
 
-// protoc -I greeting/ greeting/greeting.proto --go_out=plugins=grpc:greeting
+import "google/api/annotations.proto";
 
 message Greeting {
     string id = 1;
@@ -19,5 +19,9 @@ message GreetingResponse {
 }
 
 service GreetingService {
-    rpc Greeting (GreetingRequest) returns (GreetingResponse);
+    rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+        option (google.api.http) = {
+            get: "/api/greeting"
+        };
+    }
 }

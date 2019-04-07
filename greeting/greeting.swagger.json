@@ -1,0 +1,65 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "greeting/greeting.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/greeting": {
+      "get": {
+        "operationId": "Greeting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/greetingGreetingResponse"
+            }
+          }
+        },
+        "tags": [
+          "GreetingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "greetingGreeting": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        }
+      }
+    },
+    "greetingGreetingResponse": {
+      "type": "object",
+      "properties": {
+        "greeting": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/greetingGreeting"
+          }
+        }
+      }
+    }
+  }
+}
