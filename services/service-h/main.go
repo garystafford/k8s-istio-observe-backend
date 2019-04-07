@@ -6,7 +6,7 @@
 package main
 
 import (
-	pb "../greeting"
+	pb "github.com/garystafford/pb-greeting"
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"

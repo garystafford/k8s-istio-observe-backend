@@ -15,7 +15,7 @@ import (
 	"os"
 	"time"
 
-	pb "../greeting"
+	pb "github.com/garystafford/pb-greeting"
 )
 
 const (
