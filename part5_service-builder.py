@@ -13,7 +13,7 @@ env = Environment(loader=file_loader)
 template = env.get_template('service.j2')
 
 resource_location = 'resources/services'
-services = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+services = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'rev-proxy']
 
 for service in services:
     output = template.render(service=service,

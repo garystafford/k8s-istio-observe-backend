@@ -12,7 +12,7 @@ readonly tag=1.5.0
 for i in "${arr[@]}"
 do
   cp -f services/Dockerfile "services/service-$i"
-  pushd "service-$i"
+  pushd "services/service-$i"
   docker build -t "garystafford/go-srv-$i:$tag" . --no-cache
   rm -rf Dockerfile
   popd

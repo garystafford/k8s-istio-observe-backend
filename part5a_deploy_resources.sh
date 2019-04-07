@@ -7,8 +7,7 @@
 
 # Constants - CHANGE ME!
 readonly NAMESPACES=(dev test)
-readonly SERVICES=(a b c d e f g h)
-
+readonly SERVICES=(a b c a d e f g h rev-proxy)
 
 # Create Namespaces
 kubectl apply -f ./resources/other/namespaces.yaml
