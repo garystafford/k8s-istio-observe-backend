@@ -7,7 +7,7 @@
 
 # set -ex
 
-readonly ISTIO_HOME='/Applications/Istio/istio-1.1.1'
+readonly ISTIO_HOME='/Applications/Istio/istio-1.1.2'
 
 # helm repo add istio.io https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
 # helm repo list
