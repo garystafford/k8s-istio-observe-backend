@@ -53,7 +53,7 @@ spec:
     - destination:
         port:
           number: 80
-        host: service-a.dev.svc.cluster.local
+        host: service-rev-proxy.dev.svc.cluster.local
       weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -93,5 +93,5 @@ spec:
     - destination:
         port:
           number: 80
-        host: service-a.test.svc.cluster.local
+        host: service-rev-proxy.test.svc.cluster.local
       weight: 100
