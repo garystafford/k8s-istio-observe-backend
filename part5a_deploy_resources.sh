@@ -9,7 +9,6 @@
 readonly NAMESPACES=(dev)
 readonly SERVICES=(a b c a d e f g h rev-proxy)
 
-# Create Namespaces
 kubectl apply -f ./resources/other/namespaces.yaml
 kubectl apply -f ./resources/other/istio-gateway.yaml
 
