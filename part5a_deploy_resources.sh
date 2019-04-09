@@ -5,8 +5,10 @@
 # license: MIT License
 # purpose: Optional: Deploy Kubernetes/Istio resources
 
+# set -ex
+
 # Constants - CHANGE ME!
-readonly NAMESPACES=(dev)
+readonly NAMESPACES=(dev test)
 readonly SERVICES=(a b c a d e f g h rev-proxy)
 
 kubectl apply -f ./resources/other/namespaces.yaml
