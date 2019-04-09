@@ -46,8 +46,8 @@ The post, [Kubernetes-based Microservice Observability with Istio Service Mesh: 
 All Docker images, references in the Docker Swarm and Kubernetes resource files, for the microservices and UI, are available on [Docker Hub](https://hub.docker.com/u/garystafford/). To build all images yourself, modify and use these two scripts.
 
 ```bash
-time sh ./part1_build_srv_images.sh
-time sh ./part2_push_images.sh
+time bash part1_build_srv_images.sh
+time bash part2_push_images.sh
 ```
 
 ## Output from Service A
@@ -116,9 +116,9 @@ Build and deploy to a 3-node GKE Cluster, with Istio 1.1.x and all Istio telemet
 Requires Istio 1.1.x is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
-time sh ./part3_create_gke_cluster.sh
-export ISTIO_HOME && time sh ./part4_install_istio.sh
-time sh ./part5a_deploy_resources.sh
+time bash part3_create_gke_cluster.sh
+export ISTIO_HOME && time bash part4_install_istio.sh
+time bash part5a_deploy_resources.sh
 
 istioctl get all
 ```

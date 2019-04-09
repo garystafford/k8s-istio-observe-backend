@@ -7,7 +7,7 @@
 
 # set -ex
 
-# Constants - CHANGE ME!
+# Constants
 readonly NAMESPACES=(dev test)
 readonly SERVICES=(a b c a d e f g h rev-proxy)
 
