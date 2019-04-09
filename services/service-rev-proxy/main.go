@@ -8,6 +8,7 @@ package main
 
 import (
 	"flag"
+	"github.com/gorilla/handlers"
 	"net/http"
 
 	"context"
@@ -28,13 +29,20 @@ func run() error {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
+
+	// https://qiita.com/ushio_s/items/a442fa53a8a31b87a360
+	newMux := handlers.CORS(
+		handlers.AllowedMethods([]string{"GET", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"http://ui.dev.example-api.com"}),
+	)(mux)
+
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
 	if err != nil {
 		return err
 	}
 
-	return http.ListenAndServe(":80", mux)
+	return http.ListenAndServe(":80", newMux)
 }
 
 func main() {

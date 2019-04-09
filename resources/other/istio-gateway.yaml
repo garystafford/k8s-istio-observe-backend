@@ -39,7 +39,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: service-a-dev
+  name: service-rev-proxy
 spec:
   hosts:
   - api.dev.example-api.com
@@ -79,7 +79,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: service-a-test
+  name: service-rev-proxy-test
 spec:
   hosts:
   - api.test.example-api.com
