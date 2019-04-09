@@ -33,7 +33,7 @@ func run() error {
 	// https://qiita.com/ushio_s/items/a442fa53a8a31b87a360
 	newMux := handlers.CORS(
 		handlers.AllowedMethods([]string{"GET", "OPTIONS"}),
-		handlers.AllowedOrigins([]string{"http://ui.dev.example-api.com"}),
+		handlers.AllowedOrigins([]string{"*"}),
 	)(mux)
 
 	opts := []grpc.DialOption{grpc.WithInsecure()}
