@@ -9,6 +9,8 @@ import (
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	ot "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"net"
@@ -41,16 +43,16 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	greetings = append(greetings, &tmpGreeting)
 
-	CallGrpcService("service-d:50051")
-	CallGrpcService("service-e:50051")
+	CallGrpcService(ctx, "service-d:50051")
+	CallGrpcService(ctx, "service-e:50051")
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,
 	}, nil
 }
 
-func CallGrpcService(address string) {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+func CallGrpcService(ctx context.Context, address string) {
+	conn, err := createGRPCConn(ctx, address)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -70,6 +72,23 @@ func CallGrpcService(address string) {
 	for _, greeting := range greeting.GetGreeting() {
 		greetings = append(greetings, greeting)
 	}
+}
+
+func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) {
+	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithStreamInterceptor(
+		grpc_opentracing.StreamClientInterceptor(
+			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+	opts = append(opts, grpc.WithUnaryInterceptor(
+		grpc_opentracing.UnaryClientInterceptor(
+			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+	conn, err := grpc.DialContext(ctx, addr, opts...)
+	if err != nil {
+		log.Fatalf("Failed to connect to application addr: ", err)
+		return nil, err
+	}
+	return conn, nil
 }
 
 func getEnv(key, fallback string) string {
