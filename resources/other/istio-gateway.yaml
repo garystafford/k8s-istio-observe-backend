@@ -55,6 +55,15 @@ spec:
           number: 80
         host: service-rev-proxy.dev.svc.cluster.local
       weight: 100
+    corsPolicy:
+      allowOrigin:
+      - "*"
+      allowMethods:
+      - OPTIONS
+      - GET
+      allowCredentials: true
+      allowHeaders:
+      - "*"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -95,3 +104,12 @@ spec:
           number: 80
         host: service-rev-proxy.test.svc.cluster.local
       weight: 100
+    corsPolicy:
+      allowOrigin:
+      - "*"
+      allowMethods:
+      - OPTIONS
+      - GET
+      allowCredentials: true
+      allowHeaders:
+      - "*"
