@@ -2,7 +2,7 @@
 
 **Successfully tested with Istio 1.1.2, released 4/5/2019**
 
-The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate HTTP and gRPC/protobuf-based service-to-service, TCP-based service-to-database (MongoDB), and TCP-based service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). Service A calls Service B and Service C, Service B calls Service D and Service E, Service D produces a message on a RabbitMQ queue that Service F consumes and writes to MongoDB, and so on. These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes with Istio.
+The (8) Go-based RESTful microservices and (1) gRPC Gateway Reverse Proxy, which make up this reference distributed system platform, are designed to generate HTTP/JSON and gRPC/protobuf-based service-to-service, TCP-based service-to-database (MongoDB), and TCP-based service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). Service A calls Service B and Service C, Service B calls Service D and Service E, Service D produces a message on a RabbitMQ queue that Service F consumes and writes to MongoDB, and so on. These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes with Istio.
 
 ![Kiali](pics/Kiali.png)
 
@@ -14,7 +14,7 @@ An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-fr
 
 ## Architecture
 
-![Architecture Diagram](pics/architecture.png)
+![Architecture Diagram](pics/Golang-Service-Diagram-with-gRPC.png)
 
 ## Service Responses
 
@@ -50,10 +50,11 @@ time bash part1_build_srv_images.sh
 time bash part2_push_images.sh
 ```
 
-## Output from Service A
+## Output from Service A via gRPC Gateway Reverse Proxy
 
 ```json
-[
+{
+  "greeting": [
     {
         "id": "9f12e095-989f-49aa-80f7-05f27a1ae2ef",
         "service": "Service-D",
@@ -96,7 +97,8 @@ time bash part2_push_images.sh
         "message": "Hello, from Service-A!",
         "created": "2019-03-17T16:10:16.4982543Z"
     }
-]
+  ]
+}
 ```
 
 ## GKE Deployment
@@ -132,9 +134,9 @@ go get -u github.com/rakyll/hey
 cd go/src/github.com/rakyll/hey/
 go build
 ./hey -n 500 -c 10 -h2 http://api.dev.example-api.com
-./hey -n 1000 -c 10 -h2 http://api.dev.example-api.com/api/ping
-./hey -n 1000 -c 25 -h2 http://api.dev.example-api.com/api/ping
-./hey -n 2000 -c 50 -h2 http://api.dev.example-api.com/api/ping
+./hey -n 1000 -c 10 -h2 http://api.dev.example-api.com/api/greeting
+./hey -n 1000 -c 25 -h2 http://api.dev.example-api.com/api/greeting
+./hey -n 2000 -c 50 -h2 http://api.dev.example-api.com/api/greeting
 ```
 
 ## Port Forward to Tools
