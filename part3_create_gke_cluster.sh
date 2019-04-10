@@ -3,7 +3,7 @@
 # author: Gary A. Stafford
 # site: https://programmaticponderings.com
 # license: MIT License
-# purpose: Create 3-node GKE cluster
+# purpose: Create GKE cluster
 
 # Constants - CHANGE ME!
 readonly PROJECT='go-srv-demo'

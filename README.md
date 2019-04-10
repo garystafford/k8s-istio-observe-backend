@@ -120,7 +120,7 @@ Requires Istio 1.1.x is downloaded and available. Requires Helm to be available 
 ```bash
 time bash part3_create_gke_cluster.sh
 export ISTIO_HOME && time bash part4_install_istio.sh
-time bash part5a_deploy_resources.sh
+time bash part5_deploy_resources.sh
 
 istioctl get all
 ```

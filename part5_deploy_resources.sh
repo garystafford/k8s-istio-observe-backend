@@ -3,9 +3,7 @@
 # author: Gary A. Stafford
 # site: https://programmaticponderings.com
 # license: MIT License
-# purpose: Optional: Deploy Kubernetes/Istio resources
-
-# set -ex
+# purpose: Deploy Kubernetes/Istio resources
 
 # Constants
 readonly NAMESPACES=(dev test)

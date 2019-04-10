@@ -4,10 +4,7 @@
 # site: https://programmaticponderings.com
 # license: MIT License
 # purpose: Install Istio 1.1.x
-
-# set -ex
-
-# readonly ISTIO_HOME='../istio-1.1.2'
+#          make sure to 'export ISTIO_HOME'
 
 # helm repo add istio.io https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
 # helm repo list
