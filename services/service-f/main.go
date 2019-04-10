@@ -35,6 +35,8 @@ var (
 )
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
+	greetings = nil
+
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
 		Service: "Service-F",
