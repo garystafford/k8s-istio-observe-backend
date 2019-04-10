@@ -6,7 +6,7 @@
 # purpose: Deploy Kubernetes/Istio resources
 
 # Constants
-readonly NAMESPACES=(dev test)
+readonly NAMESPACES=(dev)
 readonly SERVICES=(a b c a d e f g h rev-proxy)
 
 kubectl apply -f ./resources/other/namespaces.yaml
