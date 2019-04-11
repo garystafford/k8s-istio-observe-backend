@@ -7,20 +7,19 @@
 package main
 
 import (
-	"flag"
-	"github.com/gorilla/handlers"
-	"google.golang.org/grpc/metadata"
-	"net/http"
-
 	"context"
+	"flag"
 	gw "github.com/garystafford/pb-greeting"
+	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	"net/http"
 )
 
 var (
-	echoEndpoint = flag.String("service-a_endpoint", "service-a:50051", "endpoint of Service-A")
+	echoEndpoint = flag.String("service-a_endpoint", "localhost:50051", "endpoint of Service-A")
 	otHeaders    = []string{
 		"x-request-id",
 		"x-b3-traceid",
@@ -29,7 +28,7 @@ var (
 		"x-b3-sampled",
 		"x-b3-flags",
 		"x-ot-span-context"}
-	)
+)
 
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
@@ -78,7 +77,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":80", newMux)
+	return http.ListenAndServe(":8088", newMux)
 }
 
 func main() {

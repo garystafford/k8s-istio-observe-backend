@@ -13,6 +13,7 @@ import (
 	ot "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"net"
 	"os"
 	"time"
@@ -58,8 +59,17 @@ func CallGrpcService(ctx context.Context, address string) {
 	}
 	defer conn.Close()
 
+	headersIn, _ := metadata.FromIncomingContext(ctx)
+	log.Info(headersIn)
+
 	client := pb.NewGreetingServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
+
+	headersOut, _ := metadata.FromOutgoingContext(ctx)
+	log.Info(headersOut)
+
 	defer cancel()
 
 	req := pb.GreetingRequest{}

@@ -13,6 +13,7 @@ import (
 	ot "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"net"
 	"os"
 	"time"
@@ -21,7 +22,7 @@ import (
 )
 
 const (
-	port = ":50051"
+	port = ":50053"
 )
 
 type greetingServiceServer struct {
@@ -58,8 +59,17 @@ func CallGrpcService(ctx context.Context, address string) {
 	}
 	defer conn.Close()
 
+	headersIn, _ := metadata.FromIncomingContext(ctx)
+	log.Info(headersIn)
+
 	client := pb.NewGreetingServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
+
+	headersOut, _ := metadata.FromOutgoingContext(ctx)
+	log.Info(headersOut)
+
 	defer cancel()
 
 	req := pb.GreetingRequest{}
@@ -77,9 +87,9 @@ func CallGrpcService(ctx context.Context, address string) {
 func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
 	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithStreamInterceptor(
-		grpc_opentracing.StreamClientInterceptor(
-			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+	//opts = append(opts, grpc.WithStreamInterceptor(
+	//	grpc_opentracing.StreamClientInterceptor(
+	//		grpc_opentracing.WithTracer(ot.GlobalTracer()))))
 	opts = append(opts, grpc.WithUnaryInterceptor(
 		grpc_opentracing.UnaryClientInterceptor(
 			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
