@@ -57,4 +57,4 @@ spec:
           value: info
         ports:
         - containerPort: 50051
-        imagePullPolicy: IfNotPresent #Always
+        imagePullPolicy: Always
