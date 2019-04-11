@@ -83,6 +83,7 @@ func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) 
 	opts = append(opts, grpc.WithUnaryInterceptor(
 		grpc_opentracing.UnaryClientInterceptor(
 			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+	opts = append(opts, grpc.WithInsecure())
 	conn, err := grpc.DialContext(ctx, addr, opts...)
 	if err != nil {
 		log.Fatalf("Failed to connect to application addr: ", err)
