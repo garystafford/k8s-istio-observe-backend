@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	port = ":50053"
+	port = ":50051"
 )
 
 type greetingServiceServer struct {

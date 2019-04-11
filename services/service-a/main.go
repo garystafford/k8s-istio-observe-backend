@@ -44,8 +44,8 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	greetings = append(greetings, &tmpGreeting)
 
-	CallGrpcService(ctx, "localhost:50053")
-	//CallGrpcService(ctx, "service-c:50051")
+	CallGrpcService(ctx, "localhost:50051")
+	CallGrpcService(ctx, "service-c:50051")
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,

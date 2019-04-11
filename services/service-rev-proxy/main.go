@@ -77,7 +77,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":8088", newMux)
+	return http.ListenAndServe(":80", newMux)
 }
 
 func main() {
