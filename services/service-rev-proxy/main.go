@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	echoEndpoint = flag.String("service-a_endpoint", "localhost:50051", "endpoint of Service-A")
+	echoEndpoint = flag.String("service-a_endpoint", "service-a:50051", "endpoint of Service-A")
 	otHeaders    = []string{
 		"x-request-id",
 		"x-b3-traceid",

@@ -87,9 +87,9 @@ func CallGrpcService(ctx context.Context, address string) {
 func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
 	var opts []grpc.DialOption
-	//opts = append(opts, grpc.WithStreamInterceptor(
-	//	grpc_opentracing.StreamClientInterceptor(
-	//		grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+	opts = append(opts, grpc.WithStreamInterceptor(
+		grpc_opentracing.StreamClientInterceptor(
+			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
 	opts = append(opts, grpc.WithUnaryInterceptor(
 		grpc_opentracing.UnaryClientInterceptor(
 			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
