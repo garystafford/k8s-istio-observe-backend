@@ -19,24 +19,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	prefixTracerState  = "x-b3-"
-	zipkinTraceID      = prefixTracerState + "traceid"
-	zipkinSpanID       = prefixTracerState + "spanid"
-	zipkinParentSpanID = prefixTracerState + "parentspanid"
-	zipkinSampled      = prefixTracerState + "sampled"
-	zipkinFlags        = prefixTracerState + "flags"
-)
-
 var (
 	echoEndpoint = flag.String("service-a_endpoint", "service-a:50051", "endpoint of Service-A")
 	otHeaders    = []string{
-		zipkinTraceID,
-		zipkinSpanID,
-		zipkinParentSpanID,
-		zipkinSampled,
-		zipkinFlags}
-)
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context"}
+	)
 
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
@@ -44,6 +37,7 @@ func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.
 	for _, h := range otHeaders {
 		if v := req.Header.Get(h); len(v) > 0 {
 			pairs = append(pairs, h, v)
+			log.Infof("%s: %s", h, v)
 		}
 	}
 	return metadata.Pairs(pairs...)
@@ -66,8 +60,6 @@ func run() error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	//mux := runtime.NewServeMux()
-
 	annotators := []annotator{injectHeadersIntoMetadata}
 
 	mux := runtime.NewServeMux(
@@ -86,7 +78,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":80", newMux)
+	return http.ListenAndServe(":8088", newMux)
 }
 
 func main() {
