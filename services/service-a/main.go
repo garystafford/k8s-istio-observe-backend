@@ -85,11 +85,9 @@ func CallGrpcService(ctx context.Context, address string) {
 
 	client := pb.NewGreetingServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
 	for key, value := range grcpHeaders {
 		ctx = metadata.AppendToOutgoingContext(ctx, key, value)
 	}
-
 	defer cancel()
 
 	req := pb.GreetingRequest{}
