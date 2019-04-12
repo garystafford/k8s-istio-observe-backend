@@ -13,7 +13,7 @@ for i in "${arr[@]}"
 do
   cp -f Dockerfile "service-$i"
   pushd "service-$i"
-  docker build -t "garystafford/go-srv-$i:$tag" .
+  docker build -t "garystafford/go-srv-$i:$tag" . --no-cache
   rm -rf Dockerfile
   popd
 done
