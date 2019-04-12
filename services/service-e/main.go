@@ -30,10 +30,21 @@ type greetingServiceServer struct {
 
 var (
 	greetings []*pb.Greeting
+	otHeaders = []string{
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context"}
+	grcpHeaders map[string]string
 )
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
 	greetings = nil
+
+	extractHeaders(ctx)
 
 	tmpGreeting := pb.Greeting{
 		Id:      uuid.New().String(),
@@ -52,6 +63,18 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 	}, nil
 }
 
+func extractHeaders(ctx context.Context) {
+	headersIn, _ := metadata.FromIncomingContext(ctx)
+	log.Info(headersIn)
+
+	grcpHeaders = make(map[string]string)
+	for _, h := range otHeaders {
+		if v := headersIn.Get(h); len(v) > 0 {
+			grcpHeaders[h] = v[0]
+		}
+	}
+}
+
 func CallGrpcService(ctx context.Context, address string) {
 	conn, err := createGRPCConn(ctx, address)
 	if err != nil {
@@ -59,16 +82,12 @@ func CallGrpcService(ctx context.Context, address string) {
 	}
 	defer conn.Close()
 
-	headersIn, _ := metadata.FromIncomingContext(ctx)
-	log.Info(headersIn)
-
 	client := pb.NewGreetingServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
-	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
-
-	headersOut, _ := metadata.FromOutgoingContext(ctx)
-	log.Info(headersOut)
+	for key, value := range grcpHeaders {
+		ctx = metadata.AppendToOutgoingContext(ctx, key, value)
+	}
 
 	defer cancel()
 
