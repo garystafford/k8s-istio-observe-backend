@@ -66,6 +66,9 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 func extractHeaders(ctx context.Context) {
 	headersIn, _ := metadata.FromIncomingContext(ctx)
 	log.Info(headersIn)
+
+	headers = make(map[string][]string)
+
 	for _, h := range otHeaders {
 		if v := headersIn.Get(h); len(v) > 0 {
 			headers.Append(h, v[0])
