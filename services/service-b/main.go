@@ -38,7 +38,7 @@ var (
 		"x-b3-sampled",
 		"x-b3-flags",
 		"x-ot-span-context"}
-	grcpHeaders map[string]string
+	headers metadata.MD
 )
 
 func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRequest) (*pb.GreetingResponse, error) {
@@ -67,10 +67,11 @@ func extractHeaders(ctx context.Context) {
 	headersIn, _ := metadata.FromIncomingContext(ctx)
 	log.Info(headersIn)
 
-	grcpHeaders = make(map[string]string)
+	headers = make(map[string][]string)
+
 	for _, h := range otHeaders {
 		if v := headersIn.Get(h); len(v) > 0 {
-			grcpHeaders[h] = v[0]
+			headers.Append(h, v[0])
 		}
 	}
 }
@@ -84,9 +85,7 @@ func CallGrpcService(ctx context.Context, address string) {
 
 	client := pb.NewGreetingServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	for key, value := range grcpHeaders {
-		ctx = metadata.AppendToOutgoingContext(ctx, key, value)
-	}
+	grpc.SendHeader(ctx, headers)
 	defer cancel()
 
 	req := pb.GreetingRequest{}
