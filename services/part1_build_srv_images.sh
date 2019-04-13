@@ -5,8 +5,8 @@
 # license: MIT License
 # purpose: Build Go microservices for demo
 
-# readonly -a arr=(a b c a d e f g h rev-proxy)
-readonly -a arr=(a b e)
+readonly -a arr=(a b c a d e f g h rev-proxy)
+#readonly -a arr=(rev-proxy)
 readonly tag=1.5.0
 
 for i in "${arr[@]}"
