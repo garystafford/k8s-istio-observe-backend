@@ -16,8 +16,8 @@ COPY main.go .
 RUN go get -d -v
 
 # Build the binary.
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/app .
-#RUN go build -o /go/bin/app
+# RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/app .
+RUN go build -o /go/bin/app
 
 ############################
 # STEP 2 build a small image
