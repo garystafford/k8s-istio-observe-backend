@@ -55,5 +55,5 @@ spec:
         - name: LOG_LEVEL
           value: info
         ports:
-        - containerPort: 8000
+        - containerPort: 80
         imagePullPolicy: Always

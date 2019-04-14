@@ -5,8 +5,8 @@
 # license: MIT License
 # purpose: Push images to Dockerhub
 
-readonly -a arr=(a b c d e f g h rev-proxy)
-#readonly -a arr=(rev-proxy)
+# readonly -a arr=(a b c d e f g h rev-proxy)
+readonly -a arr=(e)
 readonly tag=1.5.0
 
 for i in "${arr[@]}"
