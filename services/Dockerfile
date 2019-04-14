@@ -7,7 +7,7 @@ FROM golang:alpine AS builder
 # Git is required for fetching the dependencies.
 RUN apk update && apk add --no-cache git
 # Create appuser.
-RUN adduser -D -g '' appuser
+#RUN adduser -D -g '' appuser
 
 WORKDIR /go/src/app
 COPY main.go .
@@ -25,11 +25,10 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o 
 FROM alpine:latest
 
 # Import the user and group files from the builder.
-COPY --from=builder /etc/passwd /etc/passwd
+#COPY --from=builder /etc/passwd /etc/passwd
 # Copy our static executable.
 COPY --from=builder /go/bin/app /go/bin/app
 # Use an unprivileged user.
-USER appuser
+#USER appuser
 # Run the hello binary.
-#EXPOSE 8000
 ENTRYPOINT ["/go/bin/app"]
