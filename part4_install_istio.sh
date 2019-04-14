@@ -34,7 +34,7 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
   --set kiali.enabled=true \
   --set tracing.enabled=true
 
-kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
+# kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
 
 # Wait for Pods to spin up
 echo 'Waiting 30 seconds...'

@@ -1,3 +1,4 @@
+# File based on:
 # https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
 
 ############################
@@ -7,7 +8,7 @@ FROM golang:1.12-alpine AS builder
 
 # Git is required for fetching the dependencies.
 RUN apk update && apk add --no-cache git
-# Create appuser.
+# Create appuser. Not using since rev-proxy currently on :80 (< :1024 req. root)
 # RUN adduser -D -g '' appuser
 # Copy files
 WORKDIR /go/src/hello
