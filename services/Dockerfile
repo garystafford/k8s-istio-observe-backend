@@ -3,7 +3,7 @@
 ############################
 # STEP 1 build executable binary
 ############################
-FROM golang:alpine AS builder
+FROM golang:1.12-alpine AS builder
 
 # Git is required for fetching the dependencies.
 RUN apk update && apk add --no-cache git
@@ -23,7 +23,7 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/hello .
 ############################
 # STEP 2 build a small image
 ############################
-FROM alpine
+FROM alpine:3.9
 
 RUN apk update && apk add --no-cache ca-certificates
 

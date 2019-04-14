@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: service-h
-        image: registry.hub.docker.com/garystafford/go-srv-h:1.5.0
+        image: gcr.io/go-srv-demo/go-srv-h:1.5.0
         # resources:
         # requests:
         #   memory: 100M
