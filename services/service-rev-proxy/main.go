@@ -36,7 +36,7 @@ func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.
 	for _, h := range otHeaders {
 		if v := req.Header.Get(h); len(v) > 0 {
 			pairs = append(pairs, h, v)
-			log.Infof("%s: %s", h, v)
+			//log.Infof("%s: %s", h, v)
 		}
 	}
 	return metadata.Pairs(pairs...)

@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service C - gRPC
+// purpose: Service C - gRPC/Protobuf
 
 package main
 
@@ -41,9 +41,9 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 		Created: time.Now().Local().String(),
 	}
 
-	CallMongoDB(tmpGreeting)
-
 	greetings = append(greetings, &tmpGreeting)
+
+	CallMongoDB(tmpGreeting)
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,

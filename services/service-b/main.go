@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service B - gRPC
+// purpose: Service B - gRPC/Protobuf
 
 package main
 
@@ -67,8 +67,8 @@ func CallGrpcService(ctx context.Context, address string) {
 
 	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
 
-	headersOut, _ := metadata.FromOutgoingContext(ctx)
-	log.Infof("headersOut: %s", headersOut)
+	//headersOut, _ := metadata.FromOutgoingContext(ctx)
+	//log.Infof("headersOut: %s", headersOut)
 
 	defer cancel()
 

@@ -1,7 +1,7 @@
 // author: Gary A. Stafford
 // site: https://programmaticponderings.com
 // license: MIT License
-// purpose: Service F - gRPC
+// purpose: Service F - gRPC/Protobuf
 
 package main
 

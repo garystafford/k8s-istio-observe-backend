@@ -16,6 +16,6 @@ do
   docker push gcr.io/go-srv-demo/go-srv-${i}:${tag}
 done
 
-docker push garystafford/angular-observe:$tag
+docker push garystafford/angular-observe:${tag}
 docker tag garystafford/angular-observe:${tag} gcr.io/go-srv-demo/angular-observe:${tag}
 docker push gcr.io/go-srv-demo/angular-observe:${tag}
