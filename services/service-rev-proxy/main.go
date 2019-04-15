@@ -9,6 +9,7 @@ package main
 import (
 	"context"
 	"flag"
+	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	gw "github.com/garystafford/pb-greeting"
 	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -16,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net/http"
+	"os"
 )
 
 var (
@@ -78,6 +80,25 @@ func run() error {
 	}
 
 	return http.ListenAndServe(":80", newMux)
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
+func init() {
+	formatter := lrf.Formatter{ChildFormatter: &log.JSONFormatter{}}
+	formatter.Line = true
+	log.SetFormatter(&formatter)
+	log.SetOutput(os.Stdout)
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	if err != nil {
+		log.Error(err)
+	}
+	log.SetLevel(level)
 }
 
 func main() {
