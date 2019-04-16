@@ -11,7 +11,6 @@ import (
 	"flag"
 	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	gw "github.com/garystafford/pb-greeting"
-	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -67,11 +66,11 @@ func run() error {
 		runtime.WithMetadata(chainGrpcAnnotators(annotators...)),
 	)
 
-	// https://qiita.com/ushio_s/items/a442fa53a8a31b87a360
-	newMux := handlers.CORS(
-		handlers.AllowedMethods([]string{"GET", "OPTIONS"}),
-		handlers.AllowedOrigins([]string{"*"}),
-	)(mux)
+	//// https://qiita.com/ushio_s/items/a442fa53a8a31b87a360
+	//newMux := handlers.CORS(
+	//	handlers.AllowedMethods([]string{"GET", "OPTIONS"}),
+	//	handlers.AllowedOrigins([]string{"*"}),
+	//)(mux)
 
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
@@ -79,7 +78,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":80", newMux)
+	return http.ListenAndServe(":80", mux)
 }
 
 func getEnv(key, fallback string) string {
