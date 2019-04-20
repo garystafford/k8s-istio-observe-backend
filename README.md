@@ -1,4 +1,4 @@
-# Go-based Microservices Observability Demo with Istio 1.1.x
+# Go-based Microservices Observability Demo with Istio
 
 **Successfully tested with Istio 1.1.3, released 4/15/2019**
 
@@ -173,7 +173,7 @@ istio_response_bytes_count{destination_service_namespace="dev",connection_securi
 ## Tear Down GKE Cluster
 
 ```bash
-time sh ./part6_tear_down.sh
+time bash ./part6_tear_down.sh
 ```
 
 ## References
