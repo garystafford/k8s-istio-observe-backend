@@ -1,6 +1,6 @@
 # Go-based Microservices Observability Demo with Istio 1.1.x
 
-**Successfully tested with Istio 1.1.2, released 4/5/2019**
+**Successfully tested with Istio 1.1.3, released 4/19/2019**
 
 The (8) Go-based, RESTful microservices, which make up this reference distributed system platform, are designed to generate HTTP-based service-to-service, TCP-based service-to-database (MongoDB), and TCP-based service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). Service A calls Service B and Service C, Service B calls Service D and Service E, Service D produces a message on a RabbitMQ queue that Service F consumes and writes to MongoDB, and so on. These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes with Istio.
 
@@ -46,8 +46,8 @@ The post, [Kubernetes-based Microservice Observability with Istio Service Mesh: 
 All Docker images, references in the Docker Swarm and Kubernetes resource files, for the microservices and UI, are available on [Docker Hub](https://hub.docker.com/u/garystafford/). To build all images yourself, modify and use these two scripts.
 
 ```bash
-time sh ./part1_build_srv_images.sh
-time sh ./part2_push_images.sh
+time bash ./part1_build_srv_images.sh
+time bash ./part2_push_images.sh
 ```
 
 ### Deployed Stack Services
@@ -204,9 +204,9 @@ Build and deploy to a 3-node GKE Cluster, with Istio 1.1.x and all Istio telemet
 Requires Istio 1.1.x is downloaded and available. Requires Helm to be available from the command-line, locally. Update constants in all scripts before running.
 
 ```bash
-time sh ./part3_create_gke_cluster.sh
-time sh ./part4_install_istio.sh
-time sh ./part5a_deploy_resources.sh
+time bash ./part3_create_gke_cluster.sh
+export ISTIO_HOME && time bash ./part4_install_istio.sh
+time bash ./part5a_deploy_resources.sh
 
 istioctl get all
 ```

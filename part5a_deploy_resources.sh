@@ -6,7 +6,7 @@
 # purpose: Optional: Deploy Kubernetes/Istio resources
 
 # Constants - CHANGE ME!
-readonly NAMESPACES=(dev test)
+readonly NAMESPACES=(dev)
 readonly SERVICES=(a b c d e f g h)
 
 

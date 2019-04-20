@@ -4,10 +4,7 @@
 # site: https://programmaticponderings.com
 # license: MIT License
 # purpose: Install Istio 1.1.x
-
-# set -ex
-
-readonly ISTIO_HOME='/Applications/Istio/istio-1.1.2'
+#          make sure to 'export ISTIO_HOME'
 
 # helm repo add istio.io https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
 # helm repo list
@@ -37,7 +34,7 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
   --set kiali.enabled=true \
   --set tracing.enabled=true
 
-kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
+# kubectl apply --namespace istio-system -f ./resources/secrets/kiali.yaml
 
 # Wait for Pods to spin up
 echo 'Waiting 30 seconds...'
