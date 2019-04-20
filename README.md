@@ -259,7 +259,7 @@ istio_response_bytes_count{destination_service_namespace="dev",connection_securi
 ## Tear Down GKE Cluster
 
 ```bash
-time sh ./part6_tear_down.sh
+time bash ./part6_tear_down.sh
 ```
 
 ## References
