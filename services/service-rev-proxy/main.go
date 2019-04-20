@@ -19,25 +19,23 @@ import (
 	"os"
 )
 
-var (
-	echoEndpoint = flag.String("service-a_endpoint", "service-a:50051", "endpoint of Service-A")
-	otHeaders    = []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"x-ot-span-context"}
-)
-
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
+	var (
+		otHeaders = []string{
+			"x-request-id",
+			"x-b3-traceid",
+			"x-b3-spanid",
+			"x-b3-parentspanid",
+			"x-b3-sampled",
+			"x-b3-flags",
+			"x-ot-span-context"}
+	)
 	var pairs []string
+
 	for _, h := range otHeaders {
 		if v := req.Header.Get(h); len(v) > 0 {
 			pairs = append(pairs, h, v)
-			//log.Infof("%s: %s", h, v)
 		}
 	}
 	return metadata.Pairs(pairs...)
@@ -66,14 +64,8 @@ func run() error {
 		runtime.WithMetadata(chainGrpcAnnotators(annotators...)),
 	)
 
-	//// https://qiita.com/ushio_s/items/a442fa53a8a31b87a360
-	//newMux := handlers.CORS(
-	//	handlers.AllowedMethods([]string{"GET", "OPTIONS"}),
-	//	handlers.AllowedOrigins([]string{"*"}),
-	//)(mux)
-
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, "service-a:50051", opts)
 	if err != nil {
 		return err
 	}
