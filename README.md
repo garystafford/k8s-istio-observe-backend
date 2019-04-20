@@ -1,4 +1,4 @@
-# Go-based Microservices Observability Demo with Istio 1.1.x
+# Go-based Microservices Observability Demo with Istio
 
 **Successfully tested with Istio 1.1.3, released 4/15/2019**
 
