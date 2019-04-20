@@ -4,17 +4,17 @@
 
 The (8) Go-based RESTful microservices and (1) gRPC Gateway Reverse Proxy, which make up this reference distributed system platform, are designed to generate HTTP/JSON and gRPC/protobuf-based service-to-service, TCP-based service-to-database (MongoDB), and TCP-based service-to-queue-to-service (RabbitMQ) IPC (inter-process communication). Service A calls Service B and Service C, Service B calls Service D and Service E, Service D produces a message on a RabbitMQ queue that Service F consumes and writes to MongoDB, and so on. These distributed communications can be observed using Istio's observability tools, Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernetes with Istio.
 
-![Kiali](pics/Kiali.png)
+![Kiali](pics/kiaki_v2.png)
 
 ## Optional Front-end UI
 
 An Angular 7 front-end UI to the API is located on Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
-![preview](pics/ui_v2.png)
+![preview](pics/ui_v3.png)
 
 ## Architecture
 
-![Architecture Diagram](pics/Golang-Service-Diagram-with-gRPC.png)
+![Architecture Diagram](pics/architecture_v2.png)
 
 ## Service Responses
 
