@@ -19,6 +19,10 @@ import (
 	"os"
 )
 
+const (
+	port = ":80"
+)
+
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
 	var (
@@ -70,7 +74,7 @@ func run() error {
 		return err
 	}
 
-	return http.ListenAndServe(":80", mux)
+	return http.ListenAndServe(port, mux)
 }
 
 func getEnv(key, fallback string) string {
