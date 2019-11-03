@@ -4,7 +4,7 @@
 ################################
 # STEP 1 build executable binary
 ################################
-FROM golang:1.12-alpine AS builder
+FROM golang:1.13-alpine AS builder
 
 # Git required for fetching the dependencies.
 RUN apk update && apk add --no-cache git ca-certificates tzdata
