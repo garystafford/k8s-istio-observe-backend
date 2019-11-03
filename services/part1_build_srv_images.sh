@@ -7,13 +7,13 @@
 
 readonly -a arr=(a b c d e f g h rev-proxy)
 # readonly -a arr=(rev-proxy)
-readonly tag=1.5.0
+readonly tag=1.6.0-grpc
 
-for i in "${arr[@]}"
+for srv in "${arr[@]}"
 do
-  cp -f Dockerfile service-${i}
-  pushd service-${i}
-  docker build -t garystafford/go-srv-${i}:${tag} . --no-cache
+  cp -f Dockerfile service-"${srv}"
+  pushd service-"${srv}" || exit
+  docker build -t garystafford/go-srv-"${srv}":${tag} . --no-cache
   rm -rf Dockerfile
   popd
 done
