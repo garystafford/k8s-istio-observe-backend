@@ -60,7 +60,7 @@ func CallMongoDB(greeting pb.Greeting) {
 
 	defer client.Disconnect(nil)
 
-	collection := client.Database("service-g").Collection("greetings")
+	collection := client.Database("service-c").Collection("greetings")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
 	_, err = collection.InsertOne(ctx, greeting)
