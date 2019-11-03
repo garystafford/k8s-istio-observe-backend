@@ -60,7 +60,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 func SendMessage(b []byte) {
 	log.Info(b)
 
-	conn, err := amqp.Dial(os.Getenv(rabbitConn))
+	conn, err := amqp.Dial(rabbitConn)
 	if err != nil {
 		log.Error(err)
 	}
