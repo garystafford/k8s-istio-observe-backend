@@ -20,8 +20,11 @@ import (
 	pb "github.com/garystafford/pb-greeting"
 )
 
-const (
-	port = ":50051"
+var (
+	listenerPort = ":" + getEnv("PORT_SRV_D", "50051")
+	rabbitConn   = getEnv("RABBITMQ_CONN", "")
+	queueName    = getEnv("QUEUE_SRV_D", "service-d")
+	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
 type greetingServiceServer struct {
@@ -57,7 +60,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 func SendMessage(b []byte) {
 	log.Info(b)
 
-	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
+	conn, err := amqp.Dial(os.Getenv(rabbitConn))
 	if err != nil {
 		log.Error(err)
 	}
@@ -70,7 +73,7 @@ func SendMessage(b []byte) {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"service-d",
+		queueName,
 		false,
 		false,
 		false,
@@ -107,7 +110,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
@@ -115,7 +118,7 @@ func init() {
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", listenerPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

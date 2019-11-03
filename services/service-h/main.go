@@ -19,8 +19,11 @@ import (
 	"time"
 )
 
-const (
-	port = ":50051"
+var (
+	listenerPort = ":" + getEnv("PORT_SRV_H", "50051")
+	mongoConn    = getEnv("MONGO_CONN", "")
+	dbName       = getEnv("DB_SRV_H", "service-h")
+	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
 type greetingServiceServer struct {
@@ -52,14 +55,14 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 func CallMongoDB(greeting pb.Greeting) {
 	log.Info(greeting)
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoConn))
 	if err != nil {
 		log.Error(err)
 	}
 
 	defer client.Disconnect(nil)
 
-	collection := client.Database("service-h").Collection("greetings")
+	collection := client.Database(dbName).Collection("greetings")
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 
 	_, err = collection.InsertOne(ctx, greeting)
@@ -80,7 +83,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
@@ -88,7 +91,7 @@ func init() {
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", listenerPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

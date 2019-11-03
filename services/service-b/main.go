@@ -9,7 +9,7 @@ import (
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	grpcot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	ot "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -21,8 +21,11 @@ import (
 	pb "github.com/garystafford/pb-greeting"
 )
 
-const (
-	port = ":50051"
+var (
+	listenerPort = ":" + getEnv("PORT_SRV_B", "50051")
+	urlD         = getEnv("SRV_D_URL", "service-d") + ":" + getEnv("SRV_D_PORT", "50051")
+	urlE         = getEnv("SRV_E_URL", "service-e") + ":" + getEnv("SRV_E_PORT", "50051")
+	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
 type greetingServiceServer struct {
@@ -44,8 +47,8 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	greetings = append(greetings, &tmpGreeting)
 
-	CallGrpcService(ctx, "service-d:50051")
-	CallGrpcService(ctx, "service-e:50051")
+	CallGrpcService(ctx, urlD)
+	CallGrpcService(ctx, urlE)
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,
@@ -88,11 +91,11 @@ func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) 
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithStreamInterceptor(
-		grpc_opentracing.StreamClientInterceptor(
-			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+		grpcot.StreamClientInterceptor(
+			grpcot.WithTracer(ot.GlobalTracer()))))
 	opts = append(opts, grpc.WithUnaryInterceptor(
-		grpc_opentracing.UnaryClientInterceptor(
-			grpc_opentracing.WithTracer(ot.GlobalTracer()))))
+		grpcot.UnaryClientInterceptor(
+			grpcot.WithTracer(ot.GlobalTracer()))))
 	opts = append(opts, grpc.WithInsecure())
 	conn, err := grpc.DialContext(ctx, addr, opts...)
 	if err != nil {
@@ -114,7 +117,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
@@ -122,7 +125,7 @@ func init() {
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", listenerPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

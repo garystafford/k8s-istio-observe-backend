@@ -21,8 +21,11 @@ import (
 	pb "github.com/garystafford/pb-greeting"
 )
 
-const (
-	port = ":50051"
+var (
+	listenerPort = ":" + getEnv("PORT_SRV_A", "50051")
+	urlB         = getEnv("SRV_B_URL", "service-b") + ":" + getEnv("SRV_B_PORT", "50051")
+	urlC         = getEnv("SRV_C_URL", "service-c") + ":" + getEnv("SRV_C_PORT", "50051")
+	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
 type greetingServiceServer struct {
@@ -44,8 +47,8 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 
 	greetings = append(greetings, &tmpGreeting)
 
-	CallGrpcService(ctx, "service-b:50051")
-	CallGrpcService(ctx, "service-c:50051")
+	CallGrpcService(ctx, urlB)
+	CallGrpcService(ctx, urlC)
 
 	return &pb.GreetingResponse{
 		Greeting: greetings,
@@ -114,7 +117,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
@@ -122,7 +125,7 @@ func init() {
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", listenerPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

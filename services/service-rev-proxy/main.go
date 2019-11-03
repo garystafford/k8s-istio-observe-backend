@@ -19,6 +19,12 @@ import (
 	"os"
 )
 
+var (
+	listenerPort = ":" + getEnv("PORT_PROXY", "80")
+	urlA         = getEnv("SRV_A_URL", "service-a") + ":" + getEnv("SRV_A_PORT", "50051")
+	logLevel     = getEnv("LOG_LEVEL", "info")
+)
+
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
 	var (
@@ -65,12 +71,12 @@ func run() error {
 	)
 
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, "service-a:50051", opts)
+	err := gw.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, urlA, opts)
 	if err != nil {
 		return err
 	}
 
-	return http.ListenAndServe(":80", mux)
+	return http.ListenAndServe(listenerPort, mux)
 }
 
 func getEnv(key, fallback string) string {
@@ -85,7 +91,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
