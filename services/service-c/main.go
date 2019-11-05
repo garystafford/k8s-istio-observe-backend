@@ -8,7 +8,7 @@ package main
 import (
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
-	"github.com/google/uuid"
+	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,9 +21,9 @@ import (
 )
 
 var (
-	listenerPort = ":" + getEnv("PORT_SRV_C", "50051")
+	listenerPort = ":" + getEnv("SRV_C_PORT", "50051")
 	mongoConn    = getEnv("MONGO_CONN", "")
-	dbName       = getEnv("DB_SRV_C", "service-c")
+	dbName       = getEnv("SRV_C_DB", "service-c")
 	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
@@ -38,7 +38,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 	greetings = nil
 
 	tmpGreeting := pb.Greeting{
-		Id:      uuid.New().String(),
+		Id:      ksuid.New().String(),
 		Service: "Service-C",
 		Message: "Konnichiwa, from Service-C!",
 		Created: time.Now().Local().String(),

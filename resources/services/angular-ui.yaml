@@ -5,7 +5,7 @@ metadata:
   labels:
     app: angular-ui
     component: ui
-    version: "1.5.0"
+    version: "1.6.0-grpc"
 spec:
   ports:
   - name: http
@@ -13,7 +13,7 @@ spec:
   selector:
     app: angular-ui
     component: ui
-    version: "1.5.0"
+    version: "1.6.0-grpc"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: angular-ui
     component: ui
-    version: "1.5.0"
+    version: "1.6.0-grpc"
 spec:
   replicas: 2
   strategy:
@@ -31,19 +31,19 @@ spec:
     matchLabels:
       app: angular-ui
       component: ui
-      version: "1.5.0"
+      version: "1.6.0-grpc"
   template:
     metadata:
       labels:
         app: angular-ui
         component: ui
-        version: "1.5.0"
+        version: "1.6.0-grpc"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: angular-ui
-        image: gcr.io/go-srv-demo/angular-observe:1.5.0
+        image: gaystafford/angular-observe:1.6.0-grpc
         # resources:
         # requests:
         #   memory: 100M

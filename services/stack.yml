@@ -1,0 +1,123 @@
+# docker network create golang-demo --driver overlay
+# docker stack deploy --compose-file stack.yml golang-demo
+
+version: '3.7'
+
+services:
+  angular-ui:
+    image: garystafford/angular-observe:1.6.0-grpc
+    networks:
+      - golang-demo
+    ports:
+      - 80:80
+  service-rev-proxy:
+    image: garystafford/go-srv-rev-proxy:1.6.0-grpc
+    networks:
+      - golang-demo
+    ports:
+      - 8000:50051
+    environment:
+      - PROXY_PORT
+      - SRV_A_URL
+      - SRV_A_PORT
+      - LOG_LEVEL
+  service-a:
+    image: garystafford/go-srv-a:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_A_PORT
+      - SRV_B_URL
+      - SRV_B_PORT
+      - SRV_C_URL
+      - SRV_C_PORT
+      - LOG_LEVEL
+  service-b:
+    image: garystafford/go-srv-b:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_B_PORT
+      - SRV_D_URL
+      - SRV_D_PORT
+      - SRV_E_URL
+      - SRV_E_PORT
+      - LOG_LEVEL
+  service-c:
+    image: garystafford/go-srv-c:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_C_PORT
+      - MONGO_CONN
+      - SRV_C_DB
+      - LOG_LEVEL
+  service-d:
+    image: garystafford/go-srv-d:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_D_PORT
+      - RABBITMQ_CONN
+      - SRV_D_QUEUE
+      - LOG_LEVEL
+  service-e:
+    image: garystafford/go-srv-e:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_E_PORT
+      - SRV_G_URL
+      - SRV_G_PORT
+      - SRV_H_URL
+      - SRV_H_PORT
+      - LOG_LEVEL
+  service-f:
+    image: garystafford/go-srv-f:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_F_PORT
+      - RABBITMQ_CONN
+      - SRV_F_QUEUE
+      - MONGO_CONN
+      - SRV_F_DB
+      - LOG_LEVEL
+  service-g:
+    image: garystafford/go-srv-g:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_G_PORT
+      - MONGO_CONN
+      - SRV_G_DB
+      - LOG_LEVEL
+  service-h:
+    image: garystafford/go-srv-h:1.6.0-grpc
+    networks:
+      - golang-demo
+    environment:
+      - SRV_H_PORT
+      - MONGO_CONN
+      - SRV_H_DB
+      - LOG_LEVEL
+  mongodb:
+    image: mongo:latest
+    networks:
+      - golang-demo
+    ports:
+      - 27017:27017
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - golang-demo
+
+networks:
+  golang-demo:
+    external: true
+
+volumes:
+  data: {}

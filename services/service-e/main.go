@@ -8,7 +8,7 @@ package main
 import (
 	"context"
 	"github.com/banzaicloud/logrus-runtime-formatter"
-	"github.com/google/uuid"
+	"github.com/segmentio/ksuid"
 	grpcot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	ot "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	listenerPort = ":" + getEnv("PORT_SRV_E", "50051")
+	listenerPort = ":" + getEnv("SRV_E_PORT", "50051")
 	urlG         = getEnv("SRV_G_URL", "service-g") + ":" + getEnv("SRV_G_PORT", "50051")
 	urlH         = getEnv("SRV_H_URL", "service-h") + ":" + getEnv("SRV_H_PORT", "50051")
 	logLevel     = getEnv("LOG_LEVEL", "info")
@@ -39,7 +39,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 	greetings = nil
 
 	tmpGreeting := pb.Greeting{
-		Id:      uuid.New().String(),
+		Id:      ksuid.New().String(),
 		Service: "Service-E",
 		Message: "Bonjour, de Service-E!",
 		Created: time.Now().Local().String(),

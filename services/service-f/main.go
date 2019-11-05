@@ -10,7 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/banzaicloud/logrus-runtime-formatter"
-	"github.com/google/uuid"
+	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,11 +24,11 @@ import (
 )
 
 var (
-	listenerPort = ":" + getEnv("PORT_SRV_F", "50051")
+	listenerPort = ":" + getEnv("SRV_F_PORT", "50051")
 	mongoConn    = getEnv("MONGO_CONN", "")
-	dbName       = getEnv("DB_SRV_F", "service-f")
+	dbName       = getEnv("SRV_F_DB", "service-f")
 	rabbitConn   = getEnv("RABBITMQ_CONN", "")
-	queueName    = getEnv("QUEUE_SRV_D", "service-d")
+	queueName    = getEnv("SRV_F_QUEUE", "service-d")
 	logLevel     = getEnv("LOG_LEVEL", "info")
 )
 
@@ -43,7 +43,7 @@ func (s *greetingServiceServer) Greeting(ctx context.Context, req *pb.GreetingRe
 	greetings = nil
 
 	tmpGreeting := pb.Greeting{
-		Id:      uuid.New().String(),
+		Id:      ksuid.New().String(),
 		Service: "Service-F",
 		Message: "Hola, from Service-F!",
 		Created: time.Now().Local().String(),

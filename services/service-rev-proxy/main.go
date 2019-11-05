@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	listenerPort = ":" + getEnv("PORT_PROXY", "80")
+	listenerPort = ":" + getEnv("PROXY_PORT", "50051")
 	urlA         = getEnv("SRV_A_URL", "service-a") + ":" + getEnv("SRV_A_PORT", "50051")
 	logLevel     = getEnv("LOG_LEVEL", "info")
 )
