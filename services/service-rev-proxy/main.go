@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	listenerPort = ":" + getEnv("PROXY_PORT", "50051")
+	listenerPort = ":" + getEnv("PROXY_PORT", "8000")
 	urlA         = getEnv("SRV_A_URL", "service-a") + ":" + getEnv("SRV_A_PORT", "50051")
 	logLevel     = getEnv("LOG_LEVEL", "info")
 )
@@ -42,6 +42,7 @@ func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.
 	for _, h := range otHeaders {
 		if v := req.Header.Get(h); len(v) > 0 {
 			pairs = append(pairs, h, v)
+			log.Infof("%s: %s", h, v)
 		}
 	}
 	return metadata.Pairs(pairs...)

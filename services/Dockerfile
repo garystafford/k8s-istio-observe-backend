@@ -10,7 +10,7 @@ FROM golang:1.13-alpine AS builder
 RUN apk update && apk add --no-cache git ca-certificates tzdata
 
 # Create unprivileged appuser
-RUN adduser -D -g '' appuser
+#RUN adduser -D -g '' appuser
 
 # Copy file(s)
 WORKDIR /go/src/app
@@ -34,7 +34,7 @@ RUN go build  -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 FROM scratch
 
 # Import the user and group files from the builder
-COPY --from=builder /etc/passwd /etc/passwd
+#COPY --from=builder /etc/passwd /etc/passwd
 
 # Import the zoneinfo and SSL cert files from the builder
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
@@ -44,7 +44,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/bin/app /go/bin/app
 
 # Use an unprivileged user
-USER appuser
+#USER appuser
 
 # Run the app binary
 ENTRYPOINT ["/go/bin/app"]

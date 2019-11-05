@@ -3,7 +3,7 @@
 ```bash
 export LOG_LEVEL=debug
 
-export PROXY_PORT=50051
+export PROXY_PORT=8000
 export SRV_A_PORT=50051
 export SRV_B_PORT=$SRV_A_PORT
 export SRV_C_PORT=$SRV_A_PORT

@@ -15,7 +15,7 @@ services:
     networks:
       - golang-demo
     ports:
-      - 8000:50051
+      - 8000:8000
     environment:
       - PROXY_PORT
       - SRV_A_URL
