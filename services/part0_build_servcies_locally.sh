@@ -6,7 +6,7 @@
 # purpose: Build Go microservices for demo
 # date: 2021-05-22
 
-readonly -a arr=(a b c a d e f g h)
+readonly -a arr=(a b c d e f g h)
 # readonly -a arr=(a)
 
 for i in "${arr[@]}"

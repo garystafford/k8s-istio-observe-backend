@@ -6,9 +6,9 @@
 # purpose: Push images to Dockerhub
 # date: 2021-05-22
 
-readonly -a arr=(a b c a d e f g h)
+readonly -a arr=(a b c d e f g h)
 # readonly -a arr=(a)
-readonly tag=1.4.0
+readonly tag=1.6.0
 
 for i in "${arr[@]}"
 do

@@ -12,7 +12,7 @@ file_loader = FileSystemLoader('templates')
 env = Environment(loader=file_loader)
 template = env.get_template('service.j2')
 
-resource_location = 'resources/services'
+resource_location = ''
 services = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
 for service in services:
@@ -22,7 +22,7 @@ for service in services:
     print(output)
 
     filename = "service-%s%s" % (service, '.yaml')
-    resource = "%s/%s" % (resource_location, filename)
+    resource = "%s" % filename
 
     with open(resource, "w") as f:
         f.write(output)

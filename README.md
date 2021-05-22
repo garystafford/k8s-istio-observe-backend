@@ -194,8 +194,9 @@ docker logs \
 The Kubernetes Deployment and Service resources for (8) Go-based microservices were built using a common Jinja2 template (resources/services/templates/service.j2). To re-build the YAML files, run the following script.
 
 ```bash
-cd golang-srv-demo/resources/services/templates
-python3 ./service-builder.py
+cd ./resources/services/
+python3 -m pip install -r requirements.txt
+python3 ./part5_service-builder.py
 ```
 
 ### Build and Deploy GKE Cluster

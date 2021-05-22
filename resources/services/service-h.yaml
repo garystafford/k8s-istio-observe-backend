@@ -5,7 +5,7 @@ metadata:
   labels:
     app: service-h
     component: service
-    version: "1.4.0"
+    version: "1.6.0"
 spec:
   ports:
   - name: http
@@ -13,16 +13,16 @@ spec:
   selector:
     app: service-h
     component: service
-    version: "1.4.0"
+    version: "1.6.0"
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: service-h
   labels:
     app: service-h
     component: service
-    version: "1.4.0"
+    version: "1.6.0"
 spec:
   replicas: 2
   strategy:
@@ -31,19 +31,19 @@ spec:
     matchLabels:
       app: service-h
       component: service
-      version: "1.4.0"
+      version: "1.6.0"
   template:
     metadata:
       labels:
         app: service-h
         component: service
-        version: "1.4.0"
+        version: "1.6.0"
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-h
-        image: registry.hub.docker.com/garystafford/go-srv-h:1.4.0
+        image: registry.hub.docker.com/garystafford/go-srv-h:1.6.0
         resources:
         # requests:
         #   memory: 100M
@@ -52,13 +52,16 @@ spec:
         #   memory: 250M
         #   cpu: 250m
         env:
-        - name: LOG_LEVEL
-          value: info
         - name: MONGO_CONN
           valueFrom:
             secretKeyRef:
               name: go-srv-config
               key: mongodb.conn
+        - name: RABBITMQ_CONN
+          valueFrom:
+            secretKeyRef:
+              name: go-srv-config
+              key: rabbitmq.conn
         ports:
         - containerPort: 80
         imagePullPolicy: IfNotPresent #Always
