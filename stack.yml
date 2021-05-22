@@ -2,65 +2,64 @@ version: '3.7'
 
 services:
   angular-ui:
-    image: garystafford/angular-observe:1.4.0
+    image: garystafford/angular-observe:1.6.0
     networks:
       - golang-demo
     ports:
       - 80:80
   service-a:
-    image: garystafford/go-srv-a:1.4.0
+    image: garystafford/go-srv-a:1.6.0
     networks:
       - golang-demo
     ports:
       - 8000:80
   service-b:
-    image: garystafford/go-srv-b:1.4.0
+    image: garystafford/go-srv-b:1.6.0
     networks:
       - golang-demo
   service-c:
-    image: garystafford/go-srv-c:1.4.0
+    image: garystafford/go-srv-c:1.6.0
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-d:
-    image: garystafford/go-srv-d:1.4.0
+    image: garystafford/go-srv-d:1.6.0
     networks:
       - golang-demo
     environment:
       RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
   service-e:
-    image: garystafford/go-srv-e:1.4.0
+    image: garystafford/go-srv-e:1.6.0
     networks:
       - golang-demo
   service-f:
-    image: garystafford/go-srv-f:1.4.0
+    image: garystafford/go-srv-f:1.6.0
     networks:
       - golang-demo
     environment:
       RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-g:
-    image: garystafford/go-srv-g:1.4.0
+    image: garystafford/go-srv-g:1.6.0
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-h:
-    image: garystafford/go-srv-h:1.4.0
+    image: garystafford/go-srv-h:1.6.0
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   mongodb:
-    image: mongo:latest
+    image: mongo:4.4.6
     networks:
       - golang-demo
     ports:
       - 27017:27017
-    command: --smallfiles
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.8.16-management-alpine
     ports:
       - 5672:5672
       - 15672:15672

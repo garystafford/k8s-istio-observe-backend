@@ -5,7 +5,7 @@
 ################################
 # STEP 1 build executable binary
 ################################
-FROM golang:1.8-alpine3.5 AS builder
+FROM golang:1.16.4-alpine3.13 AS builder
 
 EXPOSE 8000
 

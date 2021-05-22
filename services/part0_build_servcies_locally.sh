@@ -8,15 +8,11 @@
 
 readonly -a arr=(a b c a d e f g h)
 # readonly -a arr=(a)
-readonly tag=1.6.0
 
 for i in "${arr[@]}"
 do
-  cp -f Dockerfile "service-$i"
   pushd "service-$i" || exit
-  docker build -t "garystafford/go-srv-$i:$tag" . --no-cache
-  rm -rf Dockerfile
+  go mod init "github.com/garystafford/go-srv-$i"
+  go mod tidy -v
   popd || exit
 done
-
-docker image ls | grep 'garystafford/go-srv-'
