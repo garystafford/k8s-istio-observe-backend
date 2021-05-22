@@ -2,6 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service G
+// date: 2021-05-22
 
 package main
 
@@ -28,7 +29,7 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
+func PingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	greetings = nil
@@ -36,7 +37,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-G",
-		Message:     "Ahlan, from Service-G!",
+		Message:     "Ahlan (أهلا), from Service-G!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -50,7 +51,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {

@@ -1,53 +1,59 @@
-# Build based on:
+# build based on:
 # https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
+# date: 2021-05-22
 
 ################################
 # STEP 1 build executable binary
 ################################
-FROM golang:1.13-alpine AS builder
+FROM golang:1.8-alpine3.5 AS builder
 
 EXPOSE 8000
 
-# Git required for fetching the dependencies.
+# Install git, zoneinfo, and SSL certs
 RUN apk update && apk add --no-cache git ca-certificates tzdata
 
-# Create appuser. Not using since rev-proxy currently on :80 (< :1024 req. root)
-# RUN adduser -D -g '' appuser
+# Create unprivileged appuser
+RUN adduser -D -g '' appuser
 
 # Copy file(s)
-WORKDIR /go/src/hello
+WORKDIR /go/src/app
 COPY main.go .
 
-# Using go get.
-RUN go get -d -v
+# creates go.mod file to track code dependencies
+RUN go mod init
 
-# Using go mod
-#RUN go mod download
+# ensures go.mod file matches source code in the module
+RUN go mod tidy
 
-#disable crosscompiling
+# Using go get
+#RUN go get -d -v
+
+# Disable crosscompiling
 ENV CGO_ENABLED=0
 
-#compile linux only
+# Compile Linux only
 ENV GOOS=linux
 
 # Build the binary - remove debug info and compile only for linux target
-RUN go build  -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/hello .
-# RUN go build -o /go/bin/app
+RUN go build  -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 
 ############################
 # STEP 2 build a small image
 ############################
 FROM scratch
 
-# COPY --from=builder /etc/passwd /etc/passwd
+# Import the user and group files from the builder
+COPY --from=builder /etc/passwd /etc/passwd
+
+# Import the zoneinfo and SSL cert files from the builder
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Copy static executable
-COPY --from=builder /go/bin/hello /hello
+COPY --from=builder /go/bin/app /go/bin/app
 
-# Use an unprivileged user.
-# USER appuser
+# Use an unprivileged user
+USER appuser
 
-# Run the hello binary.
-ENTRYPOINT ["/hello"]
+# Run the app binary
+ENTRYPOINT ["/go/bin/app"]

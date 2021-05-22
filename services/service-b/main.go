@@ -2,6 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service B
+// date: 2021-05-22
 
 package main
 
@@ -39,7 +40,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service-B",
-		Message:     "Namaste, from Service-B!",
+		Message:     "Namasté, from Service-B!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -51,7 +52,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {

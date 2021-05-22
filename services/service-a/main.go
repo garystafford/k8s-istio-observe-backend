@@ -2,6 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service A
+// date: 2021-05-22
 
 package main
 
@@ -54,7 +55,7 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {

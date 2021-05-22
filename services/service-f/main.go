@@ -2,6 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service F
+// date: 2021-05-22
 
 package main
 
@@ -30,7 +31,7 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
+func PingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	greetings = nil
