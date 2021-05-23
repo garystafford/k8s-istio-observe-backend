@@ -44,7 +44,7 @@ spec:
       containers:
       - name: angular-ui
         image: registry.hub.docker.com/garystafford/angular-observe:1.6.0
-        resources:
+#        resources:
         # requests:
         #   memory: 100M
         #   cpu: 100m

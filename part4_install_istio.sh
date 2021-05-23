@@ -9,7 +9,7 @@
 # helm repo add istio.io https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
 # helm repo list
 
-kubectl apply -f ${ISTIO_HOME}/install/kubernetes/helm/helm-service-account.yaml
+kubectl apply -f "${ISTIO_HOME}/install/kubernetes/helm/helm-service-account.yaml"
 
 helm init --service-account tiller
 
@@ -18,7 +18,7 @@ helm init --service-account tiller
 echo 'Waiting 30 seconds...'
 sleep 30
 
-helm install ${ISTIO_HOME}/install/kubernetes/helm/istio-init \
+helm install "${ISTIO_HOME}/install/kubernetes/helm/istio-init" \
   --name istio-init \
   --namespace istio-system
 
@@ -26,7 +26,7 @@ helm install ${ISTIO_HOME}/install/kubernetes/helm/istio-init \
 echo 'Waiting 30 seconds...'
 sleep 30
 
-helm install ${ISTIO_HOME}/install/kubernetes/helm/istio \
+helm install "${ISTIO_HOME}/install/kubernetes/helm/istio" \
   --name istio \
   --namespace istio-system \
   --set prometheus.enabled=true \
