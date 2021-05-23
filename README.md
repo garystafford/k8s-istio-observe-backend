@@ -13,7 +13,7 @@ Jaeger, Kiali, Prometheus, and Grafana, when the system is deployed to Kubernete
 
 ## Optional Front-end UI
 
-An Angular 7 front-end UI to the API is located on
+An Angular 12 front-end UI to the API is located on
 Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend).
 
 ![preview](pics/ui_v2.png)
@@ -29,10 +29,10 @@ informational JSON payload (termed a greeting in the source code).
 
 ```json
 {
-  "id": "844ea9c7-b340-4956-9c8b-f28ae42d0f4a",
+  "id": "fc65e292-eb40-43ee-810f-f819764cae61",
   "service": "Service-A",
   "message": "Hello, from Service-A!",
-  "created": "2019-03-17T16:10:16.4982543Z"
+  "created": "2021-05-22T23:31:10.489864529Z"
 }
 ```
 
@@ -58,6 +58,7 @@ available on [Docker Hub](https://hub.docker.com/u/garystafford/). To build all 
 two scripts.
 
 ```bash
+cd services/
 time bash ./part1_build_srv_images.sh
 time bash ./part2_push_images.sh
 ```
@@ -68,8 +69,6 @@ Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (
 UI, (8) Go-based microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
 
 ```bash
-docker stack rm golang-demo
-sleep 5
 docker network create -d overlay --attachable golang-demo
 docker stack deploy -c docker_swarm/stack.yml golang-demo
 
@@ -80,7 +79,7 @@ docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Port
 > docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 
 NAME                     IMAGE                                PORTS
-golang-demo_angular-ui   garystafford/angular-observe:1.5.0   *:80->80/tcp
+golang-demo_angular-ui   garystafford/angular-observe:1.6.0   *:80->80/tcp
 golang-demo_mongodb      mongo:4.4.6                          *:27017->27017/tcp
 golang-demo_rabbitmq     rabbitmq:3.8.16-management-alpine    *:5672->5672/tcp, *:15672->15672/tcp
 golang-demo_service-a    garystafford/go-srv-a:1.6.0          *:8000->80/tcp

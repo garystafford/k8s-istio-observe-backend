@@ -3,6 +3,8 @@ version: '3.9'
 services:
   angular-ui:
     image: garystafford/angular-observe:1.6.0
+    depends_on:
+      - service-a
     networks:
       - golang-demo
     ports:
@@ -19,12 +21,16 @@ services:
       - golang-demo
   service-c:
     image: garystafford/go-srv-c:1.6.0
+    depends_on:
+      - mongodb
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-d:
     image: garystafford/go-srv-d:1.6.0
+    depends_on:
+      - rabbitmq
     networks:
       - golang-demo
     environment:
@@ -35,6 +41,9 @@ services:
       - golang-demo
   service-f:
     image: garystafford/go-srv-f:1.6.0
+    depends_on:
+      - rabbitmq
+      - mongodb
     networks:
       - golang-demo
     environment:
@@ -42,12 +51,16 @@ services:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-g:
     image: garystafford/go-srv-g:1.6.0
+    depends_on:
+      - mongodb
     networks:
       - golang-demo
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-h:
     image: garystafford/go-srv-h:1.6.0
+    depends_on:
+      - mongodb
     networks:
       - golang-demo
     environment:
@@ -58,6 +71,17 @@ services:
       - golang-demo
     ports:
       - 27017:27017
+  mongo_express:
+    image: mongo-express:0.54.0
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081
+    networks:
+      - golang-demo
+    environment:
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: 'mongodb'
   rabbitmq:
     image: rabbitmq:3.8.16-management-alpine
     ports:
@@ -71,4 +95,4 @@ networks:
     external: true
 
 volumes:
-  data: {}
+  data: { }
