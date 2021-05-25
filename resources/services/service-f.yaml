@@ -62,6 +62,22 @@ spec:
             secretKeyRef:
               name: go-srv-config
               key: rabbitmq.conn
+        - name: SERVICE_A_URL
+          value: http://service-a.dev.svc.cluster.local
+        - name: SERVICE_B_URL
+          value: http://service-b.dev.svc.cluster.local
+        - name: SERVICE_C_URL
+          value: http://service-c.dev.svc.cluster.local
+        - name: SERVICE_D_URL
+          value: http://service-d.dev.svc.cluster.local
+        - name: SERVICE_E_URL
+          value: http://service-e.dev.svc.cluster.local
+        - name: SERVICE_F_URL
+          value: http://service-f.dev.svc.cluster.local
+        - name: SERVICE_G_URL
+          value: http://service-g.dev.svc.cluster.local
+        - name: SERVICE_H_URL
+          value: http://service-h.dev.svc.cluster.local
         ports:
         - containerPort: 80
         imagePullPolicy: IfNotPresent #Always

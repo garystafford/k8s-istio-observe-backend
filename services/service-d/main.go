@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service D
-// date: 2021-05-22
+// date: 2021-05-24
 
 package main
 
@@ -11,6 +11,7 @@ import (
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"net/http"
@@ -27,15 +28,15 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, _ *http.Request) {
+func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service-D",
-		Message:     "Shalom (שָׁלוֹם), from Service-D!",
+		ServiceName: "Service D",
+		Message:     "Shalom (שָׁלוֹם), from Service D!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -68,16 +69,27 @@ func SendMessage(b []byte) {
 	if err != nil {
 		log.Error(err)
 	}
-	defer conn.Close()
+	defer func(conn *amqp.Connection) {
+		err := conn.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(conn)
 
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Error(err)
 	}
-	defer ch.Close()
+
+	defer func(ch *amqp.Channel) {
+		err := ch.Close()
+		if err != nil {
+
+		}
+	}(ch)
 
 	q, err := ch.QueueDeclare(
-		"service-d",
+		"service-d.greeting",
 		false,
 		false,
 		false,
@@ -124,7 +136,8 @@ func init() {
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":80", router))
 }

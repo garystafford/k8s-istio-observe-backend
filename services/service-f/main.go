@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service F
-// date: 2021-05-22
+// date: 2021-05-24
 
 package main
 
@@ -13,6 +13,7 @@ import (
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,15 +32,15 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, _ *http.Request) {
+func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service-F",
-		Message:     "Hola, from Service-F!",
+		ServiceName: "Service F",
+		Message:     "Hola, from Service F!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -53,7 +54,7 @@ func PingHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
@@ -63,16 +64,23 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 
 func CallMongoDB(greeting Greeting) {
 	log.Info(greeting)
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
 	if err != nil {
 		log.Error(err)
 	}
 
-	defer client.Disconnect(nil)
+	defer func(client *mongo.Client, ctx context.Context) {
+		err := client.Disconnect(ctx)
+		if err != nil {
+			log.Error(err)
+		}
+	}(client, nil)
 
 	collection := client.Database("service-f").Collection("messages")
-	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	_, err = collection.InsertOne(ctx, greeting)
 	if err != nil {
@@ -85,16 +93,26 @@ func GetMessages() {
 	if err != nil {
 		log.Error(err)
 	}
-	defer conn.Close()
+	defer func(conn *amqp.Connection) {
+		err := conn.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(conn)
 
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Error(err)
 	}
-	defer ch.Close()
+	defer func(ch *amqp.Channel) {
+		err := ch.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(ch)
 
 	q, err := ch.QueueDeclare(
-		"service-d",
+		"service-d.greeting",
 		false,
 		false,
 		false,
@@ -166,7 +184,8 @@ func main() {
 
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":80", router))
 }

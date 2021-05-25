@@ -13,6 +13,7 @@ Run a service locally:
 
 ```shell
 cd ./service/service-a
+go mod tidy
 go run *.go
 ```
 

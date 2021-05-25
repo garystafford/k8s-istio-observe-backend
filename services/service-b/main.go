@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service B
-// date: 2021-05-22
+// date: 2021-05-24
 
 package main
 
@@ -11,7 +11,9 @@ import (
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -27,20 +29,20 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
+func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	log.Debug(r)
 
 	greetings = nil
 
-	CallNextServiceWithTrace("http://service-d/api/ping", w, r)
-	CallNextServiceWithTrace("http://service-e/api/ping", w, r)
+	CallNextServiceWithTrace(getEnv("SERVICE_D_URL", "http://service-d")+"/api/greeting", w, r)
+	CallNextServiceWithTrace(getEnv("SERVICE_E_URL", "http://service-e")+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service-B",
-		Message:     "Namasté, from Service-B!",
+		ServiceName: "Service B",
+		Message:     "Namasté, from Service B!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -96,7 +98,12 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		log.Error(err)
 	}
 
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(response.Body)
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
@@ -135,7 +142,8 @@ func init() {
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":80", router))
 }

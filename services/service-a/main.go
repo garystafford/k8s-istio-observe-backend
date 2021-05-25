@@ -2,20 +2,23 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service A
-// date: 2021-05-22
+// date: 2021-05-24
 
 package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"strconv"
 	"time"
@@ -30,20 +33,20 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
+func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	log.Debug(r)
 
 	greetings = nil
 
-	CallNextServiceWithTrace("http://service-b/api/ping", w, r)
-	CallNextServiceWithTrace("http://service-c/api/ping", w, r)
+	CallNextServiceWithTrace(getEnv("SERVICE_B_URL", "http://service-b")+"/api/greeting", w, r)
+	CallNextServiceWithTrace(getEnv("SERVICE_C_URL", "http://service-c")+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service-A",
-		Message:     "Hello, from Service-A!",
+		ServiceName: "Service A",
+		Message:     "Hello, from Service A!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -109,7 +112,12 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		log.Error(err)
 	}
 
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(response.Body)
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
@@ -126,6 +134,17 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 	}
 }
 
+func RequestEchoHandler(w http.ResponseWriter, r *http.Request) {
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		log.Error(err)
+	}
+	_, err = fmt.Fprintf(w, string(requestDump))
+	if err != nil {
+		log.Error(err)
+	}
+}
+
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
@@ -138,7 +157,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "debug"))
 	if err != nil {
 		log.Error(err)
 	}
@@ -153,8 +172,10 @@ func main() {
 	})
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET", "OPTIONS")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/request-echo", RequestEchoHandler).Methods(
+		"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
 	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
 	api.Handle("/metrics", promhttp.Handler())
 	handler := c.Handler(router)

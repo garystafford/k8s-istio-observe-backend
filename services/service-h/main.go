@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service H
-// date: 2021-05-22
+// date: 2021-05-24
 
 package main
 
@@ -12,6 +12,7 @@ import (
 	"github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -29,15 +30,15 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func PingHandler(w http.ResponseWriter, _ *http.Request) {
+func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service-H",
-		Message:     "Ciao, from Service-H!",
+		ServiceName: "Service H",
+		Message:     "Ciao, from Service H!",
 		CreatedAt:   time.Now().Local(),
 	}
 
@@ -51,7 +52,7 @@ func PingHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
@@ -68,7 +69,12 @@ func CallMongoDB(greeting Greeting) {
 		log.Error(err)
 	}
 
-	defer client.Disconnect(nil)
+	defer func(client *mongo.Client, ctx context.Context) {
+		err := client.Disconnect(ctx)
+		if err != nil {
+			log.Error(err)
+		}
+	}(client, nil)
 
 	collection := client.Database("service-h").Collection("greetings")
 	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
@@ -102,7 +108,8 @@ func init() {
 func main() {
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/ping", PingHandler).Methods("GET")
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":80", router))
 }

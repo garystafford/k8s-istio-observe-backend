@@ -65,8 +65,12 @@ time bash ./part2_push_images.sh
 
 ### Deployed Stack Services
 
-Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (11) containers: (1) Angular 7 Front-end
-UI, (8) Go-based microservices, (1) RabbitMQ server with (1) queue, and (1) MongoDB server with (4) databases.
+Create Docker overlay network, and deploy Docker Swarm, locally, consisting of (12) containers:
+- (1) Angular 12 front-end UI
+- (8) Go-based microservices
+- (1) RabbitMQ server with (1) queue
+- (1) MongoDB server with (4) databases
+- (1) Mongo Express
 
 ```bash
 docker network create -d overlay --attachable golang-demo
@@ -78,18 +82,19 @@ docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Port
 ```text
 > docker stack services golang-demo --format "table {{.Name}}\t{{.Image}}\t{{.Ports}}" | sort
 
-NAME                     IMAGE                                PORTS
-golang-demo_angular-ui   garystafford/angular-observe:1.6.0   *:80->80/tcp
-golang-demo_mongodb      mongo:4.4.6                          *:27017->27017/tcp
-golang-demo_rabbitmq     rabbitmq:3.8.16-management-alpine    *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a    garystafford/go-srv-a:1.6.0          *:8000->80/tcp
-golang-demo_service-b    garystafford/go-srv-b:1.6.0
-golang-demo_service-c    garystafford/go-srv-c:1.6.0
-golang-demo_service-d    garystafford/go-srv-d:1.6.0
-golang-demo_service-e    garystafford/go-srv-e:1.6.0
-golang-demo_service-f    garystafford/go-srv-f:1.6.0
-golang-demo_service-g    garystafford/go-srv-g:1.6.0
-golang-demo_service-h    garystafford/go-srv-h:1.6.0
+NAME                        IMAGE                                PORTS
+golang-demo_angular-ui      garystafford/angular-observe:1.6.0   *:80->80/tcp
+golang-demo_mongodb         mongo:4.4.6                          *:27017->27017/tcp
+golang-demo_mongo_express   mongo-express:0.54.0                 *:8081->8081/tcp
+golang-demo_rabbitmq        rabbitmq:3.8.16-management-alpine    *:5672->5672/tcp, *:15672->15672/tcp
+golang-demo_service-a       garystafford/go-srv-a:1.6.0          *:8000->80/tcp
+golang-demo_service-b       garystafford/go-srv-b:1.6.0
+golang-demo_service-c       garystafford/go-srv-c:1.6.0
+golang-demo_service-d       garystafford/go-srv-d:1.6.0
+golang-demo_service-e       garystafford/go-srv-e:1.6.0
+golang-demo_service-f       garystafford/go-srv-f:1.6.0
+golang-demo_service-g       garystafford/go-srv-g:1.6.0
+golang-demo_service-h       garystafford/go-srv-h:1.6.0
 ```
 
 ## Accessing the Docker Swarm-based Stack
