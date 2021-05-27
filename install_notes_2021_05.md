@@ -115,7 +115,7 @@ aws iam attach-role-policy \
 
 Deploy Istio
 
-```
+```shell
 istioctl install --set profile=demo -y
 
 kubectl apply -f resources/other/gateway.yaml -n dev
@@ -147,7 +147,7 @@ kubectl apply -f ./resources/secrets/go-srv-demo-internal.yaml -n dev
 kubectl apply -f ./resources/services/angular-ui.yaml -n dev
 
 for service in a b c d e f g h; do
-  kubectl apply -n dev -f "./resources/services/service-$service.yaml"
+  kubectl apply -f "./resources/services/service-$service.yaml" -n dev
 done
 
 

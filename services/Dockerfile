@@ -35,7 +35,7 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 
 # Build the binary - remove debug info and compile only for linux target
-RUN go build  -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
+RUN go build -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 
 ############################
 # STEP 2 build a small image
