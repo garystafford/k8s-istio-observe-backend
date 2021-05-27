@@ -10,7 +10,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/banzaicloud/logrus-runtime-formatter"
+	runtime "github.com/banzaicloud/logrus-runtime-formatter"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,9 +22,6 @@ import (
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
-	"os"
-	"time"
 )
 
 type Greeting struct {
@@ -187,5 +188,5 @@ func main() {
 	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
 	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":80", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

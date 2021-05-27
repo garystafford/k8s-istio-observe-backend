@@ -18,7 +18,7 @@ services = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 for service in services:
     output = template.render(service=service,
                              replicas=2,
-                             versions='1.6.0')
+                             versions='1.6.5')
     print(output)
 
     filename = "service-%s%s" % (service, '.yaml')

@@ -8,15 +8,16 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/banzaicloud/logrus-runtime-formatter"
+	runtime "github.com/banzaicloud/logrus-runtime-formatter"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
-	"net/http"
-	"os"
-	"time"
 )
 
 type Greeting struct {
@@ -139,5 +140,5 @@ func main() {
 	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
 	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":80", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

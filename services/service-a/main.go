@@ -9,12 +9,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/banzaicloud/logrus-runtime-formatter"
-	"github.com/google/uuid"
-	"github.com/gorilla/mux"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/rs/cors"
-	log "github.com/sirupsen/logrus"
+	runtime "github.com/banzaicloud/logrus-runtime-formatter"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -22,6 +17,12 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/cors"
+	log "github.com/sirupsen/logrus"
 )
 
 type Greeting struct {
@@ -179,5 +180,5 @@ func main() {
 	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
 	api.Handle("/metrics", promhttp.Handler())
 	handler := c.Handler(router)
-	log.Fatal(http.ListenAndServe(":80", handler))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

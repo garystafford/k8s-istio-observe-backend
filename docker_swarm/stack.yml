@@ -14,17 +14,17 @@ services:
     networks:
       - golang-demo
     ports:
-      - 8000:80
+      - 8080:80
     environment:
-      SERVICE_B_URL: 'http://service-b'
-      SERVICE_C_URL: 'http://service-c'
+      SERVICE_B_URL: 'http://service-b:8080'
+      SERVICE_C_URL: 'http://service-c:8080'
   service-b:
     image: garystafford/go-srv-b:1.6.0
     networks:
       - golang-demo
     environment:
-      SERVICE_D_URL: 'http://service-d'
-      SERVICE_E_URL: 'http://service-e'
+      SERVICE_D_URL: 'http://service-d:8080'
+      SERVICE_E_URL: 'http://service-e:8080'
   service-c:
     image: garystafford/go-srv-c:1.6.0
     depends_on:
@@ -46,8 +46,8 @@ services:
     networks:
       - golang-demo
     environment:
-      SERVICE_G_URL: 'http://service-g'
-      SERVICE_H_URL: 'http://service-h'
+      SERVICE_G_URL: 'http://service-g:8080'
+      SERVICE_H_URL: 'http://service-h:8080'
   service-f:
     image: garystafford/go-srv-f:1.6.0
     depends_on:

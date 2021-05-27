@@ -35,3 +35,7 @@ Push all Docker images.
 ```shell
 sh time | ./part2_push_images.sh
 ```
+
+```shell
+time | sh ./part1_build_srv_images.sh && sh ./part2_push_images.sh
+```

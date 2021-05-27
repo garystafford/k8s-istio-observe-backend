@@ -3,3 +3,4 @@ github.com/
 .idea/
 build/*
 .DS_Store
+resources/secrets/go-srv-demo-internal.yaml

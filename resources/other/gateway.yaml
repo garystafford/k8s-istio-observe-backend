@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: greetings-app-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - observe-eks-istio.dev.example-api.com
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: angular-ui
+spec:
+  hosts:
+    - observe-eks-istio.dev.example-api.com
+  gateways:
+    - greetings-app-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: angular-ui.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 80

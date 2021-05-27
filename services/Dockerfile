@@ -7,7 +7,7 @@
 ################################
 FROM golang:1.16.4-alpine3.13 AS builder
 
-EXPOSE 8000
+EXPOSE 8080
 
 # Install git, zoneinfo, and SSL certs
 RUN apk update && apk add --no-cache git ca-certificates tzdata
@@ -41,6 +41,9 @@ RUN go build  -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 # STEP 2 build a small image
 ############################
 FROM scratch
+
+LABEL maintainer="Gary A. Stafford <gary.a.stafford@gmail.com>"
+ENV REFRESHED_AT 2021-05-26
 
 # Import the user and group files from the builder
 COPY --from=builder /etc/passwd /etc/passwd

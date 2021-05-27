@@ -9,13 +9,13 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 80
+    port: 8080
   selector:
     app: service-{{ service }}
     component: service
     version: "{{ versions }}"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-{{ service }}
@@ -63,21 +63,21 @@ spec:
               name: go-srv-config
               key: rabbitmq.conn
         - name: SERVICE_A_URL
-          value: http://service-a.dev.svc.cluster.local
+          value: http://service-a.dev.svc.cluster.local:8080
         - name: SERVICE_B_URL
-          value: http://service-b.dev.svc.cluster.local
+          value: http://service-b.dev.svc.cluster.local:8080
         - name: SERVICE_C_URL
-          value: http://service-c.dev.svc.cluster.local
+          value: http://service-c.dev.svc.cluster.local:8080
         - name: SERVICE_D_URL
-          value: http://service-d.dev.svc.cluster.local
+          value: http://service-d.dev.svc.cluster.local:8080
         - name: SERVICE_E_URL
-          value: http://service-e.dev.svc.cluster.local
+          value: http://service-e.dev.svc.cluster.local:8080
         - name: SERVICE_F_URL
-          value: http://service-f.dev.svc.cluster.local
+          value: http://service-f.dev.svc.cluster.local:8080
         - name: SERVICE_G_URL
-          value: http://service-g.dev.svc.cluster.local
+          value: http://service-g.dev.svc.cluster.local:8080
         - name: SERVICE_H_URL
-          value: http://service-h.dev.svc.cluster.local
+          value: http://service-h.dev.svc.cluster.local:8080
         ports:
-        - containerPort: 80
-        imagePullPolicy: IfNotPresent #Always
+        - containerPort: 8080
+        imagePullPolicy: Always
