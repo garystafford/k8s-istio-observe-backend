@@ -542,15 +542,15 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
----
-# apiVersion: v1
-# kind: ServiceAccount
-# metadata:
-#   labels:
-#     app.kubernetes.io/component: controller
-#     app.kubernetes.io/name: aws-load-balancer-controller
-#   name: aws-load-balancer-controller
-#   namespace: kube-system
+#---
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata:
+#  labels:
+#    app.kubernetes.io/component: controller
+#    app.kubernetes.io/name: aws-load-balancer-controller
+#  name: aws-load-balancer-controller
+#  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -794,7 +794,7 @@ spec:
     spec:
       containers:
       - args:
-        - --cluster-name=eks-istio-observability-demo
+        - --cluster-name=istio-observe-demo
         - --ingress-class=alb
         image: amazon/aws-alb-ingress-controller:v2.2.0
         livenessProbe:

@@ -79,6 +79,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+        - Key: kubernetes.io/role/elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   PublicSubnet2:
     Type: AWS::EC2::Subnet
@@ -90,6 +94,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+        - Key: kubernetes.io/role/elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   PublicSubnet3:
     Type: AWS::EC2::Subnet
@@ -101,6 +109,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ3)
+        - Key: kubernetes.io/role/elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -112,6 +124,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
@@ -123,6 +139,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
@@ -134,6 +154,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ3)
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+        - Key: kubernetes.io/cluster/eks-dev-cluster-istio
+          Value: shared
 
   NatGateway1EIP:
     Type: AWS::EC2::EIP
