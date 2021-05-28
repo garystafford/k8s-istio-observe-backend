@@ -8,10 +8,10 @@ spec:
   servers:
     - port:
         number: 80
-        name: http
+        name: ui
         protocol: HTTP
       hosts:
-        - observe-eks-istio.dev.example-api.com
+        - observe-istio-eks.example-api.com
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -19,7 +19,7 @@ metadata:
   name: angular-ui
 spec:
   hosts:
-    - observe-eks-istio.dev.example-api.com
+    - observe-istio-eks.example-api.com
   gateways:
     - greetings-app-gateway
   http:
@@ -39,13 +39,15 @@ metadata:
   name: service-a
 spec:
   hosts:
-    - nlp-eks-istio.example-api.com
+    - observe-istio-eks.example-api.com
   gateways:
-    - nlp-app-gateway
+    - greetings-app-gateway
   http:
     - match:
         - uri:
             prefix: /api
+#      rewrite:
+#        uri: /
       route:
         - destination:
             host: service-a.dev.svc.cluster.local

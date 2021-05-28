@@ -130,7 +130,7 @@ kubectl apply -f resources/istio/gateway.yaml -n dev
 kubectl apply -f resources/istio/destination-rules.yaml -n dev
 
 # *** manually add 3 healthcheck lines with port from above, per instructions also above
-kubectl apply -f resources/other/greetings-app-ingress.yaml
+kubectl apply -f resources/other/istio-ingress.yaml
 
 # key command to confirm health of ALB config!
 kubectl describe ingress.networking.k8s.io --all-namespaces
@@ -182,8 +182,6 @@ kubectl delete configmap cluster-info -n amazon-cloudwatch
 Deploy App
 
 ```shell
-
-
 # secrets
 echo -n '{{mongodb.conn}}' | base64
 echo -n '{{rabbitmq.conn}}' | base64
