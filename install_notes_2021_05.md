@@ -72,14 +72,14 @@ kubectl apply --validate=false \
   -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
 
 # 1x
-curl -o resources/aws/aws-load-balancer-controller-v220-all.yaml \
+curl -o resources/other/aws-load-balancer-controller-v220-all.yaml \
   https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.2.0/docs/install/v2_2_0_full.yaml
 
 # https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
 # *** Modify the file aws-load-balancer-controller-v220-all.yaml per documentation #5 (two steps) ***
 # - --cluster-name=eks-dev-cluster-istio
 
-kubectl apply -f resources/aws/aws-load-balancer-controller-v220-all.yaml
+kubectl apply -f resources/other/aws-load-balancer-controller-v220-all.yaml
 
 kubectl get deployment -n kube-system aws-load-balancer-controller
 # NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
@@ -126,8 +126,8 @@ kubectl -n istio-system edit svc istio-ingressgateway #NodePort and get port #
 kubectl -n istio-system describe svc istio-ingressgateway
 kubectl -n istio-system get deploy istio-ingressgateway -o yaml
 
-kubectl apply -f resources/other/gateway.yaml -n dev
-kubectl apply -f resources/other/destination-rules.yaml -n dev
+kubectl apply -f resources/istio/gateway.yaml -n dev
+kubectl apply -f resources/istio/destination-rules.yaml -n dev
 
 # *** manually add 3 healthcheck lines with port from above, per instructions also above
 kubectl apply -f resources/other/greetings-app-ingress.yaml
