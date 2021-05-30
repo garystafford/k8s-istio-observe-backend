@@ -223,7 +223,6 @@ Mongo Express
 kubectl apply -f ./resources/services/mongo-express.yaml -n mongo-express
 kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
 kubectl get service/mongo-express -n mongo-express
-curl 54.204.172.70:32488
 ```
 
 Egress Gateway
