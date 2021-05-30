@@ -4,7 +4,7 @@ github.com/
 build/*
 .DS_Store
 **/*_internal.yaml
-resources/secrets/go-srv-demo-internal.yaml
+resources/secrets/secrets-internal.yaml
 resources/istio/external-mesh-document-db-internal.yaml
 resources/istio/external-mesh-amazon-mq-internal.yaml
 resources/other/alb-ingress-internal.yaml

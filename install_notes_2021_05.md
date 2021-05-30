@@ -203,7 +203,7 @@ echo -n '{{mongodb.conn}}' | base64
 echo -n '{{rabbitmq.conn}}' | base64
 
 # *** Add to go-srv-demo.yaml file
-kubectl apply -f ./resources/secrets/go-srv-demo-internal.yaml -n dev
+kubectl apply -f ./resources/secrets/secrets-internal.yaml
 
 kubectl apply -f ./resources/services/angular-ui.yaml -n dev
 
@@ -257,7 +257,7 @@ hey -n 40 -c 25 -h2 https://observe-istio-eks.example-api.com/api
 Mongo Express
 
 ```shell
-kubectl apply -f ./resources/services/mongo-express.yaml -n dev
+kubectl apply -f ./resources/services/mongo-express.yaml -n mongo-express
 ```
 
 Delete Resources
