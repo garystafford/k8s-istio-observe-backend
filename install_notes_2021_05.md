@@ -219,6 +219,7 @@ kubectl get services -n dev
 Mongo Express
 
 ```shell
+# NodePort access: https://kubernetes.io/docs/tasks/access-application-cluster/service-access-application-cluster/#creating-a-service-for-an-application-running-in-two-pods
 kubectl apply -f ./resources/services/mongo-express.yaml -n mongo-express
 kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
 kubectl get service/mongo-express -n mongo-express
@@ -238,7 +239,7 @@ kubectl apply -f resources/istio/external-mesh-document-db-internal.yaml
 kubectl apply -f resources/istio/external-mesh-amazon-mq-internal.yaml
 ```
 
-Istio Dashboard
+Kubernetes Dashboard
 
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.5/aio/deploy/recommended.yaml
