@@ -4,7 +4,7 @@ metadata:
   name: amazon-mq-external-mesh
 spec:
   hosts:
-    - {{ your_amazon_mq_hostname }}
+  - b-cb06a2f2-a425-4718-8ba6-b7e50fea0cce.mq.us-east-1.amazonaws.com
   ports:
   - name: rabbitmq
     number: 5671

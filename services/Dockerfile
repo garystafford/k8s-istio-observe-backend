@@ -1,6 +1,6 @@
 # build based on:
 # https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-# date: 2021-05-24
+# date: 2021-05-29
 
 ################################
 # STEP 1 build executable binary

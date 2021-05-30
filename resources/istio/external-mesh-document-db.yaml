@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: mongodb-atlas-external-mesh
+  name: docdb-external-mesh
 spec:
   hosts:
-  - {{ your_host_url_goes_here }}
+    - {{ your_document_db_hostname }}
   ports:
   - name: mongo
     number: 27017

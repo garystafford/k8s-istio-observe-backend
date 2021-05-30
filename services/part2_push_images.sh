@@ -4,7 +4,7 @@
 # site: https://programmaticponderings.com
 # license: MIT License
 # purpose: Push images to Dockerhub
-# date: 2021-05-24
+# date: 2021-05-29
 
 readonly -a arr=(a b c d e f g h)
 # readonly -a arr=(a)

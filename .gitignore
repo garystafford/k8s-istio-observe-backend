@@ -3,4 +3,7 @@ github.com/
 .idea/
 build/*
 .DS_Store
+**/*_internal.yaml
 resources/secrets/go-srv-demo-internal.yaml
+resources/istio/external-mesh-document-db-internal.yaml
+resources/istio/external-mesh-amazon-mq-internal.yaml

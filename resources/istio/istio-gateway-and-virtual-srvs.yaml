@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: greetings-app-gateway
+  name: istio-gateway
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -21,7 +21,7 @@ spec:
   hosts:
     - observe-istio-eks.example-api.com
   gateways:
-    - greetings-app-gateway
+    - istio-gateway
   http:
     - match:
         - uri:
@@ -41,13 +41,11 @@ spec:
   hosts:
     - observe-istio-eks.example-api.com
   gateways:
-    - greetings-app-gateway
+    - istio-gateway
   http:
     - match:
         - uri:
             prefix: /api
-#      rewrite:
-#        uri: /
       route:
         - destination:
             host: service-a.dev.svc.cluster.local

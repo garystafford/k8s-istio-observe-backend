@@ -96,7 +96,7 @@ Create/Deploy ALB Policies/Roles
 
 aws iam create-role \
   --role-name eks-alb-ingress-controller-eks-istio-observe-demo \
-  --assume-role-policy-document file://resources/aws/trust-eks-istio-observe-demo.json
+  --assume-role-policy-document file://resources/aws/trust-eks-policy.json
 
 aws iam attach-role-policy \
   --role-name eks-alb-ingress-controller-eks-istio-observe-demo \
@@ -129,8 +129,24 @@ kubectl -n istio-system get deploy istio-ingressgateway -o yaml
 kubectl apply -f resources/istio/gateway.yaml -n dev
 kubectl apply -f resources/istio/destination-rules.yaml -n dev
 
-# *** manually add 3 healthcheck lines with port from above, per instructions also above
-kubectl apply -f resources/other/istio-ingress.yaml
+istioctl analyze -n dev
+
+# *** manually add 3 healthcheck lines with port from above, and cert
+#     per instructions also above to alb-ingress.yaml
+export ALB_CERT=$(aws acm list-certificates --certificate-statuses ISSUED \
+  | jq -r '.CertificateSummaryList[] | select(.DomainName=="*.example-api.com") | .CertificateArn')
+yq e '.metadata.annotations."alb.ingress.kubernetes.io/certificate-arn" = env(ALB_CERT)' -i resources/other/alb-ingress.yaml
+
+#kubectl -n istio-system edit svc istio-egressgateway
+
+kubectl -n istio-system get svc istio-ingressgateway -o yaml \
+  | sed 's/type: LoadBalancer/type: NodePort/g' \
+  | kubectl replace -f -
+
+kubectl -n istio-system get svc istio-ingressgateway \
+  -o jsonpath='{.spec.ports[?(@.name=="status-port")].nodePort}'
+
+kubectl apply -f resources/other/alb-ingress.yaml
 
 # key command to confirm health of ALB config!
 kubectl describe ingress.networking.k8s.io --all-namespaces
@@ -195,14 +211,53 @@ for service in a b c d e f g h; do
   kubectl apply -f "./resources/services/service-$service.yaml" -n dev
 done
 
+kubectl get deployments -n dev
+kubectl get services -n dev
 
-# ingress deploys the ALB
-export ALB_CERT=$(aws acm list-certificates --certificate-statuses ISSUED \
-  | jq -r '.CertificateSummaryList[] | select(.DomainName=="*.example-api.com") | .CertificateArn')
-yq e '.metadata.annotations."alb.ingress.kubernetes.io/certificate-arn" = env(ALB_CERT)' -i resources/other/greetings-app-ingress.yaml
+```
 
-istioctl analyze -n dev
+Mongo Express
 
+```shell
+kubectl apply -f ./resources/services/mongo-express.yaml -n mongo-express
+kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
+kubectl get service/mongo-express -n mongo-express
+curl 54.204.172.70:32488
+```
+
+Egress Gateway
+
+```shell
+# https://istio.io/latest/docs/tasks/traffic-management/egress/egress-gateway/
+
+kubectl get pod -l istio=egressgateway -n istio-system
+#NAME                                   READY   STATUS    RESTARTS   AGE
+#istio-egressgateway-585f7668fc-74qtf   1/1     Running   0          14h
+
+kubectl apply -f resources/istio/external-mesh-document-db-internal.yaml
+kubectl apply -f resources/istio/external-mesh-amazon-mq-internal.yaml
+```
+
+Istio Dashboard
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.5/aio/deploy/recommended.yaml
+kubectl apply -f resources/aws/eks-admin-service-account.yaml
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
+
+```
+
+Hey
+
+```shell
+hey -n 40 -c 25 -h2 https://observe-istio-eks.example-api.com
+hey -n 40 -c 25 -h2 https://observe-istio-eks.example-api.com/api
+```
+
+Mongo Express
+
+```shell
+kubectl apply -f ./resources/services/mongo-express.yaml -n dev
 ```
 
 Delete Resources

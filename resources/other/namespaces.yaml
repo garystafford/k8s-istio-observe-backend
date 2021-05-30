@@ -8,6 +8,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: test
+  name: mongo-express
   labels:
-    name: test
+    name: mongo-express

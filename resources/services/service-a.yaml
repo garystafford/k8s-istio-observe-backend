@@ -44,7 +44,7 @@ spec:
       containers:
       - name: service-a
         image: registry.hub.docker.com/garystafford/go-srv-a:1.6.5
-        resources:
+#        resources:
         # requests:
         #   memory: 100M
         #   cpu: 100m

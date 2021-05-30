@@ -44,7 +44,7 @@ spec:
       containers:
       - name: service-{{ service }}
         image: registry.hub.docker.com/garystafford/go-srv-{{ service }}:{{ versions }}
-        resources:
+        # resources:
         # requests:
         #   memory: 100M
         #   cpu: 100m

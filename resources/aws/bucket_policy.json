@@ -8,7 +8,6 @@
       },
       "Action": "s3:PutObject",
       "Resource": [
-        "arn:aws:s3:::garystaf-aws-alb-logs-api/nlp-app/*",
         "arn:aws:s3:::garystaf-aws-alb-logs-api/greetings-app/*"
       ]
     }
