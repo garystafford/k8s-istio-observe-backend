@@ -7,16 +7,16 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: Environment=dev
-    alb.ingress.kubernetes.io/healthcheck-port: '31692'
+    alb.ingress.kubernetes.io/healthcheck-port: '{{ your_port }}'
     alb.ingress.kubernetes.io/healthcheck-path: /healthz/ready
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-    external-dns.alpha.kubernetes.io/hostname: "observe-istio-eks.example-api.com"
-    alb.ingress.kubernetes.io/certificate-arn: "{{ your_cert_here }}"
+    external-dns.alpha.kubernetes.io/hostname: "{{ your_domain }}"
+    alb.ingress.kubernetes.io/certificate-arn: "{{ your_cert }}"
     alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true,idle_timeout.timeout_seconds=30
   labels:
-    app: greetings-app
+    app: reference-app
 spec:
   rules:
     - http:
