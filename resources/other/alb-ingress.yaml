@@ -13,8 +13,8 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
     external-dns.alpha.kubernetes.io/hostname: "observe-istio-eks.example-api.com"
-    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:676164205626:certificate/c5f44f83-f06f-4d35-9366-f9cab30c6862"
-    alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true,idle_timeout.timeout_seconds=30,access_logs.s3.enabled=true,access_logs.s3.bucket=garystaf-aws-alb-logs-api,access_logs.s3.prefix=greetings-app
+    alb.ingress.kubernetes.io/certificate-arn: "{{ your_cert_here }}"
+    alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true,idle_timeout.timeout_seconds=30
   labels:
     app: greetings-app
 spec:

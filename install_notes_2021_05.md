@@ -146,7 +146,7 @@ kubectl -n istio-system get svc istio-ingressgateway -o yaml \
 kubectl -n istio-system get svc istio-ingressgateway \
   -o jsonpath='{.spec.ports[?(@.name=="status-port")].nodePort}'
 
-kubectl apply -f resources/other/alb-ingress.yaml
+kubectl apply -f resources/other/alb-ingress-internal.yaml
 
 # key command to confirm health of ALB config!
 kubectl describe ingress.networking.k8s.io --all-namespaces
