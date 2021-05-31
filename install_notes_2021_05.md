@@ -155,6 +155,9 @@ kubectl -n istio-system get ingress
 
 kubectl apply -f $ISTIO_HOME/samples/addons
 kubectl rollout status deployment/grafana -n istio-system
+istioctl dashboard prometheus
+istioctl dashboard grafana
+istioctl dashboard kiali
 ```
 
 Deploy fluent bit
