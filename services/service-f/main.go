@@ -24,6 +24,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	port = ":8080"
+)
+
 type Greeting struct {
 	ID          string    `json:"id,omitempty"`
 	ServiceName string    `json:"service,omitempty"`
@@ -188,5 +192,5 @@ func main() {
 	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
 	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
 	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(port, router))
 }

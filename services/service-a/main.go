@@ -25,6 +25,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	port = ":8080"
+)
+
 type Greeting struct {
 	ID          string    `json:"id,omitempty"`
 	ServiceName string    `json:"service,omitempty"`
@@ -167,7 +171,7 @@ func init() {
 
 func main() {
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
+		AllowedOrigins:   []string{getEnv("ALLOWED_ORIGINS", "*")},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 	})
@@ -180,5 +184,5 @@ func main() {
 	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
 	api.Handle("/metrics", promhttp.Handler())
 	handler := c.Handler(router)
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	log.Fatal(http.ListenAndServe(port, handler))
 }
