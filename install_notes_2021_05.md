@@ -248,6 +248,8 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.5/a
 kubectl apply -f resources/aws/eks-admin-service-account.yaml
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
 
+kubectl proxy
+# go to: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login
 ```
 
 Hey
@@ -257,10 +259,13 @@ hey -n 40 -c 25 -h2 https://observe-istio-eks.example-api.com
 hey -n 40 -c 25 -h2 https://observe-istio-eks.example-api.com/api
 ```
 
-Mongo Express
+Metrics Server
 
 ```shell
-kubectl apply -f ./resources/services/mongo-express.yaml -n mongo-express
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl get deployment metrics-server -n kube-system
+
 ```
 
 Delete Resources
