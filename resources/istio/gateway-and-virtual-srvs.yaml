@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: ui
+        protocol: HTTP
+      hosts:
+        - observe-ui.example-api.com
+        - observe-api.example-api.com
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: angular-ui
+spec:
+  hosts:
+    - observe-ui.example-api.com
+  gateways:
+    - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: angular-ui.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: service-a
+spec:
+  hosts:
+    - observe-api.example-api.com
+  gateways:
+    - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api
+      route:
+        - destination:
+            host: service-a.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 8080

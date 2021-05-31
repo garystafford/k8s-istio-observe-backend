@@ -126,7 +126,7 @@ kubectl -n istio-system edit svc istio-ingressgateway #NodePort and get port #
 kubectl -n istio-system describe svc istio-ingressgateway
 kubectl -n istio-system get deploy istio-ingressgateway -o yaml
 
-kubectl apply -f resources/istio/gateway.yaml -n dev
+kubectl apply -f resources/istio/gateway-and-virtual-srvs.yaml -n dev
 kubectl apply -f resources/istio/destination-rules.yaml -n dev
 
 istioctl analyze -n dev
