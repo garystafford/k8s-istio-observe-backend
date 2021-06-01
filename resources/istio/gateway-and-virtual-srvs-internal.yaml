@@ -11,8 +11,8 @@ spec:
         name: ui
         protocol: HTTP
       hosts:
-        - {{ your_ui_hostname }}
-        - {{ your_api_hostname }}
+        - observe-ui.example-api.com
+        - observe-api.example-api.com
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -20,7 +20,7 @@ metadata:
   name: angular-ui
 spec:
   hosts:
-    - {{ your_ui_hostname }}
+    - observe-ui.example-api.com
   gateways:
     - istio-gateway
   http:
@@ -40,7 +40,7 @@ metadata:
   name: service-a
 spec:
   hosts:
-    - {{ your_api_hostname }}
+    - observe-api.example-api.com
   gateways:
     - istio-gateway
   http:
