@@ -5,7 +5,6 @@ metadata:
   labels:
     app: service-{{ service }}
     component: service
-    version: {{ versions }}
 spec:
   ports:
   - name: http
@@ -13,7 +12,6 @@ spec:
   selector:
     app: service-{{ service }}
     component: service
-    version: {{ versions }}
 ---
 apiVersion: apps/v1
 kind: Deployment

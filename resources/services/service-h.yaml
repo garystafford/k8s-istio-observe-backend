@@ -5,7 +5,6 @@ metadata:
   labels:
     app: service-h
     component: service
-    version: v1
 spec:
   ports:
     - name: http
@@ -13,7 +12,6 @@ spec:
   selector:
     app: service-h
     component: service
-    version: v1
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,9 +22,12 @@ metadata:
     component: service
     version: v1
 spec:
-  replicas: 2
+  replicas: 3
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: service-h
