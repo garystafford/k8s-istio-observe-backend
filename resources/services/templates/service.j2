@@ -5,7 +5,7 @@ metadata:
   labels:
     app: service-{{ service }}
     component: service
-    version: "{{ versions }}"
+    version: '{{ versions }}'
 spec:
   ports:
   - name: http
@@ -13,7 +13,7 @@ spec:
   selector:
     app: service-{{ service }}
     component: service
-    version: "{{ versions }}"
+    version: '{{ versions }}'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: service-{{ service }}
     component: service
-    version: "{{ versions }}"
+    version: '{{ versions }}'
 spec:
   replicas: {{ replicas }}
   strategy:
@@ -31,19 +31,19 @@ spec:
     matchLabels:
       app: service-{{ service }}
       component: service
-      version: "{{ versions }}"
+      version: '{{ versions }}'
   template:
     metadata:
       labels:
         app: service-{{ service }}
         component: service
-        version: "{{ versions }}"
+        version: '{{ versions }}'
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
       - name: service-{{ service }}
-        image: registry.hub.docker.com/garystafford/go-srv-{{ service }}:{{ versions }}
+        image: registry.hub.docker.com/garystafford/go-srv-{{ service }}:{{ tag }}
         # resources:
         # requests:
         #   memory: 100M
@@ -51,6 +51,12 @@ spec:
         # limits:
         #   memory: 250M
         #   cpu: 250m
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
         env:
         - name: MONGO_CONN
           valueFrom:

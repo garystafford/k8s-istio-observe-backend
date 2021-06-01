@@ -5,7 +5,7 @@ metadata:
   labels:
     app: angular-ui
     component: ui
-    version: "1.6.0"
+    version: v1
 spec:
   ports:
   - name: http
@@ -13,7 +13,7 @@ spec:
   selector:
     app: angular-ui
     component: ui
-    version: "1.6.0"
+    version: v1
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: angular-ui
     component: ui
-    version: "1.6.0"
+    version: v1
 spec:
   replicas: 2
   strategy:
@@ -31,26 +31,23 @@ spec:
     matchLabels:
       app: angular-ui
       component: ui
-      version: "1.6.0"
+      version: v1
   template:
     metadata:
       labels:
         app: angular-ui
         component: ui
-        version: "1.6.0"
-      annotations:
-        sidecar.istio.io/inject: "true"
+        version: v1
     spec:
       containers:
       - name: angular-ui
         image: registry.hub.docker.com/garystafford/angular-observe:1.6.0
-#        resources:
-        # requests:
-        #   memory: 100M
-        #   cpu: 100m
-        # limits:
-        #   memory: 250M
-        #   cpu: 250m
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
         ports:
         - containerPort: 80
         imagePullPolicy: IfNotPresent #Always

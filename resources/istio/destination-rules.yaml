@@ -7,7 +7,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.0
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -18,7 +18,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -29,7 +29,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -40,7 +40,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -51,7 +51,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -62,7 +62,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -73,7 +73,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -84,7 +84,7 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -95,4 +95,4 @@ spec:
   subsets:
     - name: v1
       labels:
-        version: 1.6.5
+        version: v1

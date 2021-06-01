@@ -5,15 +5,15 @@ metadata:
   labels:
     app: service-g
     component: service
-    version: "1.6.5"
+    version: v1
 spec:
   ports:
-  - name: http
-    port: 8080
+    - name: http
+      port: 8080
   selector:
     app: service-g
     component: service
-    version: "1.6.5"
+    version: v1
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: service-g
     component: service
-    version: "1.6.5"
+    version: v1
 spec:
   replicas: 2
   strategy:
@@ -31,32 +31,29 @@ spec:
     matchLabels:
       app: service-g
       component: service
-      version: "1.6.5"
+      version: v1
   template:
     metadata:
       labels:
         app: service-g
         component: service
-        version: "1.6.5"
-      annotations:
-        sidecar.istio.io/inject: "true"
+        version: v1
     spec:
       containers:
-      - name: service-g
-        image: registry.hub.docker.com/garystafford/go-srv-g:1.6.5
-        # resources:
-        # requests:
-        #   memory: 100M
-        #   cpu: 100m
-        # limits:
-        #   memory: 250M
-        #   cpu: 250m
-        env:
-        - name: MONGO_CONN
-          valueFrom:
-            secretKeyRef:
-              name: go-srv-config
-              key: mongodb.conn
-        ports:
-        - containerPort: 8080
-        imagePullPolicy: Always
+        - name: service-g
+          image: registry.hub.docker.com/garystafford/go-srv-g:1.6.5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          env:
+            - name: MONGO_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: go-srv-config
+                  key: mongodb.conn
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
