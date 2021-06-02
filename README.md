@@ -127,4 +127,6 @@ To observe the queue traffic, use the RabbitMQ Management Console: <http://local
 
 To observe the databases, use Mongo Express: <http://localhost:8081>
 
+### View of UI running on Docker
+
 ![UI from Docker](pics/ui_docker.png)
