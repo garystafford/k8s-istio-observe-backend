@@ -3,10 +3,4 @@ github.com/
 .idea/
 build/*
 .DS_Store
-**/*_internal.yaml
-resources/secrets/secrets-internal.yaml
-resources/istio/external-mesh-document-db-internal.yaml
-resources/istio/external-mesh-amazon-mq-internal.yaml
-resources/other/alb-ingress-internal.yaml
-resources/istio/gateway-and-virtual-srvs-internal.yaml
-resources/aws/trust-eks-policy-internal.json
+**/*-internal.yaml

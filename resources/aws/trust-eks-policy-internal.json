@@ -1,0 +1,17 @@
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Effect":"Allow",
+         "Principal":{
+            "Federated":" {{ your_openid_connect_arn }}"
+         },
+         "Action":"sts:AssumeRoleWithWebIdentity",
+         "Condition":{
+            "StringEquals":{
+               "oidc.eks.us-east-1.amazonaws.com/id/{{ your_open_id_connect_id }}:sub":"system:serviceaccount:kube-system:alb-ingress-controller"
+            }
+         }
+      }
+   ]
+}
