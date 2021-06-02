@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   angular-ui:
-    image: garystafford/angular-observe:1.6.0
+    image: garystafford/angular-observe:1.6.5
     depends_on:
       - service-a
     networks:
@@ -10,23 +10,23 @@ services:
     ports:
       - 80:80
   service-a:
-    image: garystafford/go-srv-a:1.6.0
+    image: garystafford/go-srv-a:1.6.5
     networks:
       - golang-demo
     ports:
-      - 8080:80
+      - 8080:8080
     environment:
       SERVICE_B_URL: 'http://service-b:8080'
       SERVICE_C_URL: 'http://service-c:8080'
   service-b:
-    image: garystafford/go-srv-b:1.6.0
+    image: garystafford/go-srv-b:1.6.5
     networks:
       - golang-demo
     environment:
       SERVICE_D_URL: 'http://service-d:8080'
       SERVICE_E_URL: 'http://service-e:8080'
   service-c:
-    image: garystafford/go-srv-c:1.6.0
+    image: garystafford/go-srv-c:1.6.5
     depends_on:
       - mongodb
     networks:
@@ -34,7 +34,7 @@ services:
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-d:
-    image: garystafford/go-srv-d:1.6.0
+    image: garystafford/go-srv-d:1.6.5
     depends_on:
       - rabbitmq
     networks:
@@ -42,14 +42,14 @@ services:
     environment:
       RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
   service-e:
-    image: garystafford/go-srv-e:1.6.0
+    image: garystafford/go-srv-e:1.6.5
     networks:
       - golang-demo
     environment:
       SERVICE_G_URL: 'http://service-g:8080'
       SERVICE_H_URL: 'http://service-h:8080'
   service-f:
-    image: garystafford/go-srv-f:1.6.0
+    image: garystafford/go-srv-f:1.6.5
     depends_on:
       - rabbitmq
       - mongodb
@@ -59,7 +59,7 @@ services:
       RABBITMQ_CONN: 'amqp://guest:guest@rabbitmq:5672/'
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-g:
-    image: garystafford/go-srv-g:1.6.0
+    image: garystafford/go-srv-g:1.6.5
     depends_on:
       - mongodb
     networks:
@@ -67,7 +67,7 @@ services:
     environment:
       MONGO_CONN: 'mongodb://mongodb:27017/admin'
   service-h:
-    image: garystafford/go-srv-h:1.6.0
+    image: garystafford/go-srv-h:1.6.5
     depends_on:
       - mongodb
     networks:

@@ -5,7 +5,7 @@ post, [Kubernetes-based Microservice Observability with Istio Service Mesh](http
 
 ![Kiali](pics/kiali_new.png)
 
-## Optional Front-end UI
+## Frontend UI
 
 An Angular 12 front-end UI to the API is located on
 Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-observe-frontend/tree/2021-istio).
@@ -105,7 +105,7 @@ golang-demo_angular-ui      garystafford/angular-observe:1.6.5   *:80->80/tcp
 golang-demo_mongodb         mongo:4.4.6                          *:27017->27017/tcp
 golang-demo_mongo_express   mongo-express:0.54.0                 *:8081->8081/tcp
 golang-demo_rabbitmq        rabbitmq:3.8.16-management-alpine    *:5672->5672/tcp, *:15672->15672/tcp
-golang-demo_service-a       garystafford/go-srv-a:1.6.5          *:8000->80/tcp
+golang-demo_service-a       garystafford/go-srv-a:1.6.5          *:8080->8080/tcp
 golang-demo_service-b       garystafford/go-srv-b:1.6.5
 golang-demo_service-c       garystafford/go-srv-c:1.6.5
 golang-demo_service-d       garystafford/go-srv-d:1.6.5
@@ -117,10 +117,14 @@ golang-demo_service-h       garystafford/go-srv-h:1.6.5
 
 ### Accessing the Docker Swarm-based Stack
 
-To start, call the Angular 7 Front-end UI: <http://localhost>
+To start, call the Angular 12 Frontend UI: <http://localhost>
 
-Alternately, call Service A, the system's edge service: <http://localhost:8080/api/greeting>
+The backend API's URL will be: <http://localhost:8080>
+
+Alternately, call Service A, the system's edge service, directly: <http://localhost:8080/api/greeting>
 
 To observe the queue traffic, use the RabbitMQ Management Console: <http://localhost:15672>
 
 To observe the databases, use Mongo Express: <http://localhost:8081>
+
+![UI from Docker](pics/ui_docker.png)
