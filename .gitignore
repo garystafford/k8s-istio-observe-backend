@@ -3,4 +3,4 @@ github.com/
 .idea/
 build/*
 .DS_Store
-**/*-internal.yaml
+**/*internal.yaml
