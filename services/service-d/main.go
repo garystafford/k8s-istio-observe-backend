@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service D
-// date: 2021-05-29
+// date: 2021-06-02
 
 package main
 
@@ -68,7 +68,7 @@ func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func SendMessage(b []byte) {
-	log.Info(b)
+	log.Debug(b)
 
 	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
 	if err != nil {
