@@ -50,6 +50,8 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 3
           env:
+            - name: LOG_LEVEL
+              value: info
             - name: SERVICE_G_URL
               value: http://service-g.dev.svc.cluster.local:8080
             - name: SERVICE_H_URL

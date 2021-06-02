@@ -66,6 +66,8 @@ spec:
             secretKeyRef:
               name: go-srv-config
               key: rabbitmq.conn
+        - name: LOG_LEVEL
+          value: info
         - name: SERVICE_A_URL
           value: http://service-a.dev.svc.cluster.local:8080
         - name: SERVICE_B_URL

@@ -50,6 +50,8 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 3
           env:
+            - name: LOG_LEVEL
+              value: info
             - name: RABBITMQ_CONN
               valueFrom:
                 secretKeyRef:
