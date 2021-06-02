@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: go-srv-config
-data:
-  mongodb.conn: mongodb://mongodb:27017/admin
-  rabbitmq.conn: amqp://guest:guest@rabbitmq:5672/
