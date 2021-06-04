@@ -22,8 +22,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const (
-	port string = ":8080"
+var (
+	logLevel = getEnv("LOG_LEVEL", "debug")
+	port    = getEnv("PORT", ":8080")
+	message = getEnv("GREETING", "Konnichiwa (こんにちは), from Service C!")
+	mongoConn = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
 )
 
 type Greeting struct {
@@ -38,20 +41,21 @@ var greetings []Greeting
 
 func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service C",
-		Message:     "Konnichiwa (こんにちは), from Service C!",
+		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
 	}
 
 	greetings = append(greetings, tmpGreeting)
 
-	CallMongoDB(tmpGreeting)
+	callMongoDB(tmpGreeting, mongoConn)
 
 	err := json.NewEncoder(w).Encode(greetings)
 	if err != nil {
@@ -69,17 +73,18 @@ func getHostname() string {
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func CallMongoDB(greeting Greeting) {
+func callMongoDB(greeting Greeting, mongoConn string) {
 	log.Info(greeting)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoConn))
 	if err != nil {
 		log.Error(err)
 	}
@@ -120,7 +125,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}

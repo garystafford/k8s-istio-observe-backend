@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: service-a
-          image: registry.hub.docker.com/garystafford/go-srv-a:1.6.7
+          image: registry.hub.docker.com/garystafford/go-srv-a:1.6.8
           livenessProbe:
             httpGet:
               path: /api/health
@@ -53,7 +53,7 @@ spec:
             - name: LOG_LEVEL
               value: info
             - name: ALLOWED_ORIGINS
-              value: observe-ui.example-api.com
+              value: https://observe-istio-ui.example-api.com
             - name: SERVICE_B_URL
               value: http://service-b.dev.svc.cluster.local:8080
             - name: SERVICE_C_URL

@@ -25,8 +25,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	port string = ":8080"
+var (
+	logLevel = getEnv("LOG_LEVEL", "debug")
+	port    = getEnv("PORT", ":8080")
+	message = getEnv("GREETING", "Hello, from Service A!")
 )
 
 type Greeting struct {
@@ -41,18 +43,19 @@ var greetings []Greeting
 
 func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	log.Debug(r)
 
 	greetings = nil
 
-	CallNextServiceWithTrace(getEnv("SERVICE_B_URL", "http://service-b")+"/api/greeting", w, r)
-	CallNextServiceWithTrace(getEnv("SERVICE_C_URL", "http://service-c")+"/api/greeting", w, r)
+	callNextServiceWithTrace(getEnv("SERVICE_B_URL", "http://service-b")+"/api/greeting", w, r)
+	callNextServiceWithTrace(getEnv("SERVICE_C_URL", "http://service-c")+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service A",
-		Message:     "Hello, from Service A!",
+		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
 	}
@@ -75,6 +78,7 @@ func getHostname() string {
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
@@ -87,11 +91,11 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
-
 }
 
-func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
+func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
 	var tmpGreetings []Greeting
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -153,6 +157,9 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 }
 
 func RequestEchoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		log.Error(err)
@@ -175,7 +182,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "debug"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}

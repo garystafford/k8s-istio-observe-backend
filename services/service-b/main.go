@@ -21,8 +21,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	port string = ":8080"
+var (
+	logLevel = getEnv("LOG_LEVEL", "debug")
+	port    = getEnv("PORT", ":8080")
+	message = getEnv("GREETING", "Namasté (नमस्ते), from Service B!")
 )
 
 type Greeting struct {
@@ -37,18 +39,19 @@ var greetings []Greeting
 
 func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	log.Debug(r)
 
 	greetings = nil
 
-	CallNextServiceWithTrace(getEnv("SERVICE_D_URL", "http://service-d")+"/api/greeting", w, r)
-	CallNextServiceWithTrace(getEnv("SERVICE_E_URL", "http://service-e")+"/api/greeting", w, r)
+	callNextServiceWithTrace(getEnv("SERVICE_D_URL", "http://service-d")+"/api/greeting", w, r)
+	callNextServiceWithTrace(getEnv("SERVICE_E_URL", "http://service-e")+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service B",
-		Message:     "Namasté, from Service B!",
+		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
 	}
@@ -71,13 +74,14 @@ func getHostname() string {
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
+func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
 	log.Info(url)
 
 	var tmpGreetings []Greeting
@@ -151,7 +155,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}

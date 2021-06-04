@@ -20,9 +20,12 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const (
-	port string = ":8080"
-	queueName string = "service-d.greeting"
+var (
+	logLevel = getEnv("LOG_LEVEL", "debug")
+	port    = getEnv("PORT", ":8080")
+	message   = getEnv("GREETING", "Shalom (שָׁלוֹם), from Service D!")
+	queueName = getEnv("QUEUE_NAME", "service-d.greeting")
+	rabbitMQConn = getEnv("RABBITMQ_CONN", "amqp://guest:guest@rabbitmq:5672")
 )
 
 type Greeting struct {
@@ -37,13 +40,14 @@ var greetings []Greeting
 
 func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service D",
-		Message:     "Shalom (שָׁלוֹם), from Service D!",
+		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
 	}
@@ -56,7 +60,7 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	b, err := json.Marshal(tmpGreeting)
-	SendMessage(b)
+	sendMessage(b, rabbitMQConn)
 	if err != nil {
 		log.Error(err)
 	}
@@ -72,16 +76,17 @@ func getHostname() string {
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func SendMessage(b []byte) {
+func sendMessage(b []byte, rabbitMQConn string) {
 	log.Debug(b)
 
-	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
+	conn, err := amqp.Dial(rabbitMQConn)
 	if err != nil {
 		log.Error(err)
 	}
@@ -142,7 +147,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}

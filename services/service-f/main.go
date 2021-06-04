@@ -24,9 +24,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const (
-	port string = ":8080"
-	queueName string = "service-d.greeting"
+var (
+	logLevel = getEnv("LOG_LEVEL", "debug")
+	port    = getEnv("PORT", ":8080")
+	message   = getEnv("GREETING", "Hola, from Service F!")
+	queueName = getEnv("QUEUE_NAME", "service-d.greeting")
+	mongoConn = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
+	rabbitMQConn = getEnv("RABBITMQ_CONN", "amqp://guest:guest@rabbitmq:5672")
 )
 
 type Greeting struct {
@@ -41,20 +45,21 @@ var greetings []Greeting
 
 func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	greetings = nil
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
 		ServiceName: "Service F",
-		Message:     "Hola, from Service F!",
+		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
 	}
 
 	greetings = append(greetings, tmpGreeting)
 
-	CallMongoDB(tmpGreeting)
+	callMongoDB(tmpGreeting, mongoConn)
 
 	err := json.NewEncoder(w).Encode(greetings)
 	if err != nil {
@@ -72,17 +77,18 @@ func getHostname() string {
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("{\"alive\": true}"))
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func CallMongoDB(greeting Greeting) {
+func callMongoDB(greeting Greeting, mongoConn string) {
 	log.Info(greeting)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_CONN")))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoConn))
 	if err != nil {
 		log.Error(err)
 	}
@@ -104,8 +110,8 @@ func CallMongoDB(greeting Greeting) {
 	}
 }
 
-func GetMessages() {
-	conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONN"))
+func getMessages(rabbitMQConn string) {
+	conn, err := amqp.Dial(rabbitMQConn)
 	if err != nil {
 		log.Error(err)
 	}
@@ -157,7 +163,7 @@ func GetMessages() {
 	go func() {
 		for delivery := range msgs {
 			log.Debug(delivery)
-			CallMongoDB(deserialize(delivery.Body))
+			callMongoDB(deserialize(delivery.Body), mongoConn)
 		}
 	}()
 
@@ -188,7 +194,7 @@ func init() {
 	formatter.Line = true
 	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(getEnv("LOG_LEVEL", "info"))
+	level, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
@@ -196,7 +202,7 @@ func init() {
 }
 
 func main() {
-	go GetMessages()
+	go getMessages(rabbitMQConn)
 
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()

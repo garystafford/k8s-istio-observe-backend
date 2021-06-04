@@ -7,8 +7,8 @@
 # date: 2021-05-29
 
 readonly -a arr=(a b c d e f g h)
-# readonly -a arr=(a)
-readonly tag=1.6.5
+#readonly -a arr=(a)
+readonly tag=1.6.8
 
 for i in "${arr[@]}"
 do
