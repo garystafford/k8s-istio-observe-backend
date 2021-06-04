@@ -16,7 +16,7 @@ managedNodeGroups:
     volumeSize: 80
     labels:
       role: worker
-      stack: nlp-app
+      stack: reference-app
     tags:
       nodegroup-name: managed-ng-1
       nodegroup-role: worker
@@ -27,6 +27,6 @@ managedNodeGroups:
         albIngress: true
         autoScaler: true
         cloudWatch: true
-# cloudWatch:
-#   clusterLogging:
-#     enableTypes: ["*"]
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
