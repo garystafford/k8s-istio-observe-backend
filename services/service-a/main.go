@@ -29,6 +29,7 @@ var (
 	logLevel = getEnv("LOG_LEVEL", "debug")
 	port    = getEnv("PORT", ":8080")
 	message = getEnv("GREETING", "Hello, from Service A!")
+	allowedOrigins = getEnv("ALLOWED_ORIGINS", "*")
 )
 
 type Greeting struct {
@@ -191,7 +192,7 @@ func init() {
 
 func main() {
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{getEnv("ALLOWED_ORIGINS", "*")},
+		AllowedOrigins:   []string{allowedOrigins},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 	})
