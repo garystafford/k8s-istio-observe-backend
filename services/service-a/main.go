@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service A
-// date: 2021-05-29
+// date: 2021-06-04
 
 package main
 
@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	port = ":8080"
+	port string = ":8080"
 )
 
 type Greeting struct {
@@ -34,6 +34,7 @@ type Greeting struct {
 	ServiceName string    `json:"service,omitempty"`
 	Message     string    `json:"message,omitempty"`
 	CreatedAt   time.Time `json:"created,omitempty"`
+	Hostname    string    `json:"hostname,omitempty"`
 }
 
 var greetings []Greeting
@@ -53,6 +54,7 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 		ServiceName: "Service A",
 		Message:     "Hello, from Service A!",
 		CreatedAt:   time.Now().Local(),
+		Hostname:    getHostname(),
 	}
 
 	greetings = append(greetings, tmpGreeting)
@@ -61,6 +63,14 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
 }
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
@@ -93,13 +103,14 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 
 	// Headers must be passed for Jaeger Distributed Tracing
 	headers := []string{
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
+		"uber-trace-id",
+		"x-b3-flags",
 		"x-b3-parentspanid",
 		"x-b3-sampled",
-		"x-b3-flags",
+		"x-b3-spanid",
+		"x-b3-traceid",
 		"x-ot-span-context",
+		"x-request-id",
 	}
 
 	for _, header := range headers {
@@ -110,7 +121,9 @@ func CallNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 
 	log.Info(req)
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
 	response, err := client.Do(req)
 
 	if err != nil {

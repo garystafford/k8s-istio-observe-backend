@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: service-f
-          image: registry.hub.docker.com/garystafford/go-srv-f:1.6.5
+          image: registry.hub.docker.com/garystafford/go-srv-f:1.6.7
           livenessProbe:
             httpGet:
               path: /api/health

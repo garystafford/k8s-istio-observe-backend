@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service H
-// date: 2021-05-29
+// date: 2021-06-04
 
 package main
 
@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	port = ":8080"
+	port string = ":8080"
 )
 
 type Greeting struct {
@@ -31,6 +31,7 @@ type Greeting struct {
 	ServiceName string    `json:"service,omitempty"`
 	Message     string    `json:"message,omitempty"`
 	CreatedAt   time.Time `json:"created,omitempty"`
+	Hostname    string    `json:"hostname,omitempty"`
 }
 
 var greetings []Greeting
@@ -45,6 +46,7 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 		ServiceName: "Service H",
 		Message:     "Ciao, from Service H!",
 		CreatedAt:   time.Now().Local(),
+		Hostname:    getHostname(),
 	}
 
 	greetings = append(greetings, tmpGreeting)
@@ -55,6 +57,14 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
 }
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
