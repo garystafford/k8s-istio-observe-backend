@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service D
-// date: 2021-06-04
+// date: 2021-06-05
 
 package main
 
@@ -21,10 +21,10 @@ import (
 )
 
 var (
-	logLevel = getEnv("LOG_LEVEL", "debug")
-	port    = getEnv("PORT", ":8080")
-	message   = getEnv("GREETING", "Shalom (שָׁלוֹם), from Service D!")
-	queueName = getEnv("QUEUE_NAME", "service-d.greeting")
+	logLevel     = getEnv("LOG_LEVEL", "debug")
+	port         = getEnv("PORT", ":8080")
+	message      = getEnv("GREETING", "Shalom (שָׁלוֹם), from Service D!")
+	queueName    = getEnv("QUEUE_NAME", "service-d.greeting")
 	rabbitMQConn = getEnv("RABBITMQ_CONN", "amqp://guest:guest@rabbitmq:5672")
 )
 

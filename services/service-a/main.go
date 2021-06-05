@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service A
-// date: 2021-06-04
+// date: 2021-06-05
 
 package main
 
@@ -26,10 +26,12 @@ import (
 )
 
 var (
-	logLevel = getEnv("LOG_LEVEL", "debug")
-	port    = getEnv("PORT", ":8080")
-	message = getEnv("GREETING", "Hello, from Service A!")
+	logLevel       = getEnv("LOG_LEVEL", "debug")
+	port           = getEnv("PORT", ":8080")
+	message        = getEnv("GREETING", "Hello, from Service A!")
 	allowedOrigins = getEnv("ALLOWED_ORIGINS", "*")
+	URLServiceB    = getEnv("SERVICE_B_URL", "http://service-b")
+	URLServiceC    = getEnv("SERVICE_C_URL", "http://service-c")
 )
 
 type Greeting struct {
@@ -50,8 +52,8 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	callNextServiceWithTrace(getEnv("SERVICE_B_URL", "http://service-b")+"/api/greeting", w, r)
-	callNextServiceWithTrace(getEnv("SERVICE_C_URL", "http://service-c")+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceB+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceC+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -178,6 +180,24 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+func run() error {
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{allowedOrigins},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"},
+	})
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
+	api.HandleFunc("/request-echo", RequestEchoHandler).Methods(
+		"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
+	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
+	api.Handle("/metrics", promhttp.Handler())
+	handler := c.Handler(router)
+	return http.ListenAndServe(port, handler)
+}
+
 func init() {
 	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
 	formatter.Line = true
@@ -191,19 +211,8 @@ func init() {
 }
 
 func main() {
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{allowedOrigins},
-		AllowCredentials: true,
-		AllowedMethods:   []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
-	})
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/greeting", GreetingHandler).Methods("GET", "OPTIONS")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET", "OPTIONS")
-	api.HandleFunc("/request-echo", RequestEchoHandler).Methods(
-		"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
-	api.HandleFunc("/status/{code}", ResponseStatusHandler).Methods("GET", "OPTIONS")
-	api.Handle("/metrics", promhttp.Handler())
-	handler := c.Handler(router)
-	log.Fatal(http.ListenAndServe(port, handler))
+	if err := run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }

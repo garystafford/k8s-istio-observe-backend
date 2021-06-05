@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service H
-// date: 2021-06-04
+// date: 2021-06-05
 
 package main
 
@@ -23,9 +23,9 @@ import (
 )
 
 var (
-	logLevel = getEnv("LOG_LEVEL", "debug")
-	port    = getEnv("PORT", ":8080")
-	message = getEnv("GREETING", "Ciao, from Service H!")
+	logLevel  = getEnv("LOG_LEVEL", "debug")
+	port      = getEnv("PORT", ":8080")
+	message   = getEnv("GREETING", "Ciao, from Service H!")
 	mongoConn = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
 )
 

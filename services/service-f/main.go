@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service F
-// date: 2021-06-04
+// date: 2021-06-05
 
 package main
 
@@ -25,11 +25,11 @@ import (
 )
 
 var (
-	logLevel = getEnv("LOG_LEVEL", "debug")
-	port    = getEnv("PORT", ":8080")
-	message   = getEnv("GREETING", "Hola, from Service F!")
-	queueName = getEnv("QUEUE_NAME", "service-d.greeting")
-	mongoConn = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
+	logLevel     = getEnv("LOG_LEVEL", "debug")
+	port         = getEnv("PORT", ":8080")
+	message      = getEnv("GREETING", "Hola, from Service F!")
+	queueName    = getEnv("QUEUE_NAME", "service-d.greeting")
+	mongoConn    = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
 	rabbitMQConn = getEnv("RABBITMQ_CONN", "amqp://guest:guest@rabbitmq:5672")
 )
 
@@ -189,6 +189,17 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+func run() error {
+	go getMessages(rabbitMQConn)
+
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
+	return http.ListenAndServe(port, router)
+}
+
 func init() {
 	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
 	formatter.Line = true
@@ -202,12 +213,8 @@ func init() {
 }
 
 func main() {
-	go getMessages(rabbitMQConn)
-
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(port, router))
+	if err := run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }

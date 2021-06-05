@@ -2,7 +2,7 @@
 // site: https://programmaticponderings.com
 // license: MIT License
 // purpose: Service E
-// date: 2021-06-04
+// date: 2021-06-05
 
 package main
 
@@ -22,9 +22,11 @@ import (
 )
 
 var (
-	logLevel = getEnv("LOG_LEVEL", "debug")
-	port    = getEnv("PORT", ":8080")
-	message = getEnv("GREETING", "Bonjour, from Service E!")
+	logLevel    = getEnv("LOG_LEVEL", "debug")
+	port        = getEnv("PORT", ":8080")
+	message     = getEnv("GREETING", "Bonjour, from Service E!")
+	URLServiceG = getEnv("SERVICE_G_URL", "http://service-g")
+	URLServiceH = getEnv("SERVICE_H_URL", "http://service-h")
 )
 
 type Greeting struct {
@@ -45,8 +47,8 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	callNextServiceWithTrace(getEnv("SERVICE_G_URL", "http://service-g")+"/api/greeting", w, r)
-	callNextServiceWithTrace(getEnv("SERVICE_H_URL", "http://service-h")+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceG+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceH+"/api/greeting", w, r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
