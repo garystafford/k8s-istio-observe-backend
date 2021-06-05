@@ -43,6 +43,8 @@ type Greeting struct {
 
 var greetings []Greeting
 
+// *** HANDLERS ***
+
 func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -67,14 +69,6 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func getHostname() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		log.Error(err)
-	}
-	return hostname
-}
-
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -82,6 +76,16 @@ func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+// *** UTILITY FUNCTIONS ***
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
 }
 
 func callMongoDB(greeting Greeting, mongoConn string) {

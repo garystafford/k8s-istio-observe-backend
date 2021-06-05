@@ -44,6 +44,8 @@ type Greeting struct {
 
 var greetings []Greeting
 
+// *** HANDLERS ***
+
 func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -71,14 +73,6 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getHostname() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		log.Error(err)
-	}
-	return hostname
-}
-
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -97,6 +91,22 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
 }
+
+func RequestEchoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		log.Error(err)
+	}
+	_, err = fmt.Fprintf(w, string(requestDump))
+	if err != nil {
+		log.Error(err)
+	}
+}
+
+// *** UTILITY FUNCTIONS ***
 
 func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
 	var tmpGreetings []Greeting
@@ -159,18 +169,12 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 	}
 }
 
-func RequestEchoHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-
-	requestDump, err := httputil.DumpRequest(r, true)
+func getHostname() string {
+	hostname, err := os.Hostname()
 	if err != nil {
 		log.Error(err)
 	}
-	_, err = fmt.Fprintf(w, string(requestDump))
-	if err != nil {
-		log.Error(err)
-	}
+	return hostname
 }
 
 func getEnv(key, fallback string) string {
