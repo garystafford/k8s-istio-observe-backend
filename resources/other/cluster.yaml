@@ -12,8 +12,8 @@ managedNodeGroups:
     instanceType: m5.large
     desiredCapacity: 3
     minSize: 1
-    maxSize: 3
-    volumeSize: 80
+    maxSize: 4
+    volumeSize: 100
     labels:
       role: worker
       stack: reference-app
