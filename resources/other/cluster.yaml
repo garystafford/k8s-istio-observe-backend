@@ -10,9 +10,9 @@ managedNodeGroups:
   - name: managed-ng-1
     amiFamily: AmazonLinux2
     instanceType: m5.large
-    desiredCapacity: 3
-    minSize: 1
-    maxSize: 4
+    desiredCapacity: 4
+    minSize: 2
+    maxSize: 5
     volumeSize: 100
     labels:
       role: worker
