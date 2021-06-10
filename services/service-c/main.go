@@ -63,14 +63,6 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func getHostname() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		log.Error(err)
-	}
-	return hostname
-}
-
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -113,11 +105,28 @@ func callMongoDB(greeting Greeting, mongoConn string) {
 	}(client, ctx)
 }
 
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
+}
+
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
 	return fallback
+}
+
+func run() error {
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
+	return http.ListenAndServe(port, router)
 }
 
 func init() {
@@ -133,10 +142,8 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(port, router))
+	if err := run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }

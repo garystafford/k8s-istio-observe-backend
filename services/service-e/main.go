@@ -47,8 +47,8 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	callNextServiceWithTrace(URLServiceG+"/api/greeting", w, r)
-	callNextServiceWithTrace(URLServiceH+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceG+"/api/greeting", r)
+	callNextServiceWithTrace(URLServiceH+"/api/greeting", r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -83,20 +83,17 @@ func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
+func callNextServiceWithTrace(url string, r *http.Request) {
+	log.Debug(url)
 
 	var tmpGreetings []Greeting
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Error(err)
 	}
 
-	headers := []string{
-		"uber-trace-id",
+	incomingHeaders := []string{
 		"x-b3-flags",
 		"x-b3-parentspanid",
 		"x-b3-sampled",
@@ -106,7 +103,7 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		"x-request-id",
 	}
 
-	for _, header := range headers {
+	for _, header := range incomingHeaders {
 		if r.Header.Get(header) != "" {
 			req.Header.Add(header, r.Header.Get(header))
 		}

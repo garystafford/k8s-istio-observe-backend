@@ -23,6 +23,7 @@ import (
 var (
 	logLevel     = getEnv("LOG_LEVEL", "debug")
 	port         = getEnv("PORT", ":8080")
+	serviceName  = getEnv("SERVICE_NAME", "Service D")
 	message      = getEnv("GREETING", "Shalom (שָׁלוֹם), from Service D!")
 	queueName    = getEnv("QUEUE_NAME", "service-d.greeting")
 	rabbitMQConn = getEnv("RABBITMQ_CONN", "amqp://guest:guest@rabbitmq:5672")
@@ -38,7 +39,7 @@ type Greeting struct {
 
 var greetings []Greeting
 
-func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
+func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 
@@ -46,7 +47,7 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service D",
+		ServiceName: serviceName,
 		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
@@ -59,19 +60,32 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 		log.Error(err)
 	}
 
-	b, err := json.Marshal(tmpGreeting)
-	sendMessage(b, rabbitMQConn)
-	if err != nil {
-		log.Error(err)
+	// Headers must be passed for Jaeger Distributed Tracing
+	incomingHeaders := []string{
+		"x-b3-flags",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-spanid",
+		"x-b3-traceid",
+		"x-ot-span-context",
+		"x-request-id",
 	}
-}
 
-func getHostname() string {
-	hostname, err := os.Hostname()
+	rabbitHeaders := amqp.Table{}
+
+	for _, header := range incomingHeaders {
+		if r.Header.Get(header) != "" {
+			rabbitHeaders[header] = r.Header.Get(header)
+		}
+	}
+
+	log.Debug(rabbitHeaders)
+
+	body, err := json.Marshal(tmpGreeting)
+	sendMessage(rabbitHeaders, body, rabbitMQConn)
 	if err != nil {
 		log.Error(err)
 	}
-	return hostname
 }
 
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
@@ -83,9 +97,7 @@ func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func sendMessage(b []byte, rabbitMQConn string) {
-	log.Debug(b)
-
+func sendMessage(headers amqp.Table, body []byte, rabbitMQConn string) {
 	conn, err := amqp.Dial(rabbitMQConn)
 	if err != nil {
 		log.Error(err)
@@ -127,12 +139,21 @@ func sendMessage(b []byte, rabbitMQConn string) {
 		false,
 		false,
 		amqp.Publishing{
+			Headers:     headers,
 			ContentType: "application/json",
-			Body:        b,
+			Body:        body,
 		})
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
 }
 
 func getEnv(key, fallback string) string {
@@ -140,6 +161,15 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func run() error {
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
+	return http.ListenAndServe(port, router)
 }
 
 func init() {
@@ -155,10 +185,8 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(port, router))
+	if err := run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }

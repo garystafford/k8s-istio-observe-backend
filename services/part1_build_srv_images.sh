@@ -7,8 +7,8 @@
 # date: 2021-05-29
 
 readonly -a arr=(a b c d e f g h)
-#readonly -a arr=(a)
-readonly tag=1.6.8
+#readonly -a arr=(f)
+readonly tag=1.7.6
 
 for i in "${arr[@]}"
 do
@@ -19,4 +19,4 @@ do
   popd || exit
 done
 
-docker image ls | grep 'garystafford/go-srv-'
+#docker image ls | grep 'garystafford/go-srv-'

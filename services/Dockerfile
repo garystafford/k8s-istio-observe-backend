@@ -25,9 +25,6 @@ RUN go mod init
 # ensures go.mod file matches source code in the module
 RUN go mod tidy
 
-# Using go get
-#RUN go get -d -v
-
 # Disable crosscompiling
 ENV CGO_ENABLED=0
 
@@ -43,7 +40,7 @@ RUN go build -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 FROM scratch
 
 LABEL maintainer="Gary A. Stafford <gary.a.stafford@gmail.com>"
-ENV REFRESHED_AT 2021-06-05
+ENV REFRESHED_AT 2021-06-08
 
 # Import the user and group files from the builder
 COPY --from=builder /etc/passwd /etc/passwd

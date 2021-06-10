@@ -54,8 +54,8 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	callNextServiceWithTrace(URLServiceB+"/api/greeting", w, r)
-	callNextServiceWithTrace(URLServiceC+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceB+"/api/greeting", r)
+	callNextServiceWithTrace(URLServiceC+"/api/greeting", r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -108,10 +108,10 @@ func RequestEchoHandler(w http.ResponseWriter, r *http.Request) {
 
 // *** UTILITY FUNCTIONS ***
 
-func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	var tmpGreetings []Greeting
+func callNextServiceWithTrace(url string, r *http.Request) {
+	log.Debug(url)
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	var tmpGreetings []Greeting
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -119,8 +119,7 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 	}
 
 	// Headers must be passed for Jaeger Distributed Tracing
-	headers := []string{
-		"uber-trace-id",
+	incomingHeaders := []string{
 		"x-b3-flags",
 		"x-b3-parentspanid",
 		"x-b3-sampled",
@@ -130,7 +129,7 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		"x-request-id",
 	}
 
-	for _, header := range headers {
+	for _, header := range incomingHeaders {
 		if r.Header.Get(header) != "" {
 			req.Header.Add(header, r.Header.Get(header))
 		}

@@ -27,6 +27,7 @@ import (
 var (
 	logLevel     = getEnv("LOG_LEVEL", "debug")
 	port         = getEnv("PORT", ":8080")
+	serviceName  = "Service F"
 	message      = getEnv("GREETING", "Hola, from Service F!")
 	queueName    = getEnv("QUEUE_NAME", "service-d.greeting")
 	mongoConn    = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
@@ -53,7 +54,7 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service F",
+		ServiceName: serviceName,
 		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),

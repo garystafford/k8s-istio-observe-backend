@@ -47,8 +47,8 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	greetings = nil
 
-	callNextServiceWithTrace(URLServiceD+"/api/greeting", w, r)
-	callNextServiceWithTrace(URLServiceE+"/api/greeting", w, r)
+	callNextServiceWithTrace(URLServiceD+"/api/greeting", r)
+	callNextServiceWithTrace(URLServiceE+"/api/greeting", r)
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
@@ -66,14 +66,6 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getHostname() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		log.Error(err)
-	}
-	return hostname
-}
-
 func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -83,20 +75,17 @@ func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request) {
-	log.Info(url)
+func callNextServiceWithTrace(url string, r *http.Request) {
+	log.Debug(url)
 
 	var tmpGreetings []Greeting
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Error(err)
 	}
 
-	headers := []string{
-		"uber-trace-id",
+	incomingHeaders := []string{
 		"x-b3-flags",
 		"x-b3-parentspanid",
 		"x-b3-sampled",
@@ -106,7 +95,7 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 		"x-request-id",
 	}
 
-	for _, header := range headers {
+	for _, header := range incomingHeaders {
 		if r.Header.Get(header) != "" {
 			req.Header.Add(header, r.Header.Get(header))
 		}
@@ -145,11 +134,28 @@ func callNextServiceWithTrace(url string, w http.ResponseWriter, r *http.Request
 	}
 }
 
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Error(err)
+	}
+	return hostname
+}
+
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
 	return fallback
+}
+
+func run() error {
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
+	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
+	api.Handle("/metrics", promhttp.Handler())
+	return http.ListenAndServe(port, router)
 }
 
 func init() {
@@ -165,10 +171,8 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	api := router.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/greeting", GreetingHandler).Methods("GET")
-	api.HandleFunc("/health", HealthCheckHandler).Methods("GET")
-	api.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(port, router))
+	if err := run(); err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }
