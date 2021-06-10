@@ -23,10 +23,11 @@ import (
 )
 
 var (
-	logLevel  = getEnv("LOG_LEVEL", "debug")
-	port      = getEnv("PORT", ":8080")
-	message   = getEnv("GREETING", "Konnichiwa (こんにちは), from Service C!")
-	mongoConn = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
+	logLevel    = getEnv("LOG_LEVEL", "debug")
+	port        = getEnv("PORT", ":8080")
+	serviceName = getEnv("SERVICE_NAME", "Service C")
+	message     = getEnv("GREETING", "Konnichiwa (こんにちは), from Service C!")
+	mongoConn   = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
 )
 
 type Greeting struct {
@@ -47,7 +48,7 @@ func GreetingHandler(w http.ResponseWriter, _ *http.Request) {
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service C",
+		ServiceName: serviceName,
 		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),

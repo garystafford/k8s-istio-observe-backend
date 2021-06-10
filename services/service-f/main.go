@@ -27,7 +27,7 @@ import (
 var (
 	logLevel     = getEnv("LOG_LEVEL", "debug")
 	port         = getEnv("PORT", ":8080")
-	serviceName  = "Service F"
+	serviceName  = getEnv("SERVICE_NAME", "Service F")
 	message      = getEnv("GREETING", "Hola, from Service F!")
 	queueName    = getEnv("QUEUE_NAME", "service-d.greeting")
 	mongoConn    = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")

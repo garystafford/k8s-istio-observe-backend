@@ -28,6 +28,7 @@ import (
 var (
 	logLevel       = getEnv("LOG_LEVEL", "debug")
 	port           = getEnv("PORT", ":8080")
+	serviceName    = getEnv("SERVICE_NAME", "Service A")
 	message        = getEnv("GREETING", "Hello, from Service A!")
 	allowedOrigins = getEnv("ALLOWED_ORIGINS", "*")
 	URLServiceB    = getEnv("SERVICE_B_URL", "http://service-b")
@@ -59,7 +60,7 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 
 	tmpGreeting := Greeting{
 		ID:          uuid.New().String(),
-		ServiceName: "Service A",
+		ServiceName: serviceName,
 		Message:     message,
 		CreatedAt:   time.Now().Local(),
 		Hostname:    getHostname(),
