@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: angular-ui
+  namespace: dev
 spec:
   host: angular-ui.dev.svc.cluster.local
   subsets:
@@ -13,6 +14,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-a
+  namespace: dev
 spec:
   host: service-a.dev.svc.cluster.local
   subsets:
@@ -24,6 +26,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-b
+  namespace: dev
 spec:
   host: service-b.dev.svc.cluster.local
   subsets:
@@ -35,6 +38,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-c
+  namespace: dev
 spec:
   host: service-c.dev.svc.cluster.local
   subsets:
@@ -46,6 +50,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-d
+  namespace: dev
 spec:
   host: service-d.dev.svc.cluster.local
   subsets:
@@ -57,6 +62,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-e
+  namespace: dev
 spec:
   host: service-e.dev.svc.cluster.local
   subsets:
@@ -68,6 +74,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-f
+  namespace: dev
 spec:
   host: service-f.dev.svc.cluster.local
   subsets:
@@ -79,6 +86,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-g
+  namespace: dev
 spec:
   host: service-g.dev.svc.cluster.local
   subsets:
@@ -90,6 +98,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: service-h
+  namespace: dev
 spec:
   host: service-h.dev.svc.cluster.local
   subsets:

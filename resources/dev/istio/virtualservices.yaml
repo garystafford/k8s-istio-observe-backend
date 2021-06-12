@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: angular-ui
+  namespace: dev
 spec:
   hosts:
     - {{ your_ui_hostname }}
@@ -22,6 +23,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: service-a
+  namespace: dev
 spec:
   hosts:
     - {{ your_api_hostname }}
