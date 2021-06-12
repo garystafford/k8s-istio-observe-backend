@@ -18,7 +18,7 @@ services = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 for service in services:
     output = template.render(service=service,
                              replicas=2,
-                             tag='1.6.8',
+                             tag='1.7.5',
                              versions='v1')
     print(output)
 
