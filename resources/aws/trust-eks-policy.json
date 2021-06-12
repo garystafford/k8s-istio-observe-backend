@@ -1,17 +1,17 @@
 {
-   "Version":"2012-10-17",
-   "Statement":[
-      {
-         "Effect":"Allow",
-         "Principal":{
-            "Federated":"arn:aws:iam::1234567890:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/F91B063F4B2E8BDFED054DD64DAB4368"
-         },
-         "Action":"sts:AssumeRoleWithWebIdentity",
-         "Condition":{
-            "StringEquals":{
-               "oidc.eks.us-east-1.amazonaws.com/id/F91B063F4B2E8BDFED054DD64DAB4368:sub":"system:serviceaccount:kube-system:alb-ingress-controller"
-            }
-         }
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::1234567890:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/F91B063F4B2E8BDFED054DD64DAB4368"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-east-1.amazonaws.com/id/F91B063F4B2E8BDFED054DD64DAB4368:sub": "system:serviceaccount:kube-system:alb-ingress-controller"
+        }
       }
-   ]
+    }
+  ]
 }
