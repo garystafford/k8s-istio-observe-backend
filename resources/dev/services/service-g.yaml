@@ -59,4 +59,4 @@ spec:
                   key: mongodb.conn
           ports:
             - containerPort: 8080
-          imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent #Always

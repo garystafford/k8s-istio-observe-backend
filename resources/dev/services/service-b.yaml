@@ -58,4 +58,4 @@ spec:
               value: http://service-e.dev.svc.cluster.local:8080
           ports:
             - containerPort: 8080
-          imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent #Always

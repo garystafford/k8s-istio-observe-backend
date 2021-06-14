@@ -61,4 +61,4 @@ spec:
               value: "Nǐ hǎo (你好), from Service H!"
           ports:
             - containerPort: 8080
-          imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent #Always

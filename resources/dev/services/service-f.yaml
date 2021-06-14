@@ -64,4 +64,4 @@ spec:
                   key: rabbitmq.conn
           ports:
             - containerPort: 8080
-          imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent #Always
