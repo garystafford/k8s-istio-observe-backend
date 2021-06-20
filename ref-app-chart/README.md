@@ -1,9 +1,9 @@
 # Reference Application Platform Helm Chart
 
-Helm chart that will install all Kubernetes resources to the `dev` namespace. Place your environment specific values in the `values.yaml` first before apply chart to your k8s cluster. Note that this chart includes `HorizontalPodAutoscaler` resources, not discussed in the blog posts associated this source code.
+This Helm 3 chart will install all Kubernetes resources to the `dev` namespace for the Reference Application Platform. First, place your environment specific values in the chart's `values.yaml`. Note that this chart includes container resource requests and limits, along with the use `HorizontalPodAutoscaler` resources, which were not discussed in the blog posts associated this GitHub repository.
 
 ```shell
-# dry run
+# perform dry run
 helm install ref-app ./ref-app-chart --namespace dev --debug --dry-run
 
 # apply chart resources
