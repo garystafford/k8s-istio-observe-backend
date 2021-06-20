@@ -10,7 +10,7 @@ managedNodeGroups:
   - name: managed-ng-1
     amiFamily: AmazonLinux2
     instanceType: m5.large
-    desiredCapacity: 4
+    desiredCapacity: 3
     minSize: 2
     maxSize: 5
     volumeSize: 100
@@ -21,12 +21,12 @@ managedNodeGroups:
       nodegroup-name: managed-ng-1
       nodegroup-role: worker
     ssh:
-      enableSsm: true
+      enableSsm: true # use aws ssm instead of ssh - no need to open port 22
     iam:
       withAddonPolicies:
         albIngress: true
         autoScaler: true
         cloudWatch: true
-cloudWatch:
-  clusterLogging:
-    enableTypes: ["*"]
+# cloudWatch:
+#   clusterLogging:
+#     enableTypes: ["*"]
