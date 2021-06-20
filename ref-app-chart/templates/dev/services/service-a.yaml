@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a
+  labels:
+    app: service-a
+    component: service
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: service-a
+    component: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a
+  labels:
+    app: service-a
+    component: service
+    version: v1
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: service-a
+      component: service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: service-a
+        component: service
+        version: v1
+    spec:
+      containers:
+        - name: service-a
+          image: {{ .Values.image.repository }}/go-srv-a:{{ .Values.image.tag.ServiceA }}
+          resources:
+            requests:
+              memory: 125Mi
+              cpu: 125m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: GREETING
+              value: "Howdy, from Service A!"
+            - name: ALLOWED_ORIGINS
+              value: https://demo-ui.example-api.com
+            - name: SERVICE_B_URL
+              value: http://service-b.dev.svc.cluster.local:8080
+            - name: SERVICE_C_URL
+              value: http://service-c.dev.svc.cluster.local:8080
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: {{ .Values.image.pullPolicy }}

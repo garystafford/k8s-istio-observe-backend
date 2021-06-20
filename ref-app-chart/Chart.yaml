@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ref-app
+description: Reference application platform, written in Go and TypeScript/Angular.
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

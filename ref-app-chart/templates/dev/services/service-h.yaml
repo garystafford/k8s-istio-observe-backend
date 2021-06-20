@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-h
+  labels:
+    app: service-h
+    component: service
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: service-h
+    component: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-h
+  labels:
+    app: service-h
+    component: service
+    version: v1
+spec:
+#  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: service-h
+      component: service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: service-h
+        component: service
+        version: v1
+    spec:
+      containers:
+        - name: service-h
+          image: {{ .Values.image.repository }}/go-srv-h:{{ .Values.image.tag.ServiceH }}
+          resources:
+            requests:
+              memory: 125Mi
+              cpu: 125m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: MONGO_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: go-srv-config
+                  key: mongodb.conn
+            - name: GREETING
+              value: "Nǐ hǎo (你好), from Service H!"
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: {{ .Values.image.pullPolicy }}

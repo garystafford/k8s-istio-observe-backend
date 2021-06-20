@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: docdb-external-mesh
+spec:
+  hosts:
+  {{- range .Values.serviceEntry.documentdb.hosts }}
+  - {{ . }}
+  {{- end }}
+  ports:
+  - name: mongo
+    number: 27017
+    protocol: MONGO
+  location: MESH_EXTERNAL
+  resolution: NONE

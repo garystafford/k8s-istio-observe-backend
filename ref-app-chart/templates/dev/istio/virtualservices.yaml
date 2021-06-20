@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: angular-ui
+spec:
+  hosts:
+    - {{ .Values.istio.hosts.ui}}
+  gateways:
+    - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: angular-ui.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: service-a
+spec:
+  hosts:
+    - {{ .Values.istio.hosts.api }}
+  gateways:
+    - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api
+      route:
+        - destination:
+            host: service-a.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 8080

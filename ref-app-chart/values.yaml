@@ -1,0 +1,42 @@
+image:
+  repository: registry.hub.docker.com/garystafford
+  pullPolicy: IfNotPresent
+
+  tag:
+    AngularUI: 1.6.7
+    ServiceA: 1.7.5
+    ServiceB: 1.7.5
+    ServiceC: 1.7.5
+    ServiceD: 1.8.6
+    ServiceE: 1.7.5
+    ServiceF: 1.8.6
+    ServiceG: 1.7.5
+    ServiceH: 1.7.5
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 6
+
+  metrics:
+    memory:
+      averageUtilization: 75
+    cpu:
+      averageUtilization: 75
+
+secrets:
+  data:
+    mongodbConn: your_value_here
+    rabbitmqConn: your_value_here
+
+istio:
+  hosts:
+    ui: your_value_here.com
+    api: your_value_here.com
+
+serviceEntry:
+  documentdb:
+    hosts:
+      - your_value_here.amazonaws.com
+  amazonmq:
+    hosts:
+      - your_value_here.amazonaws.com

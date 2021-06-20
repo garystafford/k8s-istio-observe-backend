@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-b
+  labels:
+    app: service-b
+    component: service
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: service-b
+    component: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+  labels:
+    app: service-b
+    component: service
+    version: v1
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: service-b
+      component: service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: service-b
+        component: service
+        version: v1
+    spec:
+      containers:
+        - name: service-b
+          image: {{ .Values.image.repository }}/go-srv-b:{{ .Values.image.tag.ServiceB }}
+          resources:
+            requests:
+              memory: 125Mi
+              cpu: 125m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: SERVICE_D_URL
+              value: http://service-d.dev.svc.cluster.local:8080
+            - name: SERVICE_E_URL
+              value: http://service-e.dev.svc.cluster.local:8080
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: {{ .Values.image.pullPolicy }}

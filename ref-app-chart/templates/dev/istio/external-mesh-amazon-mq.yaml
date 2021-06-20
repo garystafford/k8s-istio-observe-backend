@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: amazonmq-external-mesh
+spec:
+  hosts:
+  {{- range .Values.serviceEntry.amazonmq.hosts }}
+  - {{ . }}
+  {{- end }}
+  ports:
+  - name: rabbitmq
+    number: 5671
+    protocol: TCP
+  location: MESH_EXTERNAL
+  resolution: NONE

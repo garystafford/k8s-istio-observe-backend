@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: ui
+        protocol: HTTP
+      hosts:
+        {{- range .Values.istio.hosts }}
+        - {{ . }}
+        {{- end }}
