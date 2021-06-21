@@ -1,5 +1,5 @@
 image:
-  repository: registry.hub.docker.com/garystafford
+  repository: docker.io/garystafford
   pullPolicy: IfNotPresent
 
   tag:
