@@ -16,23 +16,23 @@ Resources included in Helm Chart:
 .
 └── dev
     ├── hpa
-    │   ├── hpa-angular-ui.yaml
-    │   ├── hpa-service-a.yaml
-    │   ├── hpa-service-b.yaml
-    │   ├── hpa-service-c.yaml
-    │   ├── hpa-service-d.yaml
-    │   ├── hpa-service-e.yaml
-    │   ├── hpa-service-f.yaml
-    │   ├── hpa-service-g.yaml
-    │   └── hpa-service-h.yaml
+    │  ├── hpa-angular-ui.yaml
+    │  ├── hpa-service-a.yaml
+    │  ├── hpa-service-b.yaml
+    │  ├── hpa-service-c.yaml
+    │  ├── hpa-service-d.yaml
+    │  ├── hpa-service-e.yaml
+    │  ├── hpa-service-f.yaml
+    │  ├── hpa-service-g.yaml
+    │  └── hpa-service-h.yaml
     ├── istio
-    │   ├── destination-rules.yaml
-    │   ├── external-mesh-amazon-mq.yaml
-    │   ├── external-mesh-document-db.yaml
-    │   ├── gateway.yaml
-    │   └── virtualservices.yaml
+    │  ├── destination-rules.yaml
+    │  ├── external-mesh-amazon-mq.yaml
+    │  ├── external-mesh-document-db.yaml
+    │  ├── gateway.yaml
+    │  └── virtualservices.yaml
     ├── secrets
-    │   └── secrets.yaml
+    │  └── secrets.yaml
     └── services
         ├── angular-ui.yaml
         ├── service-a.yaml
