@@ -4,10 +4,10 @@ This Helm 3 chart will install all Kubernetes resources to the `dev` namespace f
 
 ```shell
 # perform dry run
-helm install ref-app ./ref-app-chart --namespace dev --debug --dry-run
+helm install ref-app ./ref-app --namespace dev --debug --dry-run
 
 # apply chart resources
-helm install ref-app ./ref-app-chart --namespace dev | kubectl apply -f
+helm install ref-app ./ref-app --namespace dev | kubectl apply -f
 ```
 
 Resources included in Helm Chart:
