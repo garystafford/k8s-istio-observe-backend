@@ -35,6 +35,8 @@ spec:
       version: v1
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: service-g
         component: service
@@ -42,7 +44,7 @@ spec:
     spec:
       containers:
         - name: service-g
-          image: {{ .Values.image.repository }}/go-srv-g:{{ .Values.image.tag.ServiceG }}
+          image: {{ printf "%s/go-srv-g:%s" .Values.image.repository .Values.image.tag.ServiceG }}
           resources:
             requests:
               memory: 125Mi

@@ -34,6 +34,8 @@ spec:
       version: v1
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: service-d
         component: service
@@ -41,7 +43,7 @@ spec:
     spec:
       containers:
         - name: service-d
-          image: {{ .Values.image.repository }}/go-srv-d:{{ .Values.image.tag.ServiceD }}
+          image: {{ printf "%s/go-srv-d:%s" .Values.image.repository .Values.image.tag.ServiceD }}
           resources:
             requests:
               memory: 150Mi
@@ -57,7 +59,7 @@ spec:
             periodSeconds: 3
           env:
             - name: LOG_LEVEL
-              value: debug
+              value: info
             - name: RABBITMQ_CONN
               valueFrom:
                 secretKeyRef:
