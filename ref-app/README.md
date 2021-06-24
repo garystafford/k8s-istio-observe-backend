@@ -1,6 +1,6 @@
 # Reference Application Platform Helm Chart
 
-This Helm 3 chart will install all Kubernetes resources to the `dev` namespace for the Reference Application Platform. First, place your environment specific values in the chart's `values.yaml`. Note that this chart includes container resource requests and limits, along with the use `HorizontalPodAutoscaler` resources, which were not discussed in the blog posts associated this GitHub repository.
+This Helm 3 chart will install all Kubernetes resources to the `dev` namespace for the Reference Application Platform. Before proceeding, add your environment specific values in the chart's `values.yaml`. Note that this chart includes container resource requests and limits, along with the use `HorizontalPodAutoscaler` resources.
 
 Prerequisite: Kubernetes Metrics Server for HPA
 
