@@ -3,7 +3,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/name: aws-load-balancer-controller
   name: ingressclassparams.elbv2.k8s.aws
@@ -144,19 +143,12 @@ spec:
     served: true
     storage: true
     subresources: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/name: aws-load-balancer-controller
   name: targetgroupbindings.elbv2.k8s.aws
@@ -326,8 +318,6 @@ spec:
         type: object
     served: true
     storage: false
-    subresources:
-      status: {}
   - additionalPrinterColumns:
     - description: The Kubernetes Service's name
       jsonPath: .spec.serviceRef.name
@@ -534,14 +524,6 @@ spec:
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
 #---
 #apiVersion: v1
 #kind: ServiceAccount
@@ -580,7 +562,6 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   labels:
     app.kubernetes.io/name: aws-load-balancer-controller
   name: aws-load-balancer-controller-role
@@ -836,7 +817,7 @@ spec:
           defaultMode: 420
           secretName: aws-load-balancer-webhook-tls
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   labels:
@@ -852,7 +833,7 @@ spec:
     name: aws-load-balancer-selfsigned-issuer
   secretName: aws-load-balancer-webhook-tls
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   labels:
