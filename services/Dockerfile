@@ -1,12 +1,13 @@
 # build based on:
 # https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-# date: 2021-05-29
+# date: 2021-07-03
 
 ################################
 # STEP 1 build executable binary
 ################################
-FROM golang:1.16.4-alpine3.13 AS builder
+FROM golang:1.16.5-alpine3.14 AS builder
 
+# Use port 50051 for gRPC
 EXPOSE 8080
 
 # Install git, zoneinfo, and SSL certs
@@ -40,7 +41,7 @@ RUN go build -ldflags '-w -s' -a -installsuffix cgo -o /go/bin/app .
 FROM scratch
 
 LABEL maintainer="Gary A. Stafford <gary.a.stafford@gmail.com>"
-ENV REFRESHED_AT 2021-06-08
+ENV REFRESHED_AT 2021-07-03
 
 # Import the user and group files from the builder
 COPY --from=builder /etc/passwd /etc/passwd

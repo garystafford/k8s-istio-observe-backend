@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-f
+  labels:
+    app: service-f
+    component: service
+spec:
+  ports:
+    - appProtocol: grpc
+      name: grpc
+      port: 50051
+      protocol: TCP
+      targetPort: 50051
+  selector:
+    app: service-f
+    component: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-f
+  labels:
+    app: service-f
+    component: service
+    version: v1
+spec:
+#  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: service-f
+      component: service
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: service-f
+        component: service
+        version: v1
+    spec:
+      containers:
+        - name: service-f
+          image: {{ printf "%s/go-srv-f:%s" .Values.image.repository .Values.image.tag.ServiceF }}
+          resources:
+            requests:
+              memory: 125Mi
+              cpu: 125m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: MONGO_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: go-srv-config
+                  key: mongodb.conn
+            - name: RABBITMQ_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: go-srv-config
+                  key: rabbitmq.conn
+          ports:
+            - containerPort:   50051
+          imagePullPolicy: {{ .Values.image.pullPolicy }}

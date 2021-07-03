@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-ui
+  labels:
+    app: angular-ui
+    component: ui
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: angular-ui
+    component: ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angular-ui
+  labels:
+    app: angular-ui
+    component: ui
+    version: v1
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: angular-ui
+      component: ui
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: angular-ui
+        component: ui
+        version: v1
+    spec:
+      containers:
+      - name: angular-ui
+        image: {{ printf "%s/angular-observe:%s" .Values.image.repository .Values.image.tag.AngularUI }}
+        resources:
+          requests:
+            memory: 125Mi
+            cpu: 125m
+          limits:
+            memory: 400Mi
+            cpu: 400m
+        ports:
+        - containerPort: 80
+        imagePullPolicy: {{ .Values.image.pullPolicy }}

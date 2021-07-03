@@ -1,0 +1,50 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: angular-ui
+spec:
+  hosts:
+    - {{ .Values.istio.hosts.ui}}
+  gateways:
+    - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: angular-ui.dev.svc.cluster.local
+            subset: v1
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: rev-proxy
+spec:
+  hosts:
+    - {{ .Values.istio.hosts.api }}
+  gateways:
+      - istio-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: rev-proxy.dev.svc.cluster.local
+            port:
+              number: 80
+          weight: 100
+      corsPolicy:
+        allowOrigin:
+          {{- range .Values.corsPolicy.allowOrigin }}
+          - {{ . }}
+          {{- end }}
+        allowMethods:
+          - OPTIONS
+          - GET
+        allowCredentials: true
+        allowHeaders:
+          - "*"

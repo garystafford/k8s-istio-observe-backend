@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-h
+  labels:
+    app: service-h
+    component: service
+spec:
+  ports:
+    - appProtocol: grpc
+      name: grpc
+      port: 50051
+      protocol: TCP
+      targetPort: 50051
+  selector:
+    app: service-h
+    component: service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-h
+  labels:
+    app: service-h
+    component: service
+    version: v1
+spec:
+#  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: service-h
+      component: service
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: service-h
+        component: service
+        version: v1
+    spec:
+      containers:
+        - name: service-h
+          image: {{ printf "%s/go-srv-h:%s" .Values.image.repository .Values.image.tag.ServiceH }}
+          resources:
+            requests:
+              memory: 125Mi
+              cpu: 125m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          env:
+            - name: LOG_LEVEL
+              value: info
+            - name: MONGO_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: go-srv-config
+                  key: mongodb.conn
+            - name: GREETING
+              value: "Nǐ hǎo (你好), from Service H!"
+          ports:
+            - containerPort:   50051
+          imagePullPolicy: {{ .Values.image.pullPolicy }}

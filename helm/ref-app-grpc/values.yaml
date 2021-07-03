@@ -1,0 +1,47 @@
+image:
+  repository: docker.io/garystafford
+  pullPolicy: IfNotPresent
+
+  tag:
+    AngularUI: 2.0.3-grpc
+    RevProxy: 2.1.0-grpc
+    ServiceA: 2.1.0-grpc
+    ServiceB: 2.1.0-grpc
+    ServiceC: 2.1.0-grpc
+    ServiceD: 2.1.0-grpc
+    ServiceE: 2.1.0-grpc
+    ServiceF: 2.1.0-grpc
+    ServiceG: 2.1.0-grpc
+    ServiceH: 2.1.0-grpc
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 6
+
+  metrics:
+    memory:
+      averageUtilization: 75
+    cpu:
+      averageUtilization: 75
+
+secrets:
+  data:
+    mongodbConn: your_value_here
+    rabbitmqConn: your_value_here
+
+istio:
+  hosts:
+    ui: your_value_here.com
+    api: your_value_here.com
+
+corsPolicy:
+  allowOrigin:
+    ui: https://your_value_here
+
+serviceEntry:
+  documentdb:
+    hosts:
+      - your_value_here.amazonaws.com
+  amazonmq:
+    hosts:
+      - your_value_here.amazonaws.com
