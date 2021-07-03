@@ -23,60 +23,70 @@ informational JSON payload (termed a greeting in the source code).
 
 ```json
 {
-  "id": "fc65e292-eb40-43ee-810f-f819764cae61",
-  "service": "Service-A",
-  "message": "Hello, from Service-A!",
-  "created": "2021-05-22T23:31:10.489864529Z"
+  "id": "01596496-c6f3-442e-8fa0-26c09783fac6",
+  "service": "Service A",
+  "message": "Howdy, from Service A!",
+  "created": "2021-07-03 13:24:16.43337955 +0000 UTC",
+  "hostname": "service-a-5648545d66-ddq28"
 }
 ```
 
 ### Complete response from Service A
 
 ```json
-[
-  {
-    "id": "c90f542d-22e6-401c-8361-422fea719f15",
-    "service": "Service-D",
-    "message": "Shalom (שָׁלוֹם), from Service-D!",
-    "created": "2021-05-22T23:31:10.402441212Z"
-  },
-  {
-    "id": "713156eb-f91c-4591-ab51-07d107185d61",
-    "service": "Service-G",
-    "message": "Ahlan (أهلا), from Service-G!",
-    "created": "2021-05-22T23:31:10.4324182Z"
-  },
-  {
-    "id": "22bdf2c8-1262-441e-b799-b3c4d68392df",
-    "service": "Service-H",
-    "message": "Ciao, from Service-H!",
-    "created": "2021-05-22T23:31:10.454751483Z"
-  },
-  {
-    "id": "f292a648-0f35-4248-8852-fde4035052dc",
-    "service": "Service-E",
-    "message": "Bonjour, from Service-E!",
-    "created": "2021-05-22T23:31:10.468721423Z"
-  },
-  {
-    "id": "523ddd56-5068-4d32-83dc-511545fc5fbb",
-    "service": "Service-B",
-    "message": "Namasté, from Service-B!",
-    "created": "2021-05-22T23:31:10.469495924Z"
-  },
-  {
-    "id": "d6cca80b-f238-428d-9db9-3658ba072e1e",
-    "service": "Service-C",
-    "message": "Konnichiwa (こんにちは), from Service-C!",
-    "created": "2021-05-22T23:31:10.471593632Z"
-  },
-  {
-    "id": "fc65e292-eb40-43ee-810f-f819764cae61",
-    "service": "Service-A",
-    "message": "Hello, from Service-A!",
-    "created": "2021-05-22T23:31:10.489864529Z"
-  }
-]
+{
+  "greeting": [
+    {
+      "id": "01596496-c6f3-442e-8fa0-26c09783fac6",
+      "service": "Service A",
+      "message": "Howdy, from Service A!",
+      "created": "2021-07-03 13:24:16.43337955 +0000 UTC",
+      "hostname": "service-a-5648545d66-ddq28"
+    },
+    {
+      "id": "90da9923-8b0b-4c3c-93cb-cc3a17568a5d",
+      "service": "Service B",
+      "message": "Namasté (नमस्ते), from Service B!",
+      "created": "2021-07-03 13:24:16.454971435 +0000 UTC",
+      "hostname": "service-b-6685bdf588-297hl"
+    },
+    {
+      "id": "6a43f52e-97c3-4fda-b9db-1257759cf5e9",
+      "service": "Service D",
+      "message": "Shalom (שָׁלוֹם), from Service D!",
+      "created": "2021-07-03 13:24:16.476144396 +0000 UTC",
+      "hostname": "service-d-5f486b99b5-j7gkc"
+    },
+    {
+      "id": "0ee4ec6d-1107-44b5-b53f-d243e628867c",
+      "service": "Service E",
+      "message": "Bonjour, from Service E!",
+      "created": "2021-07-03 13:24:16.550752623 +0000 UTC",
+      "hostname": "service-e-6769679f5f-q4l8s"
+    },
+    {
+      "id": "51b978c3-9cfc-420f-9fb3-956853dc76ae",
+      "service": "Service G",
+      "message": "Ahlan (أهلا), from Service G!",
+      "created": "2021-07-03 13:24:16.568093421 +0000 UTC",
+      "hostname": "service-g-7cd66567c5-lwpft"
+    },
+    {
+      "id": "179c99ef-d8a6-4e53-abd9-bbd13476bf86",
+      "service": "Service H",
+      "message": "Nǐ hǎo (你好), from Service H!",
+      "created": "2021-07-03 13:24:16.618275186 +0000 UTC",
+      "hostname": "service-h-8468c7888-jtxn9"
+    },
+    {
+      "id": "cbb05fd4-68c4-4281-83a5-3fcd402b93fc",
+      "service": "Service C",
+      "message": "Konnichiwa (こんにちは), from Service C!",
+      "created": "2021-07-03 13:24:16.665208081 +0000 UTC",
+      "hostname": "service-c-7c8d674595-hx5z7"
+    }
+  ]
+}
 ```
 
 ## Optional Docker Swarm Deployment
