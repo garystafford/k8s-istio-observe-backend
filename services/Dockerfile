@@ -7,8 +7,8 @@
 ################################
 FROM golang:1.16.5-alpine3.14 AS builder
 
-# Use port 50051 for gRPC
-EXPOSE 8080
+# Use port 50051 for gRPC, 8080 for http
+EXPOSE 50051
 
 # Install git, zoneinfo, and SSL certs
 RUN apk update && apk add --no-cache git ca-certificates tzdata

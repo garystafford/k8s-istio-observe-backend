@@ -7,11 +7,11 @@ package main
 
 import (
 	"context"
-	"github.com/banzaicloud/logrus-runtime-formatter"
+	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
 	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
@@ -30,6 +30,7 @@ var (
 	message     = getEnv("GREETING", "Ciao, from Service H!")
 	mongoConn   = getEnv("MONGO_CONN", "mongodb://mongodb:27017/admin")
 	greetings   []*pb.Greeting
+	log         = logrus.New()
 )
 
 type greetingServiceServer struct {
@@ -116,15 +117,16 @@ func run() error {
 }
 
 func init() {
-	formatter := runtime.Formatter{ChildFormatter: &log.JSONFormatter{}}
-	formatter.Line = true
-	log.SetFormatter(&formatter)
-	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(logLevel)
+	childFormatter := logrus.JSONFormatter{}
+	runtimeFormatter := &lrf.Formatter{ChildFormatter: &childFormatter}
+	runtimeFormatter.Line = true
+	log.Formatter = runtimeFormatter
+	log.Out = os.Stdout
+	level, err := logrus.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
-	log.SetLevel(level)
+	log.Level = level
 }
 
 func main() {

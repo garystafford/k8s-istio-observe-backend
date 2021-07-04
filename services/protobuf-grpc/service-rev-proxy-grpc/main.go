@@ -12,7 +12,7 @@ import (
 	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	pb "github.com/garystafford/protobuf/greeting/v3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net/http"
@@ -23,20 +23,20 @@ var (
 	logLevel    = getEnv("LOG_LEVEL", "info")
 	port        = getEnv("PORT", ":50051")
 	URLServiceA = getEnv("SERVICE_A_URL", "service-a:50051")
+	log         = logrus.New()
 )
 
 func injectHeadersIntoMetadata(ctx context.Context, req *http.Request) metadata.MD {
 	//https://aspenmesh.io/2018/04/tracing-grpc-with-istio/
-	var (
-		otHeaders = []string{
-			"x-request-id",
-			"x-b3-traceid",
-			"x-b3-spanid",
-			"x-b3-parentspanid",
-			"x-b3-sampled",
-			"x-b3-flags",
-			"x-ot-span-context"}
-	)
+	otHeaders := []string{
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context"}
+
 	var pairs []string
 
 	for _, h := range otHeaders {
@@ -87,15 +87,16 @@ func getEnv(key, fallback string) string {
 }
 
 func init() {
-	formatter := lrf.Formatter{ChildFormatter: &log.JSONFormatter{}}
-	formatter.Line = true
-	log.SetFormatter(&formatter)
-	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(logLevel)
+	childFormatter := logrus.JSONFormatter{}
+	runtimeFormatter := &lrf.Formatter{ChildFormatter: &childFormatter}
+	runtimeFormatter.Line = true
+	log.Formatter = runtimeFormatter
+	log.Out = os.Stdout
+	level, err := logrus.ParseLevel(logLevel)
 	if err != nil {
 		log.Error(err)
 	}
-	log.SetLevel(level)
+	log.Level = level
 }
 
 func main() {
