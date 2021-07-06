@@ -49,11 +49,11 @@ spec:
           image: {{ printf "%s/go-srv-d:%s" .Values.image.repository .Values.image.tag.ServiceD }}
           resources:
             requests:
-              memory: 150Mi
-              cpu: 250m
+              memory: 55Mi
+              cpu: 5m
             limits:
               memory: 400Mi
-              cpu: 600m
+              cpu: 300m
           env:
             - name: LOG_LEVEL
               value: info

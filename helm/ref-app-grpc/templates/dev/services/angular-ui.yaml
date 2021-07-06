@@ -48,11 +48,11 @@ spec:
         image: {{ printf "%s/angular-observe:%s" .Values.image.repository .Values.image.tag.AngularUI }}
         resources:
           requests:
-            memory: 125Mi
-            cpu: 125m
+            memory: 55Mi
+            cpu: 5m
           limits:
-            memory: 400Mi
-            cpu: 400m
+            memory: 100Mi
+            cpu: 200m
         ports:
         - containerPort: 80
         imagePullPolicy: {{ .Values.image.pullPolicy }}

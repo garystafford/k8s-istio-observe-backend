@@ -20,9 +20,9 @@ autoscaling:
 
   metrics:
     memory:
-      averageUtilization: 75
+      averageUtilization: 80
     cpu:
-      averageUtilization: 75
+      averageUtilization: 80
 
 secrets:
   data:
