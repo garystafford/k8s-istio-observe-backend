@@ -1,7 +1,8 @@
 # Kubernetes-based Microservice Observability with Istio Service Mesh
 
 Source code for the two-part blog
-post, [Kubernetes-based Microservice Observability with Istio Service Mesh](https://garystafford.medium.com/kubernetes-based-microservice-observability-with-istio-service-mesh-part-1-of-2-19084d13a866). See the post for detailed instructions.
+post, [Kubernetes-based Microservice Observability with Istio Service Mesh](https://garystafford.medium.com/kubernetes-based-microservice-observability-with-istio-service-mesh-part-1-of-2-19084d13a866). Also, for the post, [Observing gRPC-based Microservices on Amazon EKS running Istio
+](https://garystafford.medium.com/observing-grpc-based-microservices-on-amazon-eks-running-istio-77ba90dd8cc0). See these posts for detailed instructions.
 
 ![Kiali](pics/kiali_new.png)
 
@@ -12,9 +13,15 @@ Github: [k8s-istio-observe-frontend](https://github.com/garystafford/k8s-istio-o
 
 ![preview](pics/ui_new.png)
 
-## Reference Platform Architecture
+## Reference Platform Architectures
+
+RESTful JSON over HTTP architecture:
 
 ![Architecture Diagram](pics/architecture.png)
+
+gRPC using protobufs over HTTP/2 architecture:
+
+![Architecture Diagram](pics/grpc_platform.png)
 
 ## Service Responses
 
