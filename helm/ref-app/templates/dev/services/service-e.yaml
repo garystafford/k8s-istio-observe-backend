@@ -22,7 +22,6 @@ metadata:
     component: service
     version: v1
 spec:
-#  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -47,11 +46,11 @@ spec:
           image: {{ printf "%s/go-srv-e:%s" .Values.image.repository .Values.image.tag.ServiceE }}
           resources:
             requests:
-              memory: 125Mi
-              cpu: 125m
+              memory: 55Mi
+              cpu: 5m
             limits:
               memory: 400Mi
-              cpu: 400m
+              cpu: 200m
           livenessProbe:
             httpGet:
               path: /api/health

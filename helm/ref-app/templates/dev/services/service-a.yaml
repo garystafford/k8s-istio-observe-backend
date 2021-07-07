@@ -46,11 +46,11 @@ spec:
           image: {{ printf "%s/go-srv-a:%s" .Values.image.repository .Values.image.tag.ServiceA }}
           resources:
             requests:
-              memory: 125Mi
-              cpu: 125m
+              memory: 55Mi
+              cpu: 5m
             limits:
               memory: 400Mi
-              cpu: 400m
+              cpu: 200m
           livenessProbe:
             httpGet:
               path: /api/health
