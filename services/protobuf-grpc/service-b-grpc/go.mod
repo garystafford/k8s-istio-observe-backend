@@ -1,4 +1,4 @@
-module github.com/garystafford/service-b-grpc/v2
+module github.com/garystafford/go-srv-b-grpc
 
 go 1.16
 
@@ -8,7 +8,5 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
-	google.golang.org/grpc v1.38.0
-	gopkg.in/yaml.v2 v2.3.0 // indirect
+	google.golang.org/grpc v1.39.0
 )

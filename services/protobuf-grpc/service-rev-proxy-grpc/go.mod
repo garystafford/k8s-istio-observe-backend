@@ -1,4 +1,4 @@
-module github.com/garystafford/service-rev-proxy/v2
+module github.com/garystafford/go-srv-rev-proxy-grpc
 
 go 1.16
 

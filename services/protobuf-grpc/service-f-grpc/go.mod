@@ -1,4 +1,4 @@
-module github.com/garystafford/service-f-grpc/v2
+module github.com/garystafford/go-srv-f-grpc
 
 go 1.16
 
@@ -9,8 +9,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/streadway/amqp v1.0.0
-	go.mongodb.org/mongo-driver v1.5.3
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
-	google.golang.org/grpc v1.38.0
-	gopkg.in/yaml.v2 v2.3.0 // indirect
+	go.mongodb.org/mongo-driver v1.5.4
+	google.golang.org/grpc v1.39.0
 )
