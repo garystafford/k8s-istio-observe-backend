@@ -70,7 +70,10 @@ func run() error {
 		runtime.WithMetadata(chainGrpcAnnotators(annotators...)),
 	)
 
-	opts := []grpc.DialOption{grpc.WithInsecure()}
+	var opts []grpc.DialOption
+	opts = append(opts,
+		grpc.WithInsecure(),
+		grpc.WithBlock())
 	err := pb.RegisterGreetingServiceHandlerFromEndpoint(ctx, mux, URLServiceA, opts)
 	if err != nil {
 		return err

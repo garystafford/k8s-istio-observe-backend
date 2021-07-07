@@ -3,16 +3,16 @@ image:
   pullPolicy: IfNotPresent
 
   tag:
-    AngularUI: 2.0.5-grpc
-    RevProxy: 2.1.1-grpc
-    ServiceA: 2.1.1-grpc
-    ServiceB: 2.1.1-grpc
-    ServiceC: 2.1.1-grpc
-    ServiceD: 2.1.1-grpc
-    ServiceE: 2.1.1-grpc
-    ServiceF: 2.1.1-grpc
-    ServiceG: 2.1.1-grpc
-    ServiceH: 2.1.1-grpc
+    AngularUI: 2.0.6-grpc
+    RevProxy: 2.2.0-grpc
+    ServiceA: 2.2.0-grpc
+    ServiceB: 2.2.0-grpc
+    ServiceC: 2.2.0-grpc
+    ServiceD: 2.2.0-grpc
+    ServiceE: 2.2.0-grpc
+    ServiceF: 2.2.0-grpc
+    ServiceG: 2.2.0-grpc
+    ServiceH: 2.2.0-grpc
 
 autoscaling:
   minReplicas: 2

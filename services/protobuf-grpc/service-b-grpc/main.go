@@ -9,15 +9,10 @@ import (
 	"context"
 	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	ot "github.com/opentracing/opentracing-go"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net"
-	"net/http"
 	"os"
 	"time"
 
@@ -101,10 +96,6 @@ func callGrpcService(ctx context.Context, requestGreeting *pb.Greeting, address 
 func createGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) {
 	var opts []grpc.DialOption
 	opts = append(opts,
-		grpc.WithUnaryInterceptor(grpcprometheus.UnaryClientInterceptor),
-		grpc.WithUnaryInterceptor(
-			opentracing.UnaryClientInterceptor(
-				opentracing.WithTracer(ot.GlobalTracer()))),
 		grpc.WithInsecure(),
 		grpc.WithBlock())
 	conn, err := grpc.DialContext(ctx, addr, opts...)
@@ -135,14 +126,8 @@ func run() error {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(grpcprometheus.UnaryServerInterceptor),
-	)
+	grpcServer := grpc.NewServer()
 	pb.RegisterGreetingServiceServer(grpcServer, &greetingServiceServer{})
-	grpcprometheus.Register(grpcServer)
-	http.Handle("/metrics", promhttp.Handler())
-
 	return grpcServer.Serve(lis)
 }
 

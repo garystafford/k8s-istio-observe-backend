@@ -9,14 +9,11 @@ import (
 	"context"
 	lrf "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/google/uuid"
-	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"net"
-	"net/http"
 	"os"
 	"time"
 
@@ -105,14 +102,8 @@ func run() error {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(grpcprometheus.UnaryServerInterceptor),
-	)
+	grpcServer := grpc.NewServer()
 	pb.RegisterGreetingServiceServer(grpcServer, &greetingServiceServer{})
-	grpcprometheus.Register(grpcServer)
-	http.Handle("/metrics", promhttp.Handler())
-
 	return grpcServer.Serve(lis)
 }
 

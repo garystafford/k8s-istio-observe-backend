@@ -10,4 +10,4 @@ jobs:
         run: |
           git branch
           cd ./services/
-          time bash ./part0_build_services_locally.sh
+          time bash ./test_build_services.sh
