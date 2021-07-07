@@ -1,0 +1,13 @@
+on: [push, pull_request]
+name: Test build of services
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out GitHub repo
+        uses: actions/checkout@v2
+      - name: Build services
+        run: |
+          git branch
+          cd ./services/
+          time bash ./part0_build_services_locally.sh
