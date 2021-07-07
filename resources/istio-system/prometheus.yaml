@@ -42,20 +42,27 @@ data:
     - /etc/config/rules
     - /etc/config/alerts
     scrape_configs:
-    - job_name: 'prometheus_promhttp'
-      metrics_path: '/api/metrics'
-      scrape_interval: 5s
-      static_configs:
-        - targets: ['service-a.dev:8080','service-b.dev:8080','service-c.dev:8080',
-                    'service-d.dev:8080','service-e.dev:8080','service-f.dev:8080',
-                    'service-g.dev:8080','service-h.dev:8080']
-    - job_name: 'prometheus_promhttp_grpc'
+     - job_name: prometheus_promhttp
+       metrics_path: '/api/metrics'
+       scrape_interval: 5s
+       static_configs:
+         - targets: ['service-a.dev:8080','service-b.dev:8080','service-c.dev:8080',
+                     'service-d.dev:8080','service-e.dev:8080','service-f.dev:8080',
+                     'service-g.dev:8080','service-h.dev:8080']
+    - job_name: prometheus_promhttp_grpc
       metrics_path: '/metrics'
+      # scheme: https
       scrape_interval: 5s
       static_configs:
-        - targets: ['service-a.dev:50051','service-b.dev:50051','service-c.dev:50051',
-                    'service-d.dev:50051','service-e.dev:50051','service-f.dev:50051',
-                    'service-g.dev:50051','service-h.dev:50051']
+        - targets:
+          - service-a.dev.svc.cluster.local:50051
+          - service-b.dev.svc.cluster.local:50051
+          - service-c.dev.svc.cluster.local:50051
+          - service-d.dev.svc.cluster.local:50051
+          - service-e.dev.svc.cluster.local:50051
+          - service-f.dev.svc.cluster.local:50051
+          - service-g.dev.svc.cluster.local:50051
+          - service-h.dev.svc.cluster.local:50051
     - job_name: prometheus
       static_configs:
       - targets:
@@ -352,6 +359,7 @@ rules:
       - watch
   - nonResourceURLs:
       - "/metrics"
+      - "/api/metrics"
     verbs:
       - get
 ---

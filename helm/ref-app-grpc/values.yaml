@@ -3,7 +3,7 @@ image:
   pullPolicy: IfNotPresent
 
   tag:
-    AngularUI: 2.0.3-grpc
+    AngularUI: 2.0.5-grpc
     RevProxy: 2.1.1-grpc
     ServiceA: 2.1.1-grpc
     ServiceB: 2.1.1-grpc
