@@ -1,5 +1,7 @@
 # Kubernetes-based Microservice Observability with Istio Service Mesh
 
+[![Test build of services](https://github.com/garystafford/k8s-istio-observe-backend/actions/workflows/test.yml/badge.svg)](https://github.com/garystafford/k8s-istio-observe-backend/actions/workflows/test.yml)
+
 Source code for the two-part blog
 post, [Kubernetes-based Microservice Observability with Istio Service Mesh](https://garystafford.medium.com/kubernetes-based-microservice-observability-with-istio-service-mesh-part-1-of-2-19084d13a866). Also, for the post, [Observing gRPC-based Microservices on Amazon EKS running Istio
 ](https://garystafford.medium.com/observing-grpc-based-microservices-on-amazon-eks-running-istio-77ba90dd8cc0). See these posts for detailed instructions.
